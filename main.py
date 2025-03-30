@@ -136,11 +136,564 @@ def process_voice_input():
         "response": response
     })
 
-# Register page as the first page
+# Index page as landing page
 @app.route('/')
 def index():
-    # Redirect to register page
-    return redirect('/register')
+    # Go directly to home page showing website features
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NeoMitra - Complete Health Platform</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            :root {
+                --primary-color: #7952b3;
+                --secondary-color: #6f42c1;
+                --border-radius: 8px;
+                --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                --transition: all 0.3s ease;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .navbar {
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 0.8rem 1rem;
+            }
+            
+            .navbar-brand {
+                display: flex;
+                align-items: center;
+                font-weight: 700;
+                font-size: 1.5rem;
+            }
+            
+            .navbar-brand i {
+                margin-right: 0.5rem;
+                font-size: 1.8rem;
+            }
+            
+            .hero-section {
+                position: relative;
+                height: 80vh;
+                background: linear-gradient(135deg, #7952b3 0%, #1e88e5 100%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                overflow: hidden;
+            }
+            
+            .hero-content {
+                z-index: 2;
+                max-width: 800px;
+                padding: 2rem;
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+            
+            .btn-primary {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+                padding: 0.8rem 2rem;
+                font-weight: 600;
+                border-radius: 50px;
+                transition: all 0.3s;
+            }
+            
+            .btn-primary:hover {
+                background-color: var(--secondary-color);
+                border-color: var(--secondary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            
+            .btn-outline-light {
+                padding: 0.8rem 2rem;
+                font-weight: 600;
+                border-radius: 50px;
+                transition: all 0.3s;
+            }
+            
+            .wave-bottom {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100px;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="1" d="M0,96L80,112C160,128,320,160,480,160C640,160,800,128,960,128C1120,128,1280,160,1360,176L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,80,320L0,320Z"></path></svg>') no-repeat;
+                background-size: 100% 100%;
+            }
+            
+            .features-section {
+                padding: 5rem 0;
+            }
+            
+            .section-title {
+                text-align: center;
+                margin-bottom: 3rem;
+                color: var(--primary-color);
+                font-weight: 700;
+            }
+            
+            .feature-card {
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                padding: 2rem;
+                height: 100%;
+                transition: var(--transition);
+                border: none;
+            }
+            
+            .feature-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .feature-icon {
+                font-size: 2.5rem;
+                color: var(--primary-color);
+                margin-bottom: 1.5rem;
+            }
+            
+            .feature-title {
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+            
+            /* Chatbot assistant button */
+            .chatbot-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: var(--primary-color);
+                color: white;
+                border-radius: 50px;
+                padding: 0.8rem 1.5rem;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+            }
+            
+            .chatbot-button:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            }
+            
+            .chatbot-icon {
+                margin-right: 0.5rem;
+            }
+            
+            .about-section {
+                padding: 5rem 0;
+                background-color: #f8f9fa;
+            }
+            
+            .about-img {
+                max-width: 100%;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+            }
+            
+            .how-it-works {
+                padding: 5rem 0;
+            }
+            
+            .step-card {
+                text-align: center;
+                padding: 2rem;
+                transition: var(--transition);
+            }
+            
+            .step-number {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: var(--primary-color);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 1.5rem;
+                margin: 0 auto 1.5rem;
+            }
+            
+            .testimonials {
+                padding: 5rem 0;
+                background-color: #f8f9fa;
+            }
+            
+            .testimonial-card {
+                padding: 2rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                margin-bottom: 2rem;
+                position: relative;
+            }
+            
+            .testimonial-text {
+                font-style: italic;
+                margin-bottom: 1.5rem;
+            }
+            
+            .testimonial-author {
+                display: flex;
+                align-items: center;
+            }
+            
+            .testimonial-author img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-right: 1rem;
+            }
+            
+            .author-info h5 {
+                margin-bottom: 0.2rem;
+                font-weight: 600;
+            }
+            
+            .author-info p {
+                margin-bottom: 0;
+                font-size: 0.9rem;
+                opacity: 0.7;
+            }
+            
+            .quote-icon {
+                position: absolute;
+                top: -15px;
+                right: 20px;
+                font-size: 3rem;
+                color: var(--primary-color);
+                opacity: 0.2;
+            }
+            
+            @media (max-width: 992px) {
+                .hero-title {
+                    font-size: 2.5rem;
+                }
+                
+                .hero-subtitle {
+                    font-size: 1.2rem;
+                }
+                
+                .hero-section {
+                    height: 70vh;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .hero-section {
+                    height: 60vh;
+                }
+                
+                .hero-buttons .btn {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-heart-pulse-fill"></i> NeoMitra
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/health_records">Health Records</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/risk_assessment">Risk Assessment</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/government_schemes">Government Schemes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/nutrition">Nutrition Guide</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="/register" class="btn btn-primary">Register</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Hero Section -->
+        <section class="hero-section text-light">
+            <div class="hero-content">
+                <h1 class="hero-title">Empowering Complete Health</h1>
+                <p class="hero-subtitle">A comprehensive healthcare platform for everyone, offering personalized monitoring and recommendations for conditions like anemia, diabetes, and pregnancy with accessibility in multiple languages.</p>
+                <div class="hero-buttons">
+                    <a href="/dashboard" class="btn btn-primary me-3">Get Started</a>
+                    <a href="#features" class="btn btn-outline-light">Learn More</a>
+                </div>
+            </div>
+            <div class="wave-bottom"></div>
+        </section>
+        
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <h2 class="section-title">Our Features</h2>
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-clipboard2-pulse"></i>
+                            </div>
+                            <h3 class="feature-title">Health Tracking</h3>
+                            <p>Easily record and monitor vital health metrics for everyone, including specialized tracking for pregnancy, anemia, and diabetes.</p>
+                            <a href="/health_records" class="btn btn-sm btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <h3 class="feature-title">Risk Assessment</h3>
+                            <p>AI-powered risk assessment for health conditions including anemia and diabetes for all users, with additional pregnancy monitoring for women.</p>
+                            <a href="/risk_assessment" class="btn btn-sm btn-primary mt-3">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+                            <h3 class="feature-title">Chatbot Assistant</h3>
+                            <p>Get immediate answers to all your health questions about anemia, diabetes, and pregnancy in your preferred language.</p>
+                            <a href="/chatbot" class="btn btn-sm btn-primary mt-3">Try It Now</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-bank"></i>
+                            </div>
+                            <h3 class="feature-title">Government Schemes</h3>
+                            <p>Stay informed about government healthcare schemes for all health conditions including diabetes, anemia, and pregnancy care.</p>
+                            <a href="/government_schemes" class="btn btn-sm btn-primary mt-3">View Schemes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="section-title text-start">About NeoMitra</h2>
+                        <p class="mb-4">NeoMitra is a comprehensive healthcare platform designed to provide accessible healthcare information and services to everyone, particularly in areas with limited healthcare access.</p>
+                        <p class="mb-4">Our platform offers personalized health tracking, risk assessments for various conditions, and localized information in multiple languages to ensure that healthcare knowledge is available to all, regardless of location or language barriers.</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="badge bg-primary p-2 rounded-pill"><i class="bi bi-translate me-1"></i> Multiple Languages</div>
+                            <div class="badge bg-primary p-2 rounded-pill"><i class="bi bi-shield-check me-1"></i> Data Security</div>
+                            <div class="badge bg-primary p-2 rounded-pill"><i class="bi bi-hand-thumbs-up me-1"></i> User Friendly</div>
+                            <div class="badge bg-primary p-2 rounded-pill"><i class="bi bi-heart-pulse me-1"></i> Health Focused</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="https://source.unsplash.com/random/600x400/?healthcare" alt="Healthcare" class="about-img img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How It Works -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">How It Works</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h4>Create Account</h4>
+                            <p>Register with basic information to get started with personalized health tracking.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h4>Enter Health Data</h4>
+                            <p>Input your health metrics and medical history for personalized assessments.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h4>Get Insights</h4>
+                            <p>Receive personalized recommendations, risk assessments, and health guidance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonials -->
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="section-title">What Our Users Say</h2>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">
+                                <i class="bi bi-quote"></i>
+                            </div>
+                            <p class="testimonial-text">"NeoMitra has been a lifesaver for me during my pregnancy. The health tracking and risk assessment features have kept me informed and connected to healthcare resources."</p>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="User">
+                                <div class="author-info">
+                                    <h5>Priya Sharma</h5>
+                                    <p>Delhi, India</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">
+                                <i class="bi bi-quote"></i>
+                            </div>
+                            <p class="testimonial-text">"As someone with diabetes, the nutrition guide and health tracking features have helped me manage my condition better. The localized information in my native language is incredibly helpful."</p>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                                <div class="author-info">
+                                    <h5>Rajesh Kumar</h5>
+                                    <p>Chennai, India</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="quote-icon">
+                                <i class="bi bi-quote"></i>
+                            </div>
+                            <p class="testimonial-text">"The information about government schemes has been invaluable for our village health center. We've been able to help many families access healthcare benefits they didn't know existed."</p>
+                            <div class="testimonial-author">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User">
+                                <div class="author-info">
+                                    <h5>Lakshmi Devi</h5>
+                                    <p>Health Worker, Rajasthan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Call to Action -->
+        <section class="bg-primary text-light py-5">
+            <div class="container text-center">
+                <h2 class="mb-4">Ready to take control of your health?</h2>
+                <p class="lead mb-4">Join thousands of users who are already benefiting from NeoMitra's comprehensive health platform.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/register" class="btn btn-light btn-lg">Register Now</a>
+                    <a href="/learn_more" class="btn btn-outline-light btn-lg">Learn More</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="bg-dark text-light py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4 mb-md-0">
+                        <h4 class="mb-4"><i class="bi bi-heart-pulse-fill me-2"></i>NeoMitra</h4>
+                        <p>A comprehensive healthcare platform for everyone, offering personalized health tracking, risk assessments, and recommendations for various health conditions.</p>
+                        <div class="d-flex gap-3 mt-4">
+                            <a href="#" class="text-light fs-5"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="text-light fs-5"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="text-light fs-5"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="text-light fs-5"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-4 mb-md-0">
+                        <h5 class="mb-4">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="/" class="text-light text-decoration-none">Home</a></li>
+                            <li class="mb-2"><a href="/about" class="text-light text-decoration-none">About Us</a></li>
+                            <li class="mb-2"><a href="/services" class="text-light text-decoration-none">Services</a></li>
+                            <li class="mb-2"><a href="/contact" class="text-light text-decoration-none">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 mb-4 mb-md-0">
+                        <h5 class="mb-4">Health Resources</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="/health_records" class="text-light text-decoration-none">Health Records</a></li>
+                            <li class="mb-2"><a href="/risk_assessment" class="text-light text-decoration-none">Risk Assessment</a></li>
+                            <li class="mb-2"><a href="/government_schemes" class="text-light text-decoration-none">Government Schemes</a></li>
+                            <li class="mb-2"><a href="/nutrition" class="text-light text-decoration-none">Nutrition Guide</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5 class="mb-4">Contact Us</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>123 Healthcare St, Medical City</li>
+                            <li class="mb-2"><i class="bi bi-envelope me-2"></i>info@neomitra.com</li>
+                            <li class="mb-2"><i class="bi bi-telephone me-2"></i>+91 1234567890</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <p class="text-center mb-0">&copy; 2025 NeoMitra. All rights reserved.</p>
+            </div>
+        </footer>
+        
+        <!-- Chatbot Button -->
+        <div class="chatbot-button" onclick="window.location.href='/chatbot'">
+            <i class="bi bi-chat-dots-fill chatbot-icon"></i>
+            Ask NeoMitra
+        </div>
+        
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """)
 
 # Home page with gradient background like in the provided screenshot  
 @app.route('/home')
@@ -1184,6 +1737,1438 @@ def register():
     </html>
     """)
 
+@app.route('/risk_assessment')
+def risk_assessment():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Risk Assessment - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .form-check-input:checked {
+                background-color: var(--bs-primary);
+                border-color: var(--bs-primary);
+            }
+            .result-card {
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+            }
+            .risk-high {
+                background-color: rgba(220, 53, 69, 0.1);
+                border-left: 4px solid #dc3545;
+            }
+            .risk-moderate {
+                background-color: rgba(255, 193, 7, 0.1);
+                border-left: 4px solid #ffc107;
+            }
+            .risk-low {
+                background-color: rgba(25, 135, 84, 0.1);
+                border-left: 4px solid #198754;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link active">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Health Risk Assessment</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-7">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Complete Health Assessment</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/submit_assessment" method="post" id="riskAssessmentForm">
+                                        <h5 class="mb-3">Demographic Information</h5>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="ageAbove35">
+                                            <label class="form-check-label" for="ageAbove35">Are you over 35 years old?</label>
+                                        </div>
+                                        
+                                        <h5 class="mb-3 mt-4">Pregnancy Factors</h5>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="isPregnant">
+                                            <label class="form-check-label" for="isPregnant">Are you currently pregnant?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="multiplePregnancy">
+                                            <label class="form-check-label" for="multiplePregnancy">Are you carrying multiple babies (twins, triplets, etc.)?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="previousCSection">
+                                            <label class="form-check-label" for="previousCSection">Have you had a previous C-section?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="previousPretermBirth">
+                                            <label class="form-check-label" for="previousPretermBirth">Have you had a previous preterm birth?</label>
+                                        </div>
+                                        
+                                        <h5 class="mb-3 mt-4">Existing Medical Conditions</h5>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="diabetes">
+                                            <label class="form-check-label" for="diabetes">Do you have diabetes?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="hypertension">
+                                            <label class="form-check-label" for="hypertension">Do you have high blood pressure?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="heartDisease">
+                                            <label class="form-check-label" for="heartDisease">Do you have heart disease?</label>
+                                        </div>
+                                        
+                                        <h5 class="mb-3 mt-4">Anemia Risk Factors</h5>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="fatigue">
+                                            <label class="form-check-label" for="fatigue">Do you often feel fatigued or weak?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="dizzySpells">
+                                            <label class="form-check-label" for="dizzySpells">Do you experience dizziness or fainting?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="paleSkin">
+                                            <label class="form-check-label" for="paleSkin">Have you noticed that your skin is paler than usual?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="poorDiet">
+                                            <label class="form-check-label" for="poorDiet">Do you have limited access to iron-rich foods?</label>
+                                        </div>
+                                        
+                                        <h5 class="mb-3 mt-4">Lifestyle Factors</h5>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="smoking">
+                                            <label class="form-check-label" for="smoking">Do you smoke?</label>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="alcohol">
+                                            <label class="form-check-label" for="alcohol">Do you consume alcohol?</label>
+                                        </div>
+                                        
+                                        <div class="mb-3 mt-4">
+                                            <label for="additionalNotes" class="form-label">Additional Notes or Concerns</label>
+                                            <textarea class="form-control" id="additionalNotes" rows="3"></textarea>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-primary" onclick="calculateRisk()">Submit Assessment</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="card mb-4" id="resultsCard" style="display: none;">
+                                <div class="card-header">
+                                    <h5 class="card-title">Assessment Results</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="result-card p-3 risk-moderate">
+                                        <h5>Pregnancy Risk</h5>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Risk Level:</span>
+                                            <span class="badge bg-warning" id="pregnancyRiskLevel">Moderate</span>
+                                        </div>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 65%" id="pregnancyRiskBar"></div>
+                                        </div>
+                                        <div id="pregnancyRecommendations">
+                                            <h6>Recommendations:</h6>
+                                            <ul>
+                                                <li>Regular prenatal check-ups every 2 weeks</li>
+                                                <li>Monitor blood pressure daily</li>
+                                                <li>Follow a balanced diet rich in iron and folic acid</li>
+                                                <li>Moderate physical activity as recommended by your doctor</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="result-card p-3 risk-high">
+                                        <h5>Anemia Risk</h5>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Risk Level:</span>
+                                            <span class="badge bg-danger" id="anemiaRiskLevel">High</span>
+                                        </div>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" id="anemiaRiskBar"></div>
+                                        </div>
+                                        <div id="anemiaRecommendations">
+                                            <h6>Recommendations:</h6>
+                                            <ul>
+                                                <li>Immediate hemoglobin test recommended</li>
+                                                <li>Increase intake of iron-rich foods (leafy greens, meat, beans)</li>
+                                                <li>Consider iron supplements (consult with healthcare provider)</li>
+                                                <li>Follow up with healthcare provider within 1 week</li>
+                                                <li>Check for eligible government health schemes for free treatment</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <a href="/download_assessment" class="btn btn-outline-primary me-2">
+                                            <i class="bi bi-download me-1"></i> Download Report
+                                        </a>
+                                        <a href="/share_with_doctor" class="btn btn-outline-primary">
+                                            <i class="bi bi-share me-1"></i> Share with Doctor
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Why take this assessment?</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>This comprehensive health risk assessment helps identify potential health risks related to pregnancy complications, anemia, and other health conditions.</p>
+                                    <p>Our AI-powered assessment tool analyzes multiple risk factors to provide personalized recommendations and guidance.</p>
+                                    <p>Early identification of health risks can lead to timely interventions and improved health outcomes.</p>
+                                    <p>Your results are kept confidential and can be shared with your healthcare provider for better care coordination.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function calculateRisk() {
+                // In a real application, this would send data to the server for processing
+                // Here we're just showing the results div for demonstration
+                document.getElementById('resultsCard').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+@app.route('/government_schemes')
+def government_schemes():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Government Schemes - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .scheme-card {
+                transition: all 0.3s ease;
+                margin-bottom: 1.5rem;
+            }
+            .scheme-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .scheme-logo {
+                max-width: 80px;
+                max-height: 80px;
+            }
+            .scheme-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link active">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Government Healthcare Schemes</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <!-- Schemes List -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4>Available Schemes</h4>
+                                    <div class="input-group" style="max-width: 300px;">
+                                        <input type="text" class="form-control" placeholder="Search schemes" id="searchSchemes">
+                                        <button class="btn btn-outline-primary" type="button">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="card scheme-card position-relative">
+                                    <span class="badge bg-success scheme-badge">Recommended</span>
+                                    <div class="card-body d-flex">
+                                        <img src="https://via.placeholder.com/80x80?text=PMSMA" alt="PMSMA Logo" class="scheme-logo me-3">
+                                        <div>
+                                            <h5 class="card-title">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h5>
+                                            <p class="card-text">Provides free antenatal care to pregnant women on the 9th of every month with the aim of detecting high-risk pregnancies.</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-primary">Pregnancy Care</span>
+                                                <span class="badge bg-info">Free Check-ups</span>
+                                                <span class="badge bg-secondary">All Districts</span>
+                                            </div>
+                                            <a href="/scheme/pmsma" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card scheme-card position-relative mt-3">
+                                    <span class="badge bg-success scheme-badge">Recommended</span>
+                                    <div class="card-body d-flex">
+                                        <img src="https://via.placeholder.com/80x80?text=JSY" alt="JSY Logo" class="scheme-logo me-3">
+                                        <div>
+                                            <h5 class="card-title">Janani Suraksha Yojana (JSY)</h5>
+                                            <p class="card-text">Promotes institutional delivery among poor pregnant women with cash assistance, reducing maternal and infant mortality.</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-primary">Pregnancy Care</span>
+                                                <span class="badge bg-info">Cash Benefits</span>
+                                                <span class="badge bg-secondary">National</span>
+                                            </div>
+                                            <a href="/scheme/jsy" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card scheme-card mt-3">
+                                    <div class="card-body d-flex">
+                                        <img src="https://via.placeholder.com/80x80?text=PMJAY" alt="PMJAY Logo" class="scheme-logo me-3">
+                                        <div>
+                                            <h5 class="card-title">Pradhan Mantri Jan Arogya Yojana (PMJAY)</h5>
+                                            <p class="card-text">Health insurance scheme providing coverage up to ₹5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-primary">Health Insurance</span>
+                                                <span class="badge bg-info">All Conditions</span>
+                                                <span class="badge bg-secondary">National</span>
+                                            </div>
+                                            <a href="/scheme/pmjay" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card scheme-card mt-3">
+                                    <div class="card-body d-flex">
+                                        <img src="https://via.placeholder.com/80x80?text=RBSK" alt="RBSK Logo" class="scheme-logo me-3">
+                                        <div>
+                                            <h5 class="card-title">Rashtriya Bal Swasthya Karyakram (RBSK)</h5>
+                                            <p class="card-text">Child health screening and early intervention services for children from birth to 18 years to provide comprehensive care.</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-primary">Child Health</span>
+                                                <span class="badge bg-info">Screening</span>
+                                                <span class="badge bg-secondary">National</span>
+                                            </div>
+                                            <a href="/scheme/rbsk" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card scheme-card mt-3">
+                                    <div class="card-body d-flex">
+                                        <img src="https://via.placeholder.com/80x80?text=NPCDCS" alt="NPCDCS Logo" class="scheme-logo me-3">
+                                        <div>
+                                            <h5 class="card-title">National Programme for Prevention and Control of Diabetes</h5>
+                                            <p class="card-text">Provides free screening, diagnosis, and management of diabetes and related non-communicable diseases.</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-primary">Diabetes</span>
+                                                <span class="badge bg-info">Free Treatment</span>
+                                                <span class="badge bg-secondary">National</span>
+                                            </div>
+                                            <a href="/scheme/npcdcs" class="btn btn-sm btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <!-- Eligibility Checker -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Eligibility Checker</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Find out which government schemes you are eligible for based on your profile.</p>
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-select">
+                                                <option>General</option>
+                                                <option>SC/ST</option>
+                                                <option>OBC</option>
+                                                <option>BPL</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Annual Income</label>
+                                            <select class="form-select">
+                                                <option>Below ₹1 Lakh</option>
+                                                <option>₹1-3 Lakhs</option>
+                                                <option>₹3-5 Lakhs</option>
+                                                <option>Above ₹5 Lakhs</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Health Condition</label>
+                                            <select class="form-select">
+                                                <option>Pregnancy</option>
+                                                <option>Anemia</option>
+                                                <option>Diabetes</option>
+                                                <option>Hypertension</option>
+                                                <option>General Health</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-primary w-100">Check Eligibility</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Need Help -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Need Help?</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Having trouble understanding or applying for government schemes?</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="/chatbot" class="btn btn-outline-primary">
+                                            <i class="bi bi-chat-dots me-2"></i>
+                                            Ask Our Assistant
+                                        </a>
+                                        <a href="/contact" class="btn btn-outline-primary">
+                                            <i class="bi bi-telephone me-2"></i>
+                                            Contact Support
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Resources -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Useful Resources</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                            <a href="#" class="text-decoration-none">How to Apply for Health Schemes</a>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                            <a href="#" class="text-decoration-none">Required Documents Checklist</a>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                            <a href="#" class="text-decoration-none">Nearest Application Centers</a>
+                                        </li>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                            <a href="#" class="text-decoration-none">Application Status Tracker</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+@app.route('/nutrition')
+def nutrition():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nutrition Guide - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .food-card {
+                border-radius: 12px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            .food-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .food-img {
+                height: 180px;
+                object-fit: cover;
+            }
+            .nutrition-category-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border-radius: 10px;
+            }
+            .nutrition-category-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .meal-planner {
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 12px;
+                padding: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link active">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Nutrition Guide</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <!-- Personalized Meal Plan -->
+                    <div class="meal-planner my-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="mb-3">Your Personalized Nutrition Plan</h4>
+                                <p>Based on your health profile and current condition, we've created a customized nutrition plan to help you maintain optimal health.</p>
+                                <div class="d-flex gap-2 mt-4">
+                                    <a href="/nutrition/meal-planner" class="btn btn-primary">View Full Meal Plan</a>
+                                    <a href="/nutrition/shopping-list" class="btn btn-outline-primary">Get Shopping List</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 bg-transparent">
+                                    <div class="card-body">
+                                        <h5>Today's Recommendation</h5>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-sunrise fs-5 me-2 text-primary"></i>
+                                            <span class="fw-bold">Breakfast:</span>
+                                            <span class="ms-2">Oatmeal with nuts, seeds, and berries</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-sun fs-5 me-2 text-primary"></i>
+                                            <span class="fw-bold">Lunch:</span>
+                                            <span class="ms-2">Spinach salad with lentils and grilled chicken</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-moon fs-5 me-2 text-primary"></i>
+                                            <span class="fw-bold">Dinner:</span>
+                                            <span class="ms-2">Salmon with roasted vegetables and quinoa</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-cup-hot fs-5 me-2 text-primary"></i>
+                                            <span class="fw-bold">Snacks:</span>
+                                            <span class="ms-2">Greek yogurt with honey, mixed nuts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrition Categories -->
+                    <h4 class="mt-5 mb-3">Nutrition Categories</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-droplet-half text-primary fs-1 mb-3"></i>
+                                    <h5>Iron-Rich Foods</h5>
+                                    <p class="mb-3">Essential for preventing anemia, these foods help maintain healthy blood and energy levels.</p>
+                                    <a href="/nutrition/iron-rich" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-egg-fried text-primary fs-1 mb-3"></i>
+                                    <h5>Protein Sources</h5>
+                                    <p class="mb-3">Crucial for muscle development and repair, especially important during pregnancy.</p>
+                                    <a href="/nutrition/protein" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-flower1 text-primary fs-1 mb-3"></i>
+                                    <h5>Folate-Rich Foods</h5>
+                                    <p class="mb-3">Important for preventing birth defects and supporting healthy pregnancy development.</p>
+                                    <a href="/nutrition/folate" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-cup-straw text-primary fs-1 mb-3"></i>
+                                    <h5>Low Glycemic Foods</h5>
+                                    <p class="mb-3">Helps manage blood sugar levels and prevent gestational diabetes complications.</p>
+                                    <a href="/nutrition/low-glycemic" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-heart-pulse text-primary fs-1 mb-3"></i>
+                                    <h5>Heart-Healthy Foods</h5>
+                                    <p class="mb-3">Support cardiovascular health and manage blood pressure during pregnancy.</p>
+                                    <a href="/nutrition/heart-healthy" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card nutrition-category-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-wrench text-primary fs-1 mb-3"></i>
+                                    <h5>Calcium Sources</h5>
+                                    <p class="mb-3">Essential for bone development and preventing complications in pregnancy.</p>
+                                    <a href="/nutrition/calcium" class="btn btn-sm btn-primary">View Foods</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommended Foods -->
+                    <h4 class="mt-5 mb-3">Recommended Foods for You</h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card food-card h-100">
+                                <img src="https://source.unsplash.com/random/300x180/?spinach" class="food-img" alt="Spinach">
+                                <div class="card-body">
+                                    <h5 class="card-title">Spinach</h5>
+                                    <p class="card-text">Rich in iron, folate, and vitamins to help prevent anemia and support fetal development.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="badge bg-success">Iron-Rich</div>
+                                        <a href="/nutrition/food/spinach" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card food-card h-100">
+                                <img src="https://source.unsplash.com/random/300x180/?lentils" class="food-img" alt="Lentils">
+                                <div class="card-body">
+                                    <h5 class="card-title">Lentils</h5>
+                                    <p class="card-text">Excellent source of plant-based protein, iron, and folate for vegetarians and vegans.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="badge bg-success">Protein</div>
+                                        <a href="/nutrition/food/lentils" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card food-card h-100">
+                                <img src="https://source.unsplash.com/random/300x180/?salmon" class="food-img" alt="Salmon">
+                                <div class="card-body">
+                                    <h5 class="card-title">Salmon</h5>
+                                    <p class="card-text">Rich in Omega-3 fatty acids that support brain development and heart health.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="badge bg-success">Heart-Healthy</div>
+                                        <a href="/nutrition/food/salmon" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="card food-card h-100">
+                                <img src="https://source.unsplash.com/random/300x180/?yogurt" class="food-img" alt="Greek Yogurt">
+                                <div class="card-body">
+                                    <h5 class="card-title">Greek Yogurt</h5>
+                                    <p class="card-text">High in protein and calcium, supporting bone health and muscle development.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="badge bg-success">Calcium</div>
+                                        <a href="/nutrition/food/greek-yogurt" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrition Articles -->
+                    <h4 class="mt-5 mb-3">Nutrition Articles</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Managing Anemia Through Diet</h5>
+                                    <p class="card-text">Learn how to prevent and manage anemia with the right nutritional choices and iron-rich foods.</p>
+                                    <a href="/nutrition/article/anemia-diet" class="btn btn-sm btn-primary">Read Article</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Dietary Guidelines for Gestational Diabetes</h5>
+                                    <p class="card-text">Practical tips for maintaining stable blood sugar levels during pregnancy through proper nutrition.</p>
+                                    <a href="/nutrition/article/gestational-diabetes" class="btn btn-sm btn-primary">Read Article</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+@app.route('/appointments')
+def appointments():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Appointments - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .appointment-card {
+                border-left: 4px solid #7952b3;
+                transition: all 0.3s ease;
+            }
+            .appointment-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .appointment-upcoming {
+                border-left-color: #20c997;
+            }
+            .appointment-past {
+                border-left-color: #6c757d;
+            }
+            .appointment-calendar {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .calendar-header {
+                background-color: #7952b3;
+                color: white;
+                padding: 15px;
+            }
+            .calendar-day {
+                height: 120px;
+                border: 1px solid #e0e0e0;
+                padding: 5px;
+            }
+            .calendar-day-header {
+                font-weight: bold;
+                text-align: center;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+            }
+            .calendar-day:hover {
+                background-color: rgba(121, 82, 179, 0.1);
+                cursor: pointer;
+            }
+            .calendar-day.has-appointment {
+                background-color: rgba(32, 201, 151, 0.1);
+            }
+            .appointment-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link active">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Appointment Management</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-7">
+                            <!-- Appointment Calendar -->
+                            <div class="appointment-calendar mb-4">
+                                <div class="calendar-header d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-sm btn-outline-light">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <h5 class="mb-0">March 2025</h5>
+                                    <button class="btn btn-sm btn-outline-light">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="calendar-body bg-white">
+                                    <div class="row">
+                                        <div class="col calendar-day-header">Sun</div>
+                                        <div class="col calendar-day-header">Mon</div>
+                                        <div class="col calendar-day-header">Tue</div>
+                                        <div class="col calendar-day-header">Wed</div>
+                                        <div class="col calendar-day-header">Thu</div>
+                                        <div class="col calendar-day-header">Fri</div>
+                                        <div class="col calendar-day-header">Sat</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day">1</div>
+                                        <div class="col calendar-day">2</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day">3</div>
+                                        <div class="col calendar-day">4</div>
+                                        <div class="col calendar-day">5</div>
+                                        <div class="col calendar-day">6</div>
+                                        <div class="col calendar-day">7</div>
+                                        <div class="col calendar-day">8</div>
+                                        <div class="col calendar-day">9</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day">10</div>
+                                        <div class="col calendar-day">11</div>
+                                        <div class="col calendar-day">12</div>
+                                        <div class="col calendar-day">13</div>
+                                        <div class="col calendar-day">14</div>
+                                        <div class="col calendar-day has-appointment">
+                                            15
+                                            <div class="mt-1">
+                                                <span class="appointment-dot bg-primary"></span>
+                                                <small>10:00 AM</small>
+                                            </div>
+                                        </div>
+                                        <div class="col calendar-day">16</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day">17</div>
+                                        <div class="col calendar-day">18</div>
+                                        <div class="col calendar-day">19</div>
+                                        <div class="col calendar-day">20</div>
+                                        <div class="col calendar-day">21</div>
+                                        <div class="col calendar-day">22</div>
+                                        <div class="col calendar-day">23</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day">24</div>
+                                        <div class="col calendar-day">25</div>
+                                        <div class="col calendar-day">26</div>
+                                        <div class="col calendar-day">27</div>
+                                        <div class="col calendar-day">28</div>
+                                        <div class="col calendar-day has-appointment">
+                                            29
+                                            <div class="mt-1">
+                                                <span class="appointment-dot bg-success"></span>
+                                                <small>2:30 PM</small>
+                                            </div>
+                                        </div>
+                                        <div class="col calendar-day">30</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col calendar-day">31</div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                        <div class="col calendar-day"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Upcoming Appointments -->
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Upcoming Appointments</h5>
+                                    <a href="/appointments/new" class="btn btn-sm btn-primary">Schedule New</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="appointment-card appointment-upcoming p-3 mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5>Prenatal Check-up</h5>
+                                                <p class="mb-0">Dr. Priya Sharma, Obstetrics & Gynecology</p>
+                                                <small class="text-muted">City Hospital, Room 305</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="text-success fw-bold mb-0">March 15, 2025</p>
+                                                <p class="mb-0">10:00 AM - 11:00 AM</p>
+                                                <small class="text-muted">3 days from now</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div>
+                                                <span class="badge bg-primary me-2">Prenatal Care</span>
+                                                <span class="badge bg-secondary">Regular Check-up</span>
+                                            </div>
+                                            <div>
+                                                <a href="/appointments/123/reschedule" class="btn btn-sm btn-outline-primary">Reschedule</a>
+                                                <a href="/appointments/123/cancel" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="appointment-card appointment-upcoming p-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5>Anemia Follow-up</h5>
+                                                <p class="mb-0">Dr. Rajesh Kumar, Hematology</p>
+                                                <small class="text-muted">City Hospital, Room 204</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="text-success fw-bold mb-0">March 29, 2025</p>
+                                                <p class="mb-0">2:30 PM - 3:15 PM</p>
+                                                <small class="text-muted">17 days from now</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div>
+                                                <span class="badge bg-primary me-2">Anemia</span>
+                                                <span class="badge bg-secondary">Follow-up</span>
+                                            </div>
+                                            <div>
+                                                <a href="/appointments/124/reschedule" class="btn btn-sm btn-outline-primary">Reschedule</a>
+                                                <a href="/appointments/124/cancel" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Past Appointments -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Past Appointments</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="appointment-card appointment-past p-3 mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5>First Trimester Screening</h5>
+                                                <p class="mb-0">Dr. Priya Sharma, Obstetrics & Gynecology</p>
+                                                <small class="text-muted">City Hospital, Room 305</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="text-muted fw-bold mb-0">February 14, 2025</p>
+                                                <p class="mb-0">9:30 AM - 11:00 AM</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div>
+                                                <span class="badge bg-primary me-2">Prenatal Care</span>
+                                                <span class="badge bg-secondary">Screening</span>
+                                            </div>
+                                            <div>
+                                                <a href="/appointments/121/view" class="btn btn-sm btn-outline-primary">View Notes</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="appointment-card appointment-past p-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5>Initial Hemoglobin Test</h5>
+                                                <p class="mb-0">Dr. Rajesh Kumar, Hematology</p>
+                                                <small class="text-muted">City Hospital, Lab 102</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="text-muted fw-bold mb-0">January 28, 2025</p>
+                                                <p class="mb-0">3:00 PM - 3:30 PM</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div>
+                                                <span class="badge bg-primary me-2">Anemia</span>
+                                                <span class="badge bg-secondary">Diagnostic</span>
+                                            </div>
+                                            <div>
+                                                <a href="/appointments/120/view" class="btn btn-sm btn-outline-primary">View Notes</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <!-- Schedule New Appointment -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Schedule New Appointment</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">Appointment Type</label>
+                                            <select class="form-select">
+                                                <option>Regular Check-up</option>
+                                                <option>Anemia Follow-up</option>
+                                                <option>Prenatal Care</option>
+                                                <option>Ultrasound</option>
+                                                <option>Blood Test</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Doctor</label>
+                                            <select class="form-select">
+                                                <option>Dr. Priya Sharma (Obstetrics & Gynecology)</option>
+                                                <option>Dr. Rajesh Kumar (Hematology)</option>
+                                                <option>Dr. Meera Patel (General Medicine)</option>
+                                                <option>Dr. Sanjay Gupta (Cardiology)</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Preferred Date</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Preferred Time</label>
+                                            <select class="form-select">
+                                                <option>Morning (9:00 AM - 12:00 PM)</option>
+                                                <option>Afternoon (12:00 PM - 3:00 PM)</option>
+                                                <option>Evening (3:00 PM - 6:00 PM)</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Notes (optional)</label>
+                                            <textarea class="form-control" rows="3" placeholder="Any specific concerns or questions for the doctor?"></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-primary w-100">Schedule Appointment</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Healthcare Providers -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Your Healthcare Providers</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://via.placeholder.com/50" alt="Dr. Priya" class="rounded-circle me-3">
+                                        <div>
+                                            <h6 class="mb-0">Dr. Priya Sharma</h6>
+                                            <small class="text-muted">Obstetrics & Gynecology</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://via.placeholder.com/50" alt="Dr. Rajesh" class="rounded-circle me-3">
+                                        <div>
+                                            <h6 class="mb-0">Dr. Rajesh Kumar</h6>
+                                            <small class="text-muted">Hematology</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://via.placeholder.com/50" alt="Dr. Meera" class="rounded-circle me-3">
+                                        <div>
+                                            <h6 class="mb-0">Dr. Meera Patel</h6>
+                                            <small class="text-muted">General Medicine</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid mt-3">
+                                        <a href="/providers" class="btn btn-sm btn-outline-primary">Manage Healthcare Providers</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reminders & Preparations -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Upcoming Appointment Reminders</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <h6>Prenatal Check-up (March 15, 2025)</h6>
+                                        <p class="mb-1">Please remember to:</p>
+                                        <ul>
+                                            <li>Bring your health records</li>
+                                            <li>Come with a full bladder for ultrasound</li>
+                                            <li>Note down any questions for your doctor</li>
+                                            <li>Arrive 15 minutes early for registration</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h6>Anemia Follow-up (March 29, 2025)</h6>
+                                        <p class="mb-1">Please remember to:</p>
+                                        <ul>
+                                            <li>Fast for 8 hours before the appointment</li>
+                                            <li>Bring your previous test results</li>
+                                            <li>Track your iron supplement intake</li>
+                                            <li>Note any symptoms you've experienced</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
 @app.route('/dashboard')
 def dashboard():
     # Check if user is logged in
@@ -1536,7 +3521,7 @@ def dashboard():
                                     <i class="bi bi-activity"></i>
                                     Health Metrics
                                 </h5>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Update</a>
+                                <a href="/health-records" class="btn btn-sm btn-outline-primary">Update</a>
                             </div>
                             <div class="card-body">
                                 <div class="metric">
@@ -1569,7 +3554,7 @@ def dashboard():
                                     <i class="bi bi-shield-check"></i>
                                     Health Risk Assessment
                                 </h5>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
+                                <a href="/risk_assessment" class="btn btn-sm btn-outline-primary">Details</a>
                             </div>
                             <div class="card-body">
                                 <div class="mb-4">
@@ -1605,7 +3590,7 @@ def dashboard():
                                     <p class="text-muted mt-2 small">Based on your blood pressure readings and lifestyle factors</p>
                                 </div>
                                 
-                                <a href="#" class="btn btn-primary">Take Full Assessment</a>
+                                <a href="/risk_assessment" class="btn btn-primary">Take Full Assessment</a>
                             </div>
                         </div>
                         
@@ -1653,7 +3638,7 @@ def dashboard():
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <a href="#" class="quick-action d-block mb-3">
+                                <a href="/health-records" class="quick-action d-block mb-3">
                                     <i class="bi bi-journal-plus"></i>
                                     <div>
                                         <div class="quick-action-title">Record Health Metrics</div>
@@ -1661,7 +3646,7 @@ def dashboard():
                                     </div>
                                 </a>
                                 
-                                <a href="#" class="quick-action d-block mb-3">
+                                <a href="/appointments" class="quick-action d-block mb-3">
                                     <i class="bi bi-clipboard2-pulse"></i>
                                     <div>
                                         <div class="quick-action-title">Schedule Check-up</div>
@@ -1669,7 +3654,7 @@ def dashboard():
                                     </div>
                                 </a>
                                 
-                                <a href="#" class="quick-action d-block mb-3">
+                                <a href="/chatbot" class="quick-action d-block mb-3">
                                     <i class="bi bi-chat-dots"></i>
                                     <div>
                                         <div class="quick-action-title">Chat with Assistant</div>
@@ -1677,7 +3662,7 @@ def dashboard():
                                     </div>
                                 </a>
                                 
-                                <a href="#" class="quick-action d-block">
+                                <a href="/government_schemes" class="quick-action d-block">
                                     <i class="bi bi-bank"></i>
                                     <div>
                                         <div class="quick-action-title">Government Schemes</div>
@@ -1694,7 +3679,7 @@ def dashboard():
                                     <i class="bi bi-calendar-check"></i>
                                     Upcoming Appointments
                                 </h5>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Add New</a>
+                                <a href="/appointments" class="btn btn-sm btn-outline-primary">Add New</a>
                             </div>
                             <div class="card-body">
                                 <div class="upcoming-appointment">
@@ -1717,7 +3702,7 @@ def dashboard():
                                     </div>
                                 </div>
                                 
-                                <a href="#" class="btn btn-outline-primary w-100 mt-2">View All Appointments</a>
+                                <a href="/appointments" class="btn btn-outline-primary w-100 mt-2">View All Appointments</a>
                             </div>
                         </div>
                         
@@ -1754,7 +3739,7 @@ def dashboard():
                                         </div>
                                     </li>
                                 </ul>
-                                <a href="#" class="btn btn-outline-primary w-100">View Nutrition Guide</a>
+                                <a href="/nutrition" class="btn btn-outline-primary w-100">View Nutrition Guide</a>
                             </div>
                         </div>
                     </div>
