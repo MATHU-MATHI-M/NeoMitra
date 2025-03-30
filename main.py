@@ -1,4 +1,6 @@
 import os
+import re
+import logging
 from flask import Flask, send_from_directory, jsonify, render_template_string, redirect, url_for, request, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -34,6 +36,104 @@ def chatbot_api():
     return jsonify({
         "response": response,
         "status": "success"
+    })
+
+# Voice processing endpoint
+@app.route('/api/voice/process', methods=['POST'])
+def process_voice_input():
+    """
+    Process voice transcripts and extract health data using NLP
+    """
+    data = request.json
+    
+    if not data or 'transcript' not in data:
+        return jsonify({"error": "No transcript provided"}), 400
+    
+    transcript = data.get('transcript', '')
+    user_language = data.get('language', 'en')
+    
+    # Log the transcript for debugging
+    app.logger.info(f"Processing voice transcript: {transcript}")
+    
+    # Process the transcript to extract health data
+    # In a real application, we would use a more sophisticated NLP model
+    # Here we're using simple pattern matching for demonstration
+    
+    extracted_data = {}
+    
+    # Extract weight information (e.g., "my weight is 70 kg")
+    weight_regex = r"weight\s+(?:is|of)\s+(\d+\.?\d*)\s*(?:kg|kilograms)"
+    weight_match = re.search(weight_regex, transcript, re.IGNORECASE)
+    if weight_match:
+        extracted_data['weight'] = float(weight_match.group(1))
+    
+    # Extract height information (e.g., "my height is 175 cm")
+    height_regex = r"height\s+(?:is|of)\s+(\d+\.?\d*)\s*(?:cm|centimeters)"
+    height_match = re.search(height_regex, transcript, re.IGNORECASE)
+    if height_match:
+        extracted_data['height'] = float(height_match.group(1))
+    
+    # Extract blood pressure (e.g., "my blood pressure is 120 over 80")
+    bp_regex = r"blood\s+pressure\s+(?:is|of)\s+(\d+)\s+(?:over|by)\s+(\d+)"
+    bp_match = re.search(bp_regex, transcript, re.IGNORECASE)
+    if bp_match:
+        extracted_data['blood_pressure_systolic'] = int(bp_match.group(1))
+        extracted_data['blood_pressure_diastolic'] = int(bp_match.group(2))
+    
+    # Extract blood sugar (e.g., "my blood sugar is 95 mg/dl")
+    bs_regex = r"blood\s+sugar\s+(?:is|of)\s+(\d+\.?\d*)\s*(?:mg\/dl)"
+    bs_match = re.search(bs_regex, transcript, re.IGNORECASE)
+    if bs_match:
+        extracted_data['blood_sugar'] = float(bs_match.group(1))
+    
+    # Extract hemoglobin (e.g., "my hemoglobin is 14.5 g/dl")
+    hb_regex = r"hemoglobin\s+(?:is|of)\s+(\d+\.?\d*)\s*(?:g\/dl)"
+    hb_match = re.search(hb_regex, transcript, re.IGNORECASE)
+    if hb_match:
+        extracted_data['hemoglobin'] = float(hb_match.group(1))
+    
+    # Extract pregnancy status (e.g., "I am pregnant" or "I am not pregnant")
+    if re.search(r'\b(?:I\s+am|I\'m)\s+pregnant\b', transcript, re.IGNORECASE):
+        extracted_data['is_pregnant'] = True
+    elif re.search(r'\b(?:I\s+am|I\'m)\s+not\s+pregnant\b', transcript, re.IGNORECASE):
+        extracted_data['is_pregnant'] = False
+    
+    # Extract pregnancy week (e.g., "I am 20 weeks pregnant")
+    preg_week_regex = r"(\d+)\s+weeks?\s+pregnant"
+    preg_week_match = re.search(preg_week_regex, transcript, re.IGNORECASE)
+    if preg_week_match:
+        extracted_data['pregnancy_week'] = int(preg_week_match.group(1))
+    
+    # Extract symptoms or health concerns
+    symptoms = []
+    common_symptoms = [
+        "fever", "headache", "nausea", "vomiting", "dizziness", 
+        "fatigue", "pain", "cramps", "swelling", "bleeding"
+    ]
+    
+    for symptom in common_symptoms:
+        if re.search(rf'\b{symptom}\b', transcript, re.IGNORECASE):
+            symptoms.append(symptom)
+    
+    if symptoms:
+        extracted_data['symptoms'] = symptoms
+    
+    # Generate a response based on the extracted data
+    if extracted_data:
+        response = "I've extracted the following health information from your speech:\n"
+        for key, value in extracted_data.items():
+            response += f"- {key.replace('_', ' ').capitalize()}: {value}\n"
+        
+        # Add a suggestion for what to do next
+        response += "\nWould you like me to save this information to your health records?"
+    else:
+        response = "I couldn't extract any specific health information from your speech. Please try again with more details about your health metrics like weight, height, blood pressure, etc."
+    
+    return jsonify({
+        "success": True,
+        "transcript": transcript,
+        "extracted_data": extracted_data,
+        "response": response
     })
 
 # Home page with gradient background like in the provided screenshot
@@ -1679,6 +1779,710 @@ def logout():
     # Clear session data
     session.clear()
     return redirect('/')
+
+@app.route('/health-records')
+def health_records():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Health Records - NeoMitra</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            :root {
+                --primary-color: #7952b3;
+                --secondary-color: #6f42c1;
+                --light-color: #f8f9fa;
+                --dark-color: #212529;
+                --border-radius: 8px;
+                --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                --transition: all 0.3s ease;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f5f7ff;
+                min-height: 100vh;
+            }
+            
+            .navbar {
+                background-color: white;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .navbar-brand {
+                display: flex;
+                align-items: center;
+                font-weight: 700;
+                color: var(--primary-color);
+            }
+            
+            .navbar-brand i {
+                margin-right: 0.5rem;
+            }
+            
+            .sidebar {
+                background: white;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+                min-height: calc(100vh - 56px);
+            }
+            
+            .sidebar-link {
+                display: block;
+                padding: 0.75rem 1.25rem;
+                color: #6c757d;
+                text-decoration: none;
+                transition: var(--transition);
+                position: relative;
+            }
+            
+            .sidebar-link.active {
+                color: var(--primary-color);
+                background-color: rgba(121, 82, 179, 0.05);
+                font-weight: 600;
+            }
+            
+            .sidebar-link.active::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 4px;
+                background-color: var(--primary-color);
+            }
+            
+            .sidebar-link:hover {
+                color: var(--primary-color);
+                background-color: rgba(121, 82, 179, 0.05);
+            }
+            
+            .sidebar-link i {
+                margin-right: 0.5rem;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+            
+            .page-title {
+                color: var(--dark-color);
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+            }
+            
+            .card {
+                border: none;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+            }
+            
+            .card:hover {
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .card-header {
+                background-color: white;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1.25rem;
+            }
+            
+            .card-title {
+                color: var(--dark-color);
+                font-weight: 600;
+                margin-bottom: 0;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .btn-primary {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+            
+            .btn-primary:hover {
+                background-color: var(--secondary-color);
+                border-color: var(--secondary-color);
+            }
+            
+            .btn-outline-primary {
+                color: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+            
+            .btn-outline-primary:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
+            
+            .form-label {
+                font-weight: 500;
+                color: var(--dark-color);
+            }
+            
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.25rem rgba(121, 82, 179, 0.25);
+            }
+            
+            .form-check-input:checked {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+            
+            .health-record-list {
+                margin-bottom: 1.5rem;
+            }
+            
+            .health-record-item {
+                background-color: white;
+                border-radius: var(--border-radius);
+                padding: 1rem;
+                box-shadow: var(--box-shadow);
+                margin-bottom: 1rem;
+            }
+            
+            .health-record-date {
+                font-size: 0.875rem;
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+            }
+            
+            .health-data {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .health-data-item {
+                background-color: rgba(121, 82, 179, 0.1);
+                color: var(--primary-color);
+                padding: 0.25rem 0.75rem;
+                border-radius: 50px;
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+            
+            .microphone-container {
+                background-color: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .microphone-btn {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background-color: var(--primary-color);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                cursor: pointer;
+                margin-bottom: 1rem;
+                transition: all 0.3s;
+            }
+            
+            .microphone-btn:hover {
+                transform: scale(1.05);
+                background-color: var(--secondary-color);
+            }
+            
+            .microphone-btn.active {
+                animation: pulse 1.5s infinite;
+            }
+            
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(121, 82, 179, 0.7);
+                }
+                70% {
+                    box-shadow: 0 0 0 20px rgba(121, 82, 179, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(121, 82, 179, 0);
+                }
+            }
+            
+            .microphone-status {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            
+            .microphone-transcript {
+                max-height: 100px;
+                overflow-y: auto;
+                width: 100%;
+                padding: 1rem;
+                background-color: #f8f9fa;
+                border-radius: var(--border-radius);
+                font-style: italic;
+                color: #6c757d;
+            }
+            
+            .voice-help {
+                margin-top: 1rem;
+                font-size: 0.875rem;
+                color: #6c757d;
+            }
+            
+            .voice-help strong {
+                color: var(--dark-color);
+            }
+            
+            .voice-examples {
+                font-size: 0.875rem;
+                color: #6c757d;
+                margin-top: 0.5rem;
+            }
+            
+            .voice-examples code {
+                background-color: #f8f9fa;
+                padding: 0.15rem 0.3rem;
+                border-radius: 3px;
+                color: var(--primary-color);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-heart-pulse-fill"></i> NeoMitra
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/health-records">Health Records</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/risk-assessment">Risk Assessment</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/resources">Resources</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/chatbot">Assistant</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">{{ session.get('username', '') }}</span>
+                        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3 col-xl-2 p-0">
+                    <div class="sidebar">
+                        <a href="/dashboard" class="sidebar-link">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                        <a href="/health-records" class="sidebar-link active">
+                            <i class="bi bi-clipboard-heart"></i> Health Records
+                        </a>
+                        <a href="/risk-assessment" class="sidebar-link">
+                            <i class="bi bi-shield-check"></i> Risk Assessment
+                        </a>
+                        <a href="/resources" class="sidebar-link">
+                            <i class="bi bi-book"></i> Resources
+                        </a>
+                        <a href="/chatbot" class="sidebar-link">
+                            <i class="bi bi-chat-dots"></i> Assistant
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-9 col-xl-10">
+                    <div class="main-content">
+                        <h1 class="page-title">
+                            <i class="bi bi-clipboard-heart me-2"></i> Health Records
+                        </h1>
+                        
+                        <div class="row">
+                            <div class="col-md-7 col-lg-8">
+                                <!-- Health Record Form -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-plus-circle"></i>
+                                            Add New Health Record
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="weight" class="form-label">Weight (kg)</label>
+                                                    <input type="number" class="form-control" id="weight" name="weight" step="0.1">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="height" class="form-label">Height (cm)</label>
+                                                    <input type="number" class="form-control" id="height" name="height" step="0.1">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Blood Pressure (mmHg)</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="bp_systolic" name="bp_systolic" placeholder="Systolic">
+                                                        <span class="input-group-text">/</span>
+                                                        <input type="number" class="form-control" id="bp_diastolic" name="bp_diastolic" placeholder="Diastolic">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="blood_sugar" class="form-label">Blood Sugar (mg/dL)</label>
+                                                    <input type="number" class="form-control" id="blood_sugar" name="blood_sugar" step="0.1">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="hemoglobin" class="form-label">Hemoglobin (g/dL)</label>
+                                                    <input type="number" class="form-control" id="hemoglobin" name="hemoglobin" step="0.1">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check mt-4">
+                                                        <input class="form-check-input" type="checkbox" id="is_pregnant" name="is_pregnant">
+                                                        <label class="form-check-label" for="is_pregnant">I am pregnant</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="pregnancy-details" style="display: none;">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <label for="pregnancy_week" class="form-label">Pregnancy Week</label>
+                                                        <input type="number" class="form-control" id="pregnancy_week" name="pregnancy_week">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="due_date" class="form-label">Due Date</label>
+                                                        <input type="date" class="form-control" id="due_date" name="due_date">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="existing_conditions" class="form-label">Existing Medical Conditions</label>
+                                                <textarea class="form-control" id="existing_conditions" name="existing_conditions" rows="2"></textarea>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="current_medications" class="form-label">Current Medications</label>
+                                                <textarea class="form-control" id="current_medications" name="current_medications" rows="2"></textarea>
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-primary">Save Health Record</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <!-- Health Records List -->
+                                <div class="health-record-list">
+                                    <h5 class="mb-3">Recent Health Records</h5>
+                                    
+                                    <div class="health-record-item">
+                                        <div class="health-record-date">
+                                            <i class="bi bi-calendar me-1"></i> March 25, 2025
+                                        </div>
+                                        <div class="health-data">
+                                            <div class="health-data-item">Weight: 68kg</div>
+                                            <div class="health-data-item">Blood Pressure: 120/80</div>
+                                            <div class="health-data-item">Hemoglobin: 13.5 g/dL</div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="health-record-item">
+                                        <div class="health-record-date">
+                                            <i class="bi bi-calendar me-1"></i> March 10, 2025
+                                        </div>
+                                        <div class="health-data">
+                                            <div class="health-data-item">Weight: 67.5kg</div>
+                                            <div class="health-data-item">Blood Pressure: 118/78</div>
+                                            <div class="health-data-item">Hemoglobin: 13.2 g/dL</div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-5 col-lg-4">
+                                <!-- Voice Input Widget -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-mic"></i>
+                                            Voice Health Recording
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="microphone-container">
+                                            <div class="microphone-btn" id="microphoneBtn">
+                                                <i class="bi bi-mic"></i>
+                                            </div>
+                                            <div class="microphone-status" id="microphoneStatus">
+                                                Click the microphone to start recording
+                                            </div>
+                                            <div class="microphone-transcript" id="transcript"></div>
+                                        </div>
+                                        
+                                        <div class="voice-help">
+                                            <strong>How to use voice recording:</strong>
+                                            <p>Speak clearly and include health metrics with their values.</p>
+                                        </div>
+                                        
+                                        <div class="voice-examples">
+                                            Examples:
+                                            <ul>
+                                                <li><code>"My weight is 70 kg"</code></li>
+                                                <li><code>"My blood pressure is 120 over 80"</code></li>
+                                                <li><code>"My hemoglobin is 13.5 g/dl"</code></li>
+                                                <li><code>"I am pregnant, 20 weeks"</code></li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div id="extractedDataContainer" class="mt-3" style="display: none;">
+                                            <h6>Extracted Health Data</h6>
+                                            <div id="extractedData" class="p-3 bg-light rounded"></div>
+                                            <button id="saveExtractedData" class="btn btn-primary btn-sm mt-2">Save to Health Record</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Health Tips -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-lightbulb"></i>
+                                            Health Tips
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <strong>Regular Monitoring</strong>
+                                            <p class="small text-muted">Keep track of your health metrics regularly to identify trends and potential issues early.</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <strong>Balanced Diet</strong>
+                                            <p class="small text-muted">Maintain a balanced diet rich in vegetables, fruits, lean proteins, and whole grains to support overall health.</p>
+                                        </div>
+                                        <div>
+                                            <strong>Stay Hydrated</strong>
+                                            <p class="small text-muted">Drink adequate water throughout the day to support proper bodily functions and maintain energy levels.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- JavaScript to handle voice recognition -->
+        <script src="/static/js/voice-recognition.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Toggle pregnancy details based on checkbox
+                const isPregnantCheckbox = document.getElementById('is_pregnant');
+                const pregnancyDetails = document.querySelector('.pregnancy-details');
+                
+                isPregnantCheckbox.addEventListener('change', function() {
+                    pregnancyDetails.style.display = this.checked ? 'block' : 'none';
+                });
+                
+                // Voice recognition setup
+                const microphoneBtn = document.getElementById('microphoneBtn');
+                const microphoneStatus = document.getElementById('microphoneStatus');
+                const transcriptElement = document.getElementById('transcript');
+                const extractedDataContainer = document.getElementById('extractedDataContainer');
+                const extractedDataElement = document.getElementById('extractedData');
+                const saveExtractedDataBtn = document.getElementById('saveExtractedData');
+                
+                let voiceRecognition = null;
+                let healthDataExtractor = null;
+                let lastExtractedData = null;
+                
+                // Initialize voice recognition
+                try {
+                    voiceRecognition = new VoiceRecognition('en-US');
+                    healthDataExtractor = new HealthDataExtractor();
+                    
+                    voiceRecognition.onStart(function() {
+                        microphoneBtn.classList.add('active');
+                        microphoneStatus.textContent = 'Listening...';
+                        transcriptElement.textContent = '';
+                        extractedDataContainer.style.display = 'none';
+                    });
+                    
+                    voiceRecognition.onResult(function(transcript, confidence) {
+                        transcriptElement.textContent = transcript;
+                        
+                        // Process transcript with our backend NLP
+                        processTranscript(transcript);
+                    });
+                    
+                    voiceRecognition.onEnd(function() {
+                        microphoneBtn.classList.remove('active');
+                        microphoneStatus.textContent = 'Click the microphone to start recording';
+                    });
+                    
+                    voiceRecognition.onError(function(error) {
+                        microphoneStatus.textContent = 'Error: ' + error;
+                        microphoneBtn.classList.remove('active');
+                    });
+                } catch (error) {
+                    console.error('Error initializing voice recognition:', error);
+                    microphoneStatus.textContent = 'Speech recognition not supported';
+                    microphoneBtn.disabled = true;
+                }
+                
+                // Microphone button click handler
+                microphoneBtn.addEventListener('click', function() {
+                    if (!voiceRecognition) return;
+                    
+                    if (voiceRecognition.isListening) {
+                        voiceRecognition.stop();
+                    } else {
+                        voiceRecognition.start();
+                    }
+                });
+                
+                // Process transcript with backend NLP
+                function processTranscript(transcript) {
+                    // Show loading state
+                    microphoneStatus.textContent = 'Processing...';
+                    
+                    // Call our backend API
+                    fetch('/api/voice/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            transcript: transcript,
+                            language: 'en'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Processed data:', data);
+                        
+                        if (data.success && Object.keys(data.extracted_data).length > 0) {
+                            // Show extracted data
+                            lastExtractedData = data.extracted_data;
+                            displayExtractedData(data.extracted_data);
+                            extractedDataContainer.style.display = 'block';
+                        } else {
+                            microphoneStatus.textContent = 'No health data detected. Try again.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error processing voice input:', error);
+                        microphoneStatus.textContent = 'Error processing voice input';
+                    });
+                }
+                
+                // Display extracted data
+                function displayExtractedData(data) {
+                    let html = '';
+                    
+                    for (const [key, value] of Object.entries(data)) {
+                        const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        html += `<div><strong>${formattedKey}:</strong> ${value}</div>`;
+                    }
+                    
+                    extractedDataElement.innerHTML = html;
+                    microphoneStatus.textContent = 'Health data extracted successfully';
+                }
+                
+                // Save extracted data to form
+                saveExtractedDataBtn.addEventListener('click', function() {
+                    if (!lastExtractedData) return;
+                    
+                    // Map extracted data to form fields
+                    if (lastExtractedData.weight) {
+                        document.getElementById('weight').value = lastExtractedData.weight;
+                    }
+                    
+                    if (lastExtractedData.height) {
+                        document.getElementById('height').value = lastExtractedData.height;
+                    }
+                    
+                    if (lastExtractedData.blood_pressure_systolic) {
+                        document.getElementById('bp_systolic').value = lastExtractedData.blood_pressure_systolic;
+                    }
+                    
+                    if (lastExtractedData.blood_pressure_diastolic) {
+                        document.getElementById('bp_diastolic').value = lastExtractedData.blood_pressure_diastolic;
+                    }
+                    
+                    if (lastExtractedData.blood_sugar) {
+                        document.getElementById('blood_sugar').value = lastExtractedData.blood_sugar;
+                    }
+                    
+                    if (lastExtractedData.hemoglobin) {
+                        document.getElementById('hemoglobin').value = lastExtractedData.hemoglobin;
+                    }
+                    
+                    if (lastExtractedData.is_pregnant !== undefined) {
+                        document.getElementById('is_pregnant').checked = lastExtractedData.is_pregnant;
+                        document.querySelector('.pregnancy-details').style.display = lastExtractedData.is_pregnant ? 'block' : 'none';
+                    }
+                    
+                    if (lastExtractedData.pregnancy_week) {
+                        document.getElementById('pregnancy_week').value = lastExtractedData.pregnancy_week;
+                    }
+                    
+                    microphoneStatus.textContent = 'Data transferred to form';
+                    extractedDataContainer.style.display = 'none';
+                });
+            });
+        </script>
+        
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """)
 
 @app.route('/chatbot')
 def chatbot():
