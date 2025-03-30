@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Government Health Schemes - NeoMitra') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+        <h1 class="display-5 fw-bold text-primary">{{ _('Government Health Schemes') }}</h1>
+        <p class="lead text-muted">{{ _('Access financial support and healthcare benefits for maternal health') }}</p>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto animate-on-scroll" data-animation="fadeInUp">
+            <div class="card scheme-search">
+                <div class="card-body">
+                    <h5 class="mb-3">{{ _('Find Schemes You Qualify For') }}</h5>
+                    <div class="input-group">
+                        <input type="text" id="scheme-search" class="form-control" placeholder="{{ _('Search by keyword (e.g., maternity, financial assistance)') }}">
+                        <button class="btn btn-primary" type="button" id="scheme-search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="mt-2 small text-muted">
+                        <i class="fas fa-info-circle me-1"></i> {{ _('You can also search using voice by clicking the microphone icon') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="no-results" class="alert alert-info text-center" style="display: none;">
+        <i class="fas fa-info-circle me-2"></i> {{ _('No schemes found matching your search criteria. Please try different keywords.') }}
+    </div>
+    
+    <div class="row">
+        {% for scheme in schemes %}
+        <div class="col-lg-6 mb-4 animate-on-scroll" data-animation="fadeInUp" data-delay="{{ loop.index0 * 0.1 }}">
+            <div class="card scheme-card h-100">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h5 class="card-title mb-0">{{ scheme.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ scheme.description }}</p>
+                    
+                    <div class="scheme-detail">
+                        <div class="scheme-detail-title">{{ _('Eligibility Criteria') }}</div>
+                        <div class="scheme-detail-content">{{ scheme.eligibility_criteria }}</div>
+                    </div>
+                    
+                    <div class="scheme-detail">
+                        <div class="scheme-detail-title">{{ _('Benefits') }}</div>
+                        <div class="scheme-detail-content">{{ scheme.benefits }}</div>
+                    </div>
+                    
+                    <div class="scheme-detail">
+                        <div class="scheme-detail-title">{{ _('How to Apply') }}</div>
+                        <div class="scheme-detail-content">{{ scheme.application_process }}</div>
+                    </div>
+                    
+                    <div class="scheme-detail">
+                        <div class="scheme-detail-title">{{ _('Required Documents') }}</div>
+                        <div class="scheme-detail-content">{{ scheme.documents_required }}</div>
+                    </div>
+                    
+                    {% if scheme.scheme_url %}
+                    <div class="mt-3">
+                        <a href="{{ scheme.scheme_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i> {{ _('Official Website') }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light">
+                    <button type="button" class="btn btn-link text-primary p-0" data-bs-toggle="modal" data-bs-target="#eligibilityModal{{ scheme.id }}">
+                        <i class="fas fa-check-circle me-1"></i> {{ _('Check your eligibility') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Eligibility Modal -->
+        <div class="modal fade" id="eligibilityModal{{ scheme.id }}" tabindex="-1" aria-labelledby="eligibilityModalLabel{{ scheme.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eligibilityModalLabel{{ scheme.id }}">
+                            {{ _('Eligibility Check: ') }} {{ scheme.name }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ _('Answer a few questions to check if you might be eligible for this scheme:') }}</p>
+                        
+                        <form id="eligibilityForm{{ scheme.id }}">
+                            {% if 'BPL' in scheme.eligibility_criteria %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ _('Do you have a Below Poverty Line (BPL) card?') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="bpl" id="bplYes{{ scheme.id }}" value="yes">
+                                    <label class="form-check-label" for="bplYes{{ scheme.id }}">{{ _('Yes') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="bpl" id="bplNo{{ scheme.id }}" value="no">
+                                    <label class="form-check-label" for="bplNo{{ scheme.id }}">{{ _('No') }}</label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if 'first live birth' in scheme.eligibility_criteria.lower() %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ _('Is this your first pregnancy/first live birth?') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="firstBirth" id="firstBirthYes{{ scheme.id }}" value="yes">
+                                    <label class="form-check-label" for="firstBirthYes{{ scheme.id }}">{{ _('Yes') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="firstBirth" id="firstBirthNo{{ scheme.id }}" value="no">
+                                    <label class="form-check-label" for="firstBirthNo{{ scheme.id }}">{{ _('No') }}</label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if 'institutional delivery' in scheme.eligibility_criteria.lower() %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ _('Are you planning to deliver in a hospital/institutional facility?') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="institutionalDelivery" id="institutionalDeliveryYes{{ scheme.id }}" value="yes">
+                                    <label class="form-check-label" for="institutionalDeliveryYes{{ scheme.id }}">{{ _('Yes') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="institutionalDelivery" id="institutionalDeliveryNo{{ scheme.id }}" value="no">
+                                    <label class="form-check-label" for="institutionalDeliveryNo{{ scheme.id }}">{{ _('No') }}</label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if 'age' in scheme.eligibility_criteria.lower() %}
+                            <div class="mb-3">
+                                <label class="form-label">{{ _('Are you 19 years or older?') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageAbove19" id="ageAbove19Yes{{ scheme.id }}" value="yes">
+                                    <label class="form-check-label" for="ageAbove19Yes{{ scheme.id }}">{{ _('Yes') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ageAbove19" id="ageAbove19No{{ scheme.id }}" value="no">
+                                    <label class="form-check-label" for="ageAbove19No{{ scheme.id }}">{{ _('No') }}</label>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label">{{ _('Do you have required documents (Aadhaar card, bank account)?') }}</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="documents" id="documentsYes{{ scheme.id }}" value="yes">
+                                    <label class="form-check-label" for="documentsYes{{ scheme.id }}">{{ _('Yes') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="documents" id="documentsNo{{ scheme.id }}" value="no">
+                                    <label class="form-check-label" for="documentsNo{{ scheme.id }}">{{ _('No') }}</label>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div id="eligibilityResult{{ scheme.id }}" class="alert mt-3" style="display: none;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+                        <button type="button" class="btn btn-primary" onclick="checkEligibility({{ scheme.id }})">{{ _('Check Eligibility') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Questions & Assistance Section -->
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card animate-on-scroll" data-animation="fadeInUp">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-question-circle fa-3x text-primary"></i>
+                    </div>
+                    <h4>{{ _('Need Help With Government Schemes?') }}</h4>
+                    <p class="mb-4">{{ _('Our assistant can answer your questions and guide you through the application process.') }}</p>
+                    <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary">
+                        <i class="fas fa-robot me-2"></i> {{ _('Chat With Our Assistant') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize voice-based search
+        initializeSchemeSearch();
+    });
+    
+    function checkEligibility(schemeId) {
+        const form = document.getElementById(`eligibilityForm${schemeId}`);
+        const resultDiv = document.getElementById(`eligibilityResult${schemeId}`);
+        
+        // Check if all questions are answered
+        const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
+        const totalQuestions = form.querySelectorAll('.mb-3').length;
+        
+        if (radioButtons.length < totalQuestions) {
+            resultDiv.className = 'alert alert-warning mt-3';
+            resultDiv.textContent = "{{ _('Please answer all questions.') }}";
+            resultDiv.style.display = 'block';
+            return;
+        }
+        
+        // Count "yes" answers
+        let yesCount = 0;
+        radioButtons.forEach(radio => {
+            if (radio.value === 'yes') yesCount++;
+        });
+        
+        // Determine eligibility based on yes count ratio
+        const eligibilityRatio = yesCount / totalQuestions;
+        
+        if (eligibilityRatio >= 0.8) {
+            resultDiv.className = 'alert alert-success mt-3';
+            resultDiv.innerHTML = `<i class="fas fa-check-circle me-2"></i> {{ _('Based on your answers, you are likely eligible for this scheme!') }} {{ _('We recommend proceeding with the application.') }}`;
+        } else if (eligibilityRatio >= 0.5) {
+            resultDiv.className = 'alert alert-warning mt-3';
+            resultDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> {{ _('You may be eligible, but there are some factors that might affect your application.') }} {{ _('We recommend consulting with a local health worker.') }}`;
+        } else {
+            resultDiv.className = 'alert alert-danger mt-3';
+            resultDiv.innerHTML = `<i class="fas fa-times-circle me-2"></i> {{ _('Based on your answers, you might not be eligible for this scheme.') }} {{ _('However, eligibility criteria can change. Please consult with a local health worker for confirmation.') }}`;
+        }
+        
+        resultDiv.style.display = 'block';
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,641 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Health Records - NeoMitra') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-8 animate-on-scroll" data-animation="fadeInLeft">
+            <h1 class="display-5 fw-bold text-primary mb-2">{{ _('Your Health Records') }}</h1>
+            <p class="lead text-muted">{{ _('Track your maternal health journey with comprehensive health records') }}</p>
+        </div>
+        <div class="col-lg-4 text-lg-end animate-on-scroll" data-animation="fadeInRight">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecordModal">
+                <i class="fas fa-plus-circle me-1"></i> {{ _('Add New Record') }}
+            </button>
+        </div>
+    </div>
+    
+    <!-- Health Metrics Visualization -->
+    {% if health_records %}
+    <div class="row mb-5">
+        <div class="col-12 animate-on-scroll" data-animation="fadeInUp">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">{{ _('Health Metrics Timeline') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% set dates = [] %}
+                    {% set weights = [] %}
+                    {% set hemoglobin_values = [] %}
+                    
+                    {% for record in health_records %}
+                        {% do dates.append(record.record_date.strftime('%d %b')) %}
+                        {% if record.weight %}
+                            {% do weights.append(record.weight) %}
+                        {% else %}
+                            {% do weights.append(None) %}
+                        {% endif %}
+                        
+                        {% if record.hemoglobin %}
+                            {% do hemoglobin_values.append(record.hemoglobin) %}
+                        {% else %}
+                            {% do hemoglobin_values.append(None) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <div class="chart-container">
+                        <canvas id="health-metrics-chart" 
+                                data-dates="{{ dates|tojson }}" 
+                                data-weights="{{ weights|tojson }}" 
+                                data-hemoglobin="{{ hemoglobin_values|tojson }}">
+                        </canvas>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-primary active" id="chartWeight">{{ _('Weight') }}</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="chartHemoglobin">{{ _('Hemoglobin') }}</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="chartBP">{{ _('Blood Pressure') }}</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="chartBloodSugar">{{ _('Blood Sugar') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Health Records List -->
+    <div class="row">
+        <div class="col-lg-8 mb-4 mb-lg-0">
+            {% if health_records %}
+                {% for record in health_records %}
+                <div class="card health-record-card mb-4 animate-on-scroll" data-animation="fadeInLeft" data-delay="{{ loop.index0 * 0.1 }}">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">{{ _('Record #') }}{{ loop.index }}</h5>
+                            <span class="health-record-date">{{ record.record_date.strftime('%d %B, %Y') }}</span>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#recordDetails{{ record.id }}">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Basic info preview -->
+                        <div class="row mb-3">
+                            <div class="col-6 col-md-3">
+                                <div class="health-metric">
+                                    <div class="metric-label">{{ _('Pregnancy Status') }}</div>
+                                    <div class="metric-value">
+                                        {% if record.is_pregnant %}
+                                            <span class="text-primary">{{ _('Pregnant') }}</span>
+                                        {% else %}
+                                            {{ _('Not Pregnant') }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if record.is_pregnant %}
+                            <div class="col-6 col-md-3">
+                                <div class="health-metric">
+                                    <div class="metric-label">{{ _('Pregnancy Week') }}</div>
+                                    <div class="metric-value">{{ record.pregnancy_week|default('--', true) }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="health-metric">
+                                    <div class="metric-label">{{ _('Due Date') }}</div>
+                                    <div class="metric-value">
+                                        {% if record.due_date %}
+                                            {{ record.due_date.strftime('%d %b, %Y') }}
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-6 col-md-3">
+                                <div class="health-metric">
+                                    <div class="metric-label">{{ _('Weight') }}</div>
+                                    <div class="metric-value">{{ record.weight|default('--', true) }} kg</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Detailed record (collapsible) -->
+                        <div class="collapse" id="recordDetails{{ record.id }}">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-3">{{ _('Physical Measurements') }}</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Height') }}</div>
+                                                <div class="metric-value">{{ record.height|default('--', true) }} cm</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('BMI') }}</div>
+                                                <div class="metric-value">
+                                                    {% if record.weight and record.height %}
+                                                        {{ (record.weight / ((record.height / 100) ** 2))|round(1) }}
+                                                    {% else %}
+                                                        --
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mt-4 mb-3">{{ _('Vital Signs') }}</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Blood Pressure') }}</div>
+                                                <div class="metric-value">
+                                                    {% if record.blood_pressure_systolic and record.blood_pressure_diastolic %}
+                                                        {{ record.blood_pressure_systolic }}/{{ record.blood_pressure_diastolic }} mmHg
+                                                    {% else %}
+                                                        --
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Blood Sugar') }}</div>
+                                                <div class="metric-value">{{ record.blood_sugar|default('--', true) }} mg/dL</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h6 class="mb-3 mt-md-0 mt-4">{{ _('Blood Work') }}</h6>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Hemoglobin') }}</div>
+                                                <div class="metric-value">
+                                                    {% if record.hemoglobin %}
+                                                        {{ record.hemoglobin }} g/dL
+                                                        {% if record.is_pregnant and record.hemoglobin < 11 %}
+                                                            <span class="badge bg-warning ms-2">{{ _('Low') }}</span>
+                                                        {% elif not record.is_pregnant and record.hemoglobin < 12 %}
+                                                            <span class="badge bg-warning ms-2">{{ _('Low') }}</span>
+                                                        {% else %}
+                                                            <span class="badge bg-success ms-2">{{ _('Normal') }}</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        --
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mt-4 mb-3">{{ _('Medical History') }}</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Previous Pregnancies') }}</div>
+                                                <div class="metric-value">{{ record.previous_pregnancies|default('0', true) }}</div>
+                                            </div>
+                                        </div>
+                                        {% if record.previous_complications %}
+                                        <div class="col-12 mt-2">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Previous Complications') }}</div>
+                                                <div class="metric-value">{{ record.previous_complications }}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12 mt-4">
+                                    <h6 class="mb-3">{{ _('Current Health Status') }}</h6>
+                                    <div class="row">
+                                        {% if record.existing_conditions %}
+                                        <div class="col-md-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Existing Conditions') }}</div>
+                                                <div class="metric-value">{{ record.existing_conditions }}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if record.current_medications %}
+                                        <div class="col-md-6">
+                                            <div class="health-metric">
+                                                <div class="metric-label">{{ _('Current Medications') }}</div>
+                                                <div class="metric-value">{{ record.current_medications }}</div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-end mt-4">
+                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="printRecord({{ record.id }})">
+                                    <i class="fas fa-print me-1"></i> {{ _('Print') }}
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRecordModal{{ record.id }}">
+                                    <i class="fas fa-edit me-1"></i> {{ _('Edit') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="card mb-4 animate-on-scroll" data-animation="fadeInUp">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-notes-medical fa-3x text-muted"></i>
+                        </div>
+                        <h5>{{ _('No Health Records Yet') }}</h5>
+                        <p class="text-muted mb-4">{{ _('Start tracking your health journey by adding your first health record.') }}</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecordModal">
+                            <i class="fas fa-plus-circle me-1"></i> {{ _('Add First Record') }}
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Health Status Side Panel -->
+            <div class="card mb-4 sticky-top animate-on-scroll" data-animation="fadeInRight" style="top: 100px; z-index: 100;">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">{{ _('Health Overview') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if health_records %}
+                        {% set latest_record = health_records[0] %}
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="me-3">
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                    <i class="fas fa-calendar-check text-primary"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">{{ _('Last Updated') }}</h6>
+                                <p class="mb-0 text-muted">{{ latest_record.record_date.strftime('%d %b, %Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if latest_record.is_pregnant %}
+                        <div class="pregnancy-status-card bg-primary bg-opacity-10 p-3 rounded mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-baby text-primary me-2"></i>
+                                <h6 class="mb-0">{{ _('Pregnancy Status') }}</h6>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ _('Current Week') }}:</span>
+                                <strong>{{ latest_record.pregnancy_week|default('--', true) }}</strong>
+                            </div>
+                            
+                            {% if latest_record.due_date %}
+                            <div class="d-flex justify-content-between">
+                                <span>{{ _('Due Date') }}:</span>
+                                <strong>{{ latest_record.due_date.strftime('%d %b, %Y') }}</strong>
+                            </div>
+                            
+                            <div class="pregnancy-progress mt-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small>{{ _('Progress') }}</small>
+                                    <small>
+                                        {% if latest_record.pregnancy_week %}
+                                            {{ ((latest_record.pregnancy_week / 40) * 100)|int }}%
+                                        {% else %}
+                                            --
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                         style="width: {{ ((latest_record.pregnancy_week or 0) / 40) * 100 }}%" 
+                                         aria-valuenow="{{ latest_record.pregnancy_week or 0 }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="40">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <h6 class="fw-bold mb-3">{{ _('Key Health Indicators') }}</h6>
+                        
+                        <!-- Hemoglobin Status -->
+                        <div class="health-indicator-card mb-3 p-3 rounded
+                            {% if latest_record.hemoglobin %}
+                                {% if latest_record.is_pregnant and latest_record.hemoglobin < 11 %}
+                                    bg-warning bg-opacity-10
+                                {% elif not latest_record.is_pregnant and latest_record.hemoglobin < 12 %}
+                                    bg-warning bg-opacity-10
+                                {% else %}
+                                    bg-success bg-opacity-10
+                                {% endif %}
+                            {% else %}
+                                bg-light
+                            {% endif %}
+                        ">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ _('Hemoglobin Level') }}</h6>
+                                    <p class="mb-0">
+                                        {% if latest_record.hemoglobin %}
+                                            {{ latest_record.hemoglobin }} g/dL
+                                        {% else %}
+                                            {{ _('Not recorded') }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div>
+                                    {% if latest_record.hemoglobin %}
+                                        {% if latest_record.is_pregnant and latest_record.hemoglobin < 11 %}
+                                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                        {% elif not latest_record.is_pregnant and latest_record.hemoglobin < 12 %}
+                                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                        {% else %}
+                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="fas fa-question-circle text-muted fa-lg"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Blood Pressure Status -->
+                        <div class="health-indicator-card mb-3 p-3 rounded
+                            {% if latest_record.blood_pressure_systolic and latest_record.blood_pressure_diastolic %}
+                                {% if latest_record.blood_pressure_systolic > 140 or latest_record.blood_pressure_diastolic > 90 %}
+                                    bg-warning bg-opacity-10
+                                {% elif latest_record.blood_pressure_systolic < 90 or latest_record.blood_pressure_diastolic < 60 %}
+                                    bg-warning bg-opacity-10
+                                {% else %}
+                                    bg-success bg-opacity-10
+                                {% endif %}
+                            {% else %}
+                                bg-light
+                            {% endif %}
+                        ">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ _('Blood Pressure') }}</h6>
+                                    <p class="mb-0">
+                                        {% if latest_record.blood_pressure_systolic and latest_record.blood_pressure_diastolic %}
+                                            {{ latest_record.blood_pressure_systolic }}/{{ latest_record.blood_pressure_diastolic }} mmHg
+                                        {% else %}
+                                            {{ _('Not recorded') }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div>
+                                    {% if latest_record.blood_pressure_systolic and latest_record.blood_pressure_diastolic %}
+                                        {% if latest_record.blood_pressure_systolic > 140 or latest_record.blood_pressure_diastolic > 90 %}
+                                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                        {% elif latest_record.blood_pressure_systolic < 90 or latest_record.blood_pressure_diastolic < 60 %}
+                                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                        {% else %}
+                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="fas fa-question-circle text-muted fa-lg"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- BMI Status -->
+                        <div class="health-indicator-card p-3 rounded
+                            {% if latest_record.weight and latest_record.height %}
+                                {% set bmi = (latest_record.weight / ((latest_record.height / 100) ** 2))|round(1) %}
+                                {% if bmi < 18.5 or bmi >= 30 %}
+                                    bg-warning bg-opacity-10
+                                {% elif bmi >= 25 %}
+                                    bg-light
+                                {% else %}
+                                    bg-success bg-opacity-10
+                                {% endif %}
+                            {% else %}
+                                bg-light
+                            {% endif %}
+                        ">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ _('BMI') }}</h6>
+                                    <p class="mb-0">
+                                        {% if latest_record.weight and latest_record.height %}
+                                            {% set bmi = (latest_record.weight / ((latest_record.height / 100) ** 2))|round(1) %}
+                                            {{ bmi }} 
+                                            ({% if bmi < 18.5 %}{{ _('Underweight') }}
+                                            {% elif bmi < 25 %}{{ _('Normal') }}
+                                            {% elif bmi < 30 %}{{ _('Overweight') }}
+                                            {% else %}{{ _('Obese') }}{% endif %})
+                                        {% else %}
+                                            {{ _('Not recorded') }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div>
+                                    {% if latest_record.weight and latest_record.height %}
+                                        {% set bmi = (latest_record.weight / ((latest_record.height / 100) ** 2))|round(1) %}
+                                        {% if bmi < 18.5 or bmi >= 30 %}
+                                            <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                        {% elif bmi >= 25 %}
+                                            <i class="fas fa-info-circle text-info fa-lg"></i>
+                                        {% else %}
+                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="fas fa-question-circle text-muted fa-lg"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-list fa-3x text-muted"></i>
+                            </div>
+                            <h6>{{ _('No health data available') }}</h6>
+                            <p class="text-muted mb-0">{{ _('Add your first health record to see your health overview.') }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('anemia_prevention') }}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-tint me-1"></i> {{ _('Anemia Prevention Tips') }}
+                        </a>
+                        <a href="{{ url_for('nutrition') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-apple-alt me-1"></i> {{ _('Nutrition Advice') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Health Record Modal -->
+<div class="modal fade" id="addRecordModal" tabindex="-1" aria-labelledby="addRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRecordModalLabel">{{ _('Add New Health Record') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('health_records') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Pregnancy Information') }}</h6>
+                        <div class="form-check mb-3">
+                            {{ form.is_pregnant(class="form-check-input", id="is_pregnant") }}
+                            <label class="form-check-label" for="is_pregnant">
+                                {{ _('Are you pregnant?') }}
+                            </label>
+                        </div>
+                        
+                        <div id="pregnancy-fields" class="d-none">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="pregnancy_week" class="form-label">{{ _('Pregnancy Week') }}</label>
+                                    {{ form.pregnancy_week(class="form-control", id="pregnancy_week") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="due_date" class="form-label">{{ _('Due Date') }}</label>
+                                    {{ form.due_date(class="form-control", id="due_date", type="date") }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Physical Measurements') }}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="weight" class="form-label">{{ _('Weight (kg)') }}</label>
+                                {{ form.weight(class="form-control", id="weight") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="height" class="form-label">{{ _('Height (cm)') }}</label>
+                                {{ form.height(class="form-control", id="height") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Vital Signs') }}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ _('Blood Pressure (mmHg)') }}</label>
+                                <div class="input-group">
+                                    {{ form.blood_pressure_systolic(class="form-control", placeholder="Systolic") }}
+                                    <span class="input-group-text">/</span>
+                                    {{ form.blood_pressure_diastolic(class="form-control", placeholder="Diastolic") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="blood_sugar" class="form-label">{{ _('Blood Sugar (mg/dL)') }}</label>
+                                {{ form.blood_sugar(class="form-control", id="blood_sugar") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Blood Work') }}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="hemoglobin" class="form-label">{{ _('Hemoglobin (g/dL)') }}</label>
+                                {{ form.hemoglobin(class="form-control", id="hemoglobin") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Medical History') }}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="previous_pregnancies" class="form-label">{{ _('Number of Previous Pregnancies') }}</label>
+                                {{ form.previous_pregnancies(class="form-control", id="previous_pregnancies") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="previous_complications" class="form-label">{{ _('Previous Pregnancy Complications') }}</label>
+                                {{ form.previous_complications(class="form-control", id="previous_complications") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ _('Current Health Status') }}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="existing_conditions" class="form-label">{{ _('Existing Medical Conditions') }}</label>
+                                {{ form.existing_conditions(class="form-control", id="existing_conditions") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="current_medications" class="form-label">{{ _('Current Medications') }}</label>
+                                {{ form.current_medications(class="form-control", id="current_medications") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function printRecord(recordId) {
+        const recordDiv = document.getElementById(`recordDetails${recordId}`);
+        const printWindow = window.open('', '_blank');
+        
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Health Record</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #6a5acd; }
+                    .metric { margin-bottom: 15px; }
+                    .label { font-weight: bold; color: #666; }
+                    .value { font-size: 1.1em; }
+                    .section { margin-bottom: 20px; }
+                    .header { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>NeoMitra Health Record</h1>
+                    <p>Date: ${new Date().toLocaleString()}</p>
+                </div>
+                ${recordDiv.innerHTML}
+            </body>
+            </html>
+        `);
+        
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }
+</script>
+{% endblock %}

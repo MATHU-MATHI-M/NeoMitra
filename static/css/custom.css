@@ -1,0 +1,976 @@
+/* -------------------------------------
+   Variables
+------------------------------------- */
+:root {
+    --primary-color: #6a5acd;       /* Slateblue - main brand color */
+    --primary-light: #9d91e3;       /* Lighter shade of primary for hover states */
+    --secondary-color: #4bc0c0;     /* Teal - accent color */
+    --accent-color: #ff9f43;        /* Orange - used for highlights and CTA */
+    --warning-color: #f1c40f;       /* Yellow - used for warnings */
+    --danger-color: #e74c3c;        /* Red - used for errors and critical information */
+    --text-color: #2d3436;          /* Dark gray - main text color */
+    --light-text: #7b8c98;          /* Light gray - secondary text color */
+    --bg-color: #f0f2f5;            /* Light grayish blue - background color */
+    --card-color: #ffffff;          /* White - card background color */
+    --border-radius: 8px;           /* Border radius for cards and buttons */
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Shadow for cards */
+    --transition-speed: 0.3s;       /* Standard transition speed */
+}
+
+/* -------------------------------------
+   General Styles
+------------------------------------- */
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    overflow-x: hidden;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.btn-accent:hover, .btn-accent:focus {
+    background-color: #e58e3d;
+    border-color: #e58e3d;
+    color: white;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+.text-accent {
+    color: var(--accent-color) !important;
+}
+
+.bg-primary-light {
+    background-color: rgba(106, 90, 205, 0.1);
+}
+
+.bg-secondary-light {
+    background-color: rgba(75, 192, 192, 0.1);
+}
+
+.card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: none;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* -------------------------------------
+   Header & Navigation
+------------------------------------- */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--card-color);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--primary-color);
+}
+
+.navbar-brand span {
+    color: var(--secondary-color);
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: var(--primary-color);
+}
+
+/* Language selector */
+.language-selector {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    font-size: 0.9rem;
+}
+
+/* -------------------------------------
+   Hero Section
+------------------------------------- */
+.hero-section {
+    background: linear-gradient(135deg, rgba(106, 90, 205, 0.9) 0%, rgba(75, 192, 192, 0.8) 100%), url('https://source.unsplash.com/1600x900/?healthcare,pregnancy') center/cover no-repeat;
+    min-height: 500px;
+    color: white;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-cta {
+    font-size: 1.1rem;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Wave effect at the bottom of hero */
+.wave-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.wave {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 60px;
+}
+
+/* -------------------------------------
+   Feature Cards
+------------------------------------- */
+.feature-card {
+    padding: 30px 25px;
+    margin-bottom: 30px;
+    transition: all var(--transition-speed);
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.feature-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+/* -------------------------------------
+   Dashboard
+------------------------------------- */
+.dashboard-card {
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card .icon-bg {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    font-size: 7rem;
+    opacity: 0.1;
+    color: var(--primary-color);
+}
+
+.dashboard-stat {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.stat-change {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.stat-change.positive {
+    background-color: rgba(72, 219, 120, 0.1);
+    color: #28a745;
+}
+
+.stat-change.negative {
+    background-color: rgba(255, 91, 91, 0.1);
+    color: #dc3545;
+}
+
+/* Risk gauges */
+.risk-gauge {
+    margin: 20px auto;
+    max-width: 200px;
+}
+
+.gauge-body {
+    width: 100%;
+    height: 0;
+    padding-bottom: 50%;
+    background-color: #e6e6e6;
+    position: relative;
+    border-top-left-radius: 100% 200%;
+    border-top-right-radius: 100% 200%;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.gauge-fill {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    transform-origin: center top;
+    transform: rotate(0deg);
+    transition: transform 1s ease-out;
+}
+
+.gauge-cover {
+    width: 75%;
+    height: 150%;
+    background-color: var(--card-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 25%;
+    box-sizing: border-box;
+}
+
+.gauge-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gauge-label {
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Health metrics chart */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+/* -------------------------------------
+   Risk Assessment Form
+------------------------------------- */
+.risk-assessment-form {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.risk-assessment-form .form-group {
+    margin-bottom: 20px;
+}
+
+.risk-assessment-form .form-label {
+    font-weight: 500;
+}
+
+.risk-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.risk-section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+/* Risk result card */
+.risk-result-card {
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.risk-level {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.risk-level.high {
+    color: var(--danger-color);
+}
+
+.risk-level.moderate {
+    color: var(--warning-color);
+}
+
+.risk-level.low {
+    color: #28a745;
+}
+
+.recommendations-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.recommendations-list li {
+    padding: 8px 0;
+    position: relative;
+    padding-left: 25px;
+}
+
+.recommendations-list li:before {
+    content: "\f058";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+/* -------------------------------------
+   Health Records
+------------------------------------- */
+.health-record-card {
+    margin-bottom: 25px;
+}
+
+.health-record-date {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.health-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.health-metric {
+    flex: 1 0 30%;
+    margin-bottom: 15px;
+    min-width: 120px;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* -------------------------------------
+   Government Schemes
+------------------------------------- */
+.scheme-card {
+    margin-bottom: 30px;
+}
+
+.scheme-card .card-title {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.scheme-detail {
+    margin-bottom: 15px;
+}
+
+.scheme-detail-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.scheme-detail-content {
+    font-size: 1rem;
+}
+
+.scheme-search {
+    margin-bottom: 30px;
+}
+
+/* -------------------------------------
+   Chatbot
+------------------------------------- */
+.chatbot-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+}
+
+.chatbot-container.minimized {
+    height: 60px;
+    overflow: hidden;
+}
+
+.chatbot-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-title {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.chatbot-controls {
+    display: flex;
+}
+
+.chatbot-controls button {
+    background: none;
+    border: none;
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.chatbot-controls button:hover {
+    opacity: 1;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.user-message {
+    flex-direction: row-reverse;
+}
+
+.message-content {
+    background-color: #f1f0f0;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 70%;
+}
+
+.bot-message .message-content {
+    background-color: var(--primary-light);
+    color: white;
+    border-top-left-radius: 5px;
+}
+
+.user-message .message-content {
+    background-color: var(--secondary-color);
+    color: white;
+    border-top-right-radius: 5px;
+}
+
+.message-avatar {
+    width: 30px;
+    height: 30px;
+    background-color: #e6e6e6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+}
+
+.bot-message .message-avatar {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.user-message .message-avatar {
+    background-color: var(--secondary-color);
+}
+
+.chat-input-container {
+    padding: 15px;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    align-items: center;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-input-container button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.chat-input-container button:hover {
+    background-color: var(--primary-light);
+}
+
+/* Typing indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.typing-indicator span {
+    height: 10px;
+    width: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: typingAnimation 1s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+    margin-right: 0;
+}
+
+@keyframes typingAnimation {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+/* Chatbot toggle button */
+.chatbot-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: transform 0.3s;
+}
+
+.chatbot-toggle:hover {
+    transform: scale(1.1);
+}
+
+.chatbot-toggle i {
+    font-size: 1.5rem;
+}
+
+/* -------------------------------------
+   Voice Interaction
+------------------------------------- */
+.voice-input-button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.2s;
+}
+
+.voice-input-button:hover {
+    color: var(--primary-light);
+    transform: scale(1.1);
+}
+
+.listening-indicator {
+    position: absolute;
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+
+.listening-ripple {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.listening-wave {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    animation: ripple 1.8s linear infinite;
+}
+
+.listening-wave:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.listening-wave:nth-child(3) {
+    animation-delay: 1.2s;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.voice-active {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.25) !important;
+}
+
+.voice-error-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--danger-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.voice-error-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* -------------------------------------
+   Animations
+------------------------------------- */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s, transform 0.8s;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fadeIn {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.fadeInUp {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.fadeInLeft {
+    animation: fadeInLeft 0.5s ease forwards;
+}
+
+.fadeInRight {
+    animation: fadeInRight 0.5s ease forwards;
+}
+
+.zoomIn {
+    animation: zoomIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Loading spinner */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Page transition overlay */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+/* Pulse animation */
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* -------------------------------------
+   Responsive Styles
+------------------------------------- */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .feature-card {
+        margin-bottom: 20px;
+    }
+    
+    .chatbot-container {
+        width: 300px;
+        height: 450px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .dashboard-stat {
+        font-size: 1.5rem;
+    }
+    
+    .health-metric {
+        flex: 1 0 50%;
+    }
+    
+    .chatbot-container {
+        width: 280px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        min-height: 400px;
+        padding: 60px 0;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-cta {
+        font-size: 1rem;
+        padding: 10px 25px;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+    
+    .feature-title {
+        font-size: 1.1rem;
+    }
+    
+    .chatbot-container {
+        width: 100%;
+        height: 60%;
+        bottom: 0;
+        right: 0;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .chatbot-toggle {
+        bottom: 20px;
+        right: 20px;
+    }
+}

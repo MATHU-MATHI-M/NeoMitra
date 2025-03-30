@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Risk Assessment - NeoMitra') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .risk-section {
+        padding: 15px;
+        border-left: 4px solid transparent;
+        margin-bottom: 15px;
+    }
+    .risk-section.medical {
+        border-left-color: var(--primary-color);
+    }
+    .risk-section.lifestyle {
+        border-left-color: var(--secondary-color);
+    }
+    .risk-section.pregnancy {
+        border-left-color: var(--accent-color);
+    }
+    .risk-section.anemia {
+        border-left-color: #e74c3c;
+    }
+    .assessment-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .assessment-title i {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: var(--primary-color);
+    }
+    .assessment-title h2 {
+        margin-bottom: 0;
+    }
+    .conditional-group {
+        transition: all 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="assessment-title animate-on-scroll" data-animation="fadeInUp">
+        <i class="fas fa-clipboard-check"></i>
+        <div>
+            <h2 class="fw-bold text-primary">{{ _('Pregnancy Risk Assessment') }}</h2>
+            <p class="text-muted mb-0">{{ _('Assess your risk factors for high-risk pregnancy and anemia') }}</p>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-lg-8 animate-on-scroll" data-animation="fadeInLeft">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">{{ _('About This Assessment') }}</h5>
+                    <p>{{ _('This risk assessment tool uses advanced algorithms to evaluate potential risk factors for high-risk pregnancy and anemia. The assessment takes approximately 5 minutes to complete and provides immediate results.') }}</p>
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-info-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0">{{ _('Your answers are confidential and used only to provide personalized risk assessment and recommendations. This assessment is not a substitute for professional medical advice.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="risk-assessment-form" method="POST" action="{{ url_for('risk_assessment') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="mb-0">{{ _('Basic Information') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-section medical">
+                            <h6 class="fw-bold mb-3">{{ _('Age & Previous Pregnancies') }}</h6>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.age_above_35(class="form-check-input") }}
+                                <label class="form-check-label" for="age_above_35">
+                                    {{ _('Are you over 35 years old?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.multiple_pregnancy(class="form-check-input") }}
+                                <label class="form-check-label" for="multiple_pregnancy">
+                                    {{ _('Are you carrying multiple babies (twins, triplets, etc.)?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.previous_csection(class="form-check-input") }}
+                                <label class="form-check-label" for="previous_csection">
+                                    {{ _('Have you had a previous C-section?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.previous_preterm_birth(class="form-check-input") }}
+                                <label class="form-check-label" for="previous_preterm_birth">
+                                    {{ _('Have you had a previous preterm birth?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.previous_miscarriage(class="form-check-input") }}
+                                <label class="form-check-label" for="previous_miscarriage">
+                                    {{ _('Have you had previous miscarriages?') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="mb-0">{{ _('Medical Conditions') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-section medical">
+                            <h6 class="fw-bold mb-3">{{ _('Pre-existing Medical Conditions') }}</h6>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.diabetes(class="form-check-input risk-factor-input", **{'data-info': _('Pre-existing diabetes can affect pregnancy outcomes and requires special monitoring')}) }}
+                                <label class="form-check-label" for="diabetes">
+                                    {{ _('Do you have diabetes?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.hypertension(class="form-check-input risk-factor-input", **{'data-info': _('Chronic hypertension requires careful management during pregnancy')}) }}
+                                <label class="form-check-label" for="hypertension">
+                                    {{ _('Do you have high blood pressure?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.heart_disease(class="form-check-input risk-factor-input", **{'data-info': _('Heart conditions can be affected by the increased cardiac demands during pregnancy')}) }}
+                                <label class="form-check-label" for="heart_disease">
+                                    {{ _('Do you have heart disease?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.kidney_disease(class="form-check-input risk-factor-input", **{'data-info': _('Kidney disease can affect fluid balance and blood pressure during pregnancy')}) }}
+                                <label class="form-check-label" for="kidney_disease">
+                                    {{ _('Do you have kidney disease?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.autoimmune_disease(class="form-check-input risk-factor-input", **{'data-info': _('Autoimmune diseases can sometimes flare or improve during pregnancy')}) }}
+                                <label class="form-check-label" for="autoimmune_disease">
+                                    {{ _('Do you have an autoimmune disease?') }}
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-section pregnancy">
+                            <h6 class="fw-bold mb-3">{{ _('Current Pregnancy Complications') }}</h6>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.gestational_diabetes(class="form-check-input risk-factor-input", **{'data-info': _('Diabetes that develops during pregnancy')}) }}
+                                <label class="form-check-label" for="gestational_diabetes">
+                                    {{ _('Have you been diagnosed with gestational diabetes?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.preeclampsia(class="form-check-input risk-factor-input", **{'data-info': _('A serious pregnancy complication characterized by high blood pressure and damage to organ systems')}) }}
+                                <label class="form-check-label" for="preeclampsia">
+                                    {{ _('Have you been diagnosed with preeclampsia?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.placenta_previa(class="form-check-input risk-factor-input", **{'data-info': _('A condition where the placenta covers part or all of the cervix')}) }}
+                                <label class="form-check-label" for="placenta_previa">
+                                    {{ _('Have you been diagnosed with placenta previa?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.bleeding(class="form-check-input risk-factor-input", **{'data-info': _('Vaginal bleeding during pregnancy can sometimes indicate complications')}) }}
+                                <label class="form-check-label" for="bleeding">
+                                    {{ _('Have you experienced vaginal bleeding during this pregnancy?') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="mb-0">{{ _('Lifestyle Factors') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-section lifestyle">
+                            <div class="form-check mb-3">
+                                {{ form.smoking(class="form-check-input risk-factor-input", **{'data-info': _('Smoking during pregnancy increases risks of complications')}) }}
+                                <label class="form-check-label" for="smoking">
+                                    {{ _('Do you smoke?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.alcohol(class="form-check-input risk-factor-input", **{'data-info': _('Alcohol consumption during pregnancy can harm fetal development')}) }}
+                                <label class="form-check-label" for="alcohol">
+                                    {{ _('Do you consume alcohol?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.drug_use(class="form-check-input risk-factor-input", **{'data-info': _('Recreational drug use can severely impact pregnancy outcomes')}) }}
+                                <label class="form-check-label" for="drug_use">
+                                    {{ _('Do you use recreational drugs?') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="mb-0">{{ _('Anemia Risk Factors') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="risk-section anemia">
+                            <div class="form-check mb-3">
+                                {{ form.fatigue(class="form-check-input risk-factor-input", **{'data-info': _('Severe fatigue can be a symptom of anemia')}) }}
+                                <label class="form-check-label" for="fatigue">
+                                    {{ _('Do you often feel fatigued or weak?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.dizzy_spells(class="form-check-input risk-factor-input", **{'data-info': _('Dizziness and lightheadedness can indicate anemia')}) }}
+                                <label class="form-check-label" for="dizzy_spells">
+                                    {{ _('Do you experience dizziness or fainting?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.pale_skin(class="form-check-input risk-factor-input", **{'data-info': _('Pale skin, especially noticeable in the gums, nails, and inside of eyelids, can be a sign of anemia')}) }}
+                                <label class="form-check-label" for="pale_skin">
+                                    {{ _('Have you noticed that your skin is paler than usual?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.shortness_of_breath(class="form-check-input risk-factor-input", **{'data-info': _('Shortness of breath during normal activities can indicate anemia')}) }}
+                                <label class="form-check-label" for="shortness_of_breath">
+                                    {{ _('Do you experience shortness of breath during normal activities?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.poor_diet(class="form-check-input risk-factor-input", **{'data-info': _('Diet low in iron-rich foods can lead to anemia')}) }}
+                                <label class="form-check-label" for="poor_diet">
+                                    {{ _('Do you have limited access to iron-rich foods?') }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                {{ form.recent_blood_loss(class="form-check-input risk-factor-input", **{'data-info': _('Recent blood loss can deplete iron stores')}) }}
+                                <label class="form-check-label" for="recent_blood_loss">
+                                    {{ _('Have you experienced any recent blood loss?') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h5 class="mb-0">{{ _('Additional Information') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="additional_notes" class="form-label">{{ _('Any additional notes or concerns') }}</label>
+                            {{ form.additional_notes(class="form-control", rows="3") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-primary btn-lg pulse-animation") }}
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-lg-4 animate-on-scroll" data-animation="fadeInRight">
+            <!-- Previous Assessment Results -->
+            <div class="card mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">{{ _('Your Previous Assessments') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if assessments %}
+                        {% set dates = [] %}
+                        {% set pregnancy_risks = [] %}
+                        {% set anemia_risks = [] %}
+                        
+                        {% for assessment in assessments %}
+                            {% do dates.append(assessment.assessment_date.strftime('%d %b')) %}
+                            {% do pregnancy_risks.append(assessment.pregnancy_risk_score|float) %}
+                            {% do anemia_risks.append(assessment.anemia_risk_score|float) %}
+                        {% endfor %}
+                        
+                        <div class="chart-container mb-3">
+                            <canvas id="assessment-history-chart"
+                                    data-dates="{{ dates|tojson }}"
+                                    data-pregnancy-risks="{{ pregnancy_risks|tojson }}"
+                                    data-anemia-risks="{{ anemia_risks|tojson }}">
+                            </canvas>
+                        </div>
+                        
+                        <h6 class="fw-bold mt-4 mb-3">{{ _('Latest Assessment Results') }}</h6>
+                        <div class="latest-assessment mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2"><i class="fas fa-calendar-alt text-muted"></i></div>
+                                <span>{{ assessments[0].assessment_date.strftime('%d %b, %Y') }}</span>
+                            </div>
+                            
+                            <div class="risk-gauges row">
+                                <div class="col-6">
+                                    <div class="risk-gauge" data-value="{{ assessments[0].pregnancy_risk_score }}" data-label="{{ _('Pregnancy Risk') }}"></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="risk-gauge" data-value="{{ assessments[0].anemia_risk_score }}" data-label="{{ _('Anemia Risk') }}"></div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="fw-bold mt-4">{{ _('Key Risk Factors') }}</h6>
+                            {% if assessments[0].risk_factors %}
+                                <ul class="ps-3 mb-4">
+                                    {% for factor in assessments[0].risk_factors.split(',') %}
+                                        <li>{{ factor.strip() }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">{{ _('No significant risk factors identified.') }}</p>
+                            {% endif %}
+                            
+                            <h6 class="fw-bold">{{ _('Recommendations') }}</h6>
+                            {% if assessments[0].recommendations %}
+                                <ul class="ps-3 mb-0">
+                                    {% for recommendation in assessments[0].recommendations.split(',') %}
+                                        <li>{{ recommendation.strip() }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">{{ _('No specific recommendations provided.') }}</p>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-check fa-3x text-muted"></i>
+                            </div>
+                            <h6>{{ _('No assessments yet') }}</h6>
+                            <p class="text-muted mb-0">{{ _('Complete the form to see your results here.') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Information Cards -->
+            <div class="card mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">{{ _('Why Assessment Matters') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-stethoscope fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Early Detection') }}</h6>
+                            <p class="mb-0 text-muted">{{ _('Identifying risk factors early allows for timely intervention and better outcomes.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-user-md fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Personalized Care') }}</h6>
+                            <p class="mb-0 text-muted">{{ _('Risk assessment helps healthcare providers create tailored care plans for your specific needs.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-0">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-shield-alt fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Peace of Mind') }}</h6>
+                            <p class="mb-0 text-muted">{{ _('Understanding your risk factors can reduce anxiety and help you feel more in control of your pregnancy.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/risk_assessment.js') }}"></script>
+{% endblock %}

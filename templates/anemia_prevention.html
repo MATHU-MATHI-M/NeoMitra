@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Anemia Prevention - NeoMitra') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+        <h1 class="display-5 fw-bold text-primary">{{ _('Anemia Prevention') }}</h1>
+        <p class="lead text-muted">{{ _('Essential guidance to prevent and manage anemia during pregnancy') }}</p>
+    </div>
+    
+    <!-- Introduction Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto animate-on-scroll" data-animation="fadeInUp">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                <i class="fas fa-tint fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="mb-1">{{ _('Understanding Anemia During Pregnancy') }}</h3>
+                            <p class="text-muted mb-0">{{ _('What you need to know about this common pregnancy condition') }}</p>
+                        </div>
+                    </div>
+                    
+                    <p>{{ _('Anemia during pregnancy occurs when you don\'t have enough red blood cells to carry oxygen to your tissues and to your baby. The most common cause is iron deficiency. During pregnancy, your body needs extra iron to make more blood to supply oxygen to your baby.') }}</p>
+                    
+                    <h5 class="mt-4 mb-3">{{ _('Common Symptoms of Anemia') }}</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Fatigue and weakness') }}</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Pale skin, lips, and nails') }}</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Dizziness or lightheadedness') }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Shortness of breath') }}</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Rapid heartbeat') }}</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> {{ _('Difficulty concentrating') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-info-circle fa-lg"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0">{{ _('Anemia in pregnancy is typically diagnosed when hemoglobin levels fall below 11 g/dL in the first and third trimesters, or below 10.5 g/dL in the second trimester.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nutrition Advice Section -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4 animate-on-scroll" data-animation="fadeInUp">
+            <h2 class="text-primary fw-bold">{{ _('Preventing Anemia Through Diet') }}</h2>
+            <p class="lead">{{ _('The right foods can help maintain healthy hemoglobin levels') }}</p>
+        </div>
+        
+        {% for item in advice %}
+        <div class="col-lg-6 mb-4 animate-on-scroll" data-animation="fadeInUp" data-delay="{{ loop.index0 * 0.1 }}">
+            <div class="card h-100">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h5 class="mb-0">{{ item.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ item.description }}</p>
+                    
+                    <h6 class="fw-bold mb-2">{{ _('Recommended Foods') }}</h6>
+                    <p>{{ item.food_recommendations }}</p>
+                    
+                    {% if item.foods_to_avoid %}
+                    <h6 class="fw-bold mb-2 mt-4">{{ _('Foods to Limit or Avoid') }}</h6>
+                    <p>{{ item.foods_to_avoid }}</p>
+                    {% endif %}
+                    
+                    <div class="food-categories mt-4">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="food-category d-flex align-items-center">
+                                    <div class="food-icon me-2">
+                                        <i class="fas fa-drumstick-bite text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 small fw-bold">{{ _('Iron-Rich Meats') }}</h6>
+                                        <small class="text-muted">{{ _('Beef, liver, lamb') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="food-category d-flex align-items-center">
+                                    <div class="food-icon me-2">
+                                        <i class="fas fa-seedling text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 small fw-bold">{{ _('Leafy Greens') }}</h6>
+                                        <small class="text-muted">{{ _('Spinach, kale, collards') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="food-category d-flex align-items-center">
+                                    <div class="food-icon me-2">
+                                        <i class="fas fa-egg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 small fw-bold">{{ _('Iron-Rich Proteins') }}</h6>
+                                        <small class="text-muted">{{ _('Eggs, tofu, lentils') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="food-category d-flex align-items-center">
+                                    <div class="food-icon me-2">
+                                        <i class="fas fa-lemon text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 small fw-bold">{{ _('Vitamin C Sources') }}</h6>
+                                        <small class="text-muted">{{ _('Citrus, bell peppers, berries') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Supplementation Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto animate-on-scroll" data-animation="fadeInUp">
+            <div class="card">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h5 class="mb-0">{{ _('Iron Supplementation Guidelines') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="me-3">
+                            <i class="fas fa-pills fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>{{ _('When Diet Alone Is Not Enough') }}</h5>
+                            <p class="mb-0">{{ _('Even with a balanced diet rich in iron, pregnant women often need supplements to meet increased iron requirements.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h6 class="fw-bold mb-3">{{ _('Recommended Daily Intake') }}</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ _('Non-pregnant women') }}
+                                    <span class="badge bg-primary rounded-pill">18 mg</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ _('Pregnant women') }}
+                                    <span class="badge bg-primary rounded-pill">27 mg</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ _('Women with anemia during pregnancy') }}
+                                    <span class="badge bg-primary rounded-pill">60-120 mg</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <h6 class="fw-bold mb-3">{{ _('Tips for Taking Iron Supplements') }}</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    {{ _('Take iron with vitamin C to enhance absorption') }}
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    {{ _('Avoid taking with calcium supplements or milk') }}
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    {{ _('Take on an empty stomach if possible, but with food if it causes stomach upset') }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-exclamation-triangle fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">{{ _('Important:') }}</h6>
+                                <p class="mb-0">{{ _('Always consult with your healthcare provider before starting any supplements. Too much iron can be harmful, and the right dosage depends on your individual needs.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cooking Tips & Lifestyle Section -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4 animate-on-scroll" data-animation="fadeInLeft">
+            <div class="card h-100">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h5 class="mb-0">{{ _('Cooking Tips to Maximize Iron Absorption') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="tip-item d-flex mb-3">
+                        <div class="tip-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-utensils text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Cook in Iron Pots') }}</h6>
+                            <p class="mb-0">{{ _('Cooking acidic foods like tomato sauce in cast iron cookware can increase the iron content of your meals.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex mb-3">
+                        <div class="tip-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-lemon text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Add Vitamin C') }}</h6>
+                            <p class="mb-0">{{ _('Squeeze lemon juice over iron-rich foods or include a vitamin C source with meals to enhance iron absorption.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex mb-3">
+                        <div class="tip-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-mug-hot text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Time Your Tea and Coffee') }}</h6>
+                            <p class="mb-0">{{ _('Avoid tea and coffee with meals as they can inhibit iron absorption. Wait at least an hour before or after meals.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-item d-flex">
+                        <div class="tip-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-blender text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Properly Prepare Legumes') }}</h6>
+                            <p class="mb-0">{{ _('Soak beans and lentils before cooking to reduce phytates that can inhibit iron absorption.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4 animate-on-scroll" data-animation="fadeInRight">
+            <div class="card h-100">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h5 class="mb-0">{{ _('Lifestyle Changes to Combat Anemia') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="lifestyle-item d-flex mb-3">
+                        <div class="lifestyle-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-walking text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Moderate Exercise') }}</h6>
+                            <p class="mb-0">{{ _('Regular, gentle exercise can stimulate blood cell production. Consult your doctor about a safe prenatal exercise routine.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="lifestyle-item d-flex mb-3">
+                        <div class="lifestyle-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-bed text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Adequate Rest') }}</h6>
+                            <p class="mb-0">{{ _('Prioritize sleep and rest periods, especially if you're experiencing fatigue due to anemia.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="lifestyle-item d-flex mb-3">
+                        <div class="lifestyle-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-heartbeat text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Regular Check-ups') }}</h6>
+                            <p class="mb-0">{{ _('Keep all prenatal appointments to monitor your hemoglobin levels throughout pregnancy.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="lifestyle-item d-flex">
+                        <div class="lifestyle-icon me-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2">
+                                <i class="fas fa-calendar-alt text-primary"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold">{{ _('Meal Planning') }}</h6>
+                            <p class="mb-0">{{ _('Plan your meals to include iron-rich foods throughout the day, especially if you're taking supplements at specific times.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resources Section -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card animate-on-scroll" data-animation="fadeInUp">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-book-medical fa-3x text-primary"></i>
+                    </div>
+                    <h4>{{ _('Need Personalized Guidance?') }}</h4>
+                    <p class="mb-4">{{ _('Our AI assistant can provide tailored recommendations based on your specific health needs.') }}</p>
+                    <div class="d-flex justify-content-center flex-wrap">
+                        <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary me-2 mb-2">
+                            <i class="fas fa-robot me-1"></i> {{ _('Chat With Assistant') }}
+                        </a>
+                        <a href="{{ url_for('health_records') }}" class="btn btn-outline-primary mb-2">
+                            <i class="fas fa-plus-circle me-1"></i> {{ _('Update Health Records') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

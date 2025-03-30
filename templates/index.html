@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 hero-content animate-on-scroll" data-animation="fadeInLeft">
+                <h1 class="hero-title">{{ _('Empowering Maternal Health with Technology') }}</h1>
+                <p class="hero-subtitle">{{ _('Early detection of high-risk pregnancies and anemia prevention for healthier mothers and babies.') }}</p>
+                <div class="d-flex flex-wrap">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-light hero-cta me-3 mb-2">
+                        <i class="fas fa-tachometer-alt me-2"></i> {{ _('Go to Dashboard') }}
+                    </a>
+                    <a href="{{ url_for('risk_assessment') }}" class="btn btn-accent hero-cta mb-2">
+                        <i class="fas fa-clipboard-check me-2"></i> {{ _('Take Risk Assessment') }}
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('register') }}" class="btn btn-light hero-cta me-3 mb-2">
+                        <i class="fas fa-user-plus me-2"></i> {{ _('Sign Up Now') }}
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-accent hero-cta mb-2">
+                        <i class="fas fa-sign-in-alt me-2"></i> {{ _('Login') }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 d-flex justify-content-center align-items-center animate-on-scroll" data-animation="fadeInRight">
+                <img src="https://cdn.dribbble.com/users/3813676/screenshots/14165594/media/6d8b1061f7141a3363c4237e9987c7e7.gif" alt="Healthcare Illustration" class="img-fluid" style="max-height: 350px; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
+            </div>
+        </div>
+    </div>
+    <div class="wave-container">
+        <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+            <path fill="#f0f2f5" fill-opacity="1" d="M0,32L60,37.3C120,43,240,53,360,53.3C480,53,600,43,720,48C840,53,960,75,1080,74.7C1200,75,1320,53,1380,42.7L1440,32L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+            <h2 class="display-5 fw-bold text-primary">{{ _('How NeoMitra Helps You') }}</h2>
+            <p class="lead text-muted">{{ _('Comprehensive maternal healthcare solutions designed for accessibility and ease of use') }}</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.1">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('High-Risk Pregnancy Detection') }}</h3>
+                        <p>{{ _('Advanced AI algorithms analyze your health data to identify potential risk factors early, ensuring timely intervention.') }}</p>
+                        <a href="{{ url_for('risk_assessment') }}" class="btn btn-sm btn-outline-primary mt-3">
+                            {{ _('Learn More') }} <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.2">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('Anemia Prevention') }}</h3>
+                        <p>{{ _('Personalized guidance on managing and preventing anemia during pregnancy, with nutrition advice tailored to your needs.') }}</p>
+                        <a href="{{ url_for('anemia_prevention') }}" class="btn btn-sm btn-outline-primary mt-3">
+                            {{ _('Learn More') }} <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.3">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('Multilingual Support') }}</h3>
+                        <p>{{ _('Access vital healthcare information in your preferred language, making maternal care accessible to everyone.') }}</p>
+                        <div class="d-flex justify-content-center mt-3">
+                            <span class="badge bg-light text-dark me-1">English</span>
+                            <span class="badge bg-light text-dark me-1">हिंदी</span>
+                            <span class="badge bg-light text-dark me-1">தமிழ்</span>
+                            <span class="badge bg-light text-dark me-1">తెలుగు</span>
+                            <span class="badge bg-light text-dark me-1">বাংলা</span>
+                            <span class="badge bg-light text-dark">मराठी</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.4">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('Interactive Assistant') }}</h3>
+                        <p>{{ _('Our AI-powered chatbot provides instant answers to your pregnancy and health-related questions anytime, anywhere.') }}</p>
+                        <a href="{{ url_for('chatbot_page') }}" class="btn btn-sm btn-outline-primary mt-3">
+                            {{ _('Chat Now') }} <i class="fas fa-comment-dots ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.5">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-hand-holding-medical"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('Government Schemes') }}</h3>
+                        <p>{{ _('Learn about state and central government schemes for maternal healthcare, reducing financial burden during pregnancy.') }}</p>
+                        <a href="{{ url_for('health_schemes') }}" class="btn btn-sm btn-outline-primary mt-3">
+                            {{ _('Explore Schemes') }} <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card feature-card animate-on-scroll" data-animation="fadeInUp" data-delay="0.6">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-wifi-slash"></i>
+                        </div>
+                        <h3 class="feature-title">{{ _('Offline Access') }}</h3>
+                        <p>{{ _('Access critical health information even without internet connectivity, perfect for rural areas with limited network.') }}</p>
+                        <button class="btn btn-sm btn-outline-primary mt-3" onclick="alert('To use offline features, please install our PWA app by clicking Add to Home Screen in your browser menu.')">
+                            {{ _('Enable Offline Mode') }} <i class="fas fa-download ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+            <h2 class="display-5 fw-bold text-primary">{{ _('How It Works') }}</h2>
+            <p class="lead text-muted">{{ _('Simple steps to start your maternal health journey with NeoMitra') }}</p>
+        </div>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 animate-on-scroll" data-animation="fadeInLeft">
+                <img src="https://assets10.lottiefiles.com/packages/lf20_bXhyeK.json" alt="Registration Process" class="img-fluid rounded" style="max-height: 400px;">
+            </div>
+            <div class="col-lg-6 animate-on-scroll" data-animation="fadeInRight">
+                <div class="steps-container">
+                    <div class="step d-flex mb-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="min-width: 50px; height: 50px; font-weight: 600;">1</div>
+                        <div class="ms-3">
+                            <h4>{{ _('Create Your Account') }}</h4>
+                            <p class="text-muted">{{ _('Sign up with your basic details to create a secure profile for personalized health tracking.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step d-flex mb-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="min-width: 50px; height: 50px; font-weight: 600;">2</div>
+                        <div class="ms-3">
+                            <h4>{{ _('Add Your Health Information') }}</h4>
+                            <p class="text-muted">{{ _('Enter your pregnancy details, medical history, and current health metrics for accurate assessment.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step d-flex mb-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="min-width: 50px; height: 50px; font-weight: 600;">3</div>
+                        <div class="ms-3">
+                            <h4>{{ _('Get Your Risk Assessment') }}</h4>
+                            <p class="text-muted">{{ _('Receive a comprehensive analysis of potential pregnancy risks and anemia status based on your data.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step d-flex">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="min-width: 50px; height: 50px; font-weight: 600;">4</div>
+                        <div class="ms-3">
+                            <h4>{{ _('Follow Personalized Recommendations') }}</h4>
+                            <p class="text-muted">{{ _('Get customized advice, diet plans, and access government schemes based on your health profile.') }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">
+                        {{ _('Get Started Now') }} <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+            <h2 class="display-5 fw-bold text-primary">{{ _('Success Stories') }}</h2>
+            <p class="lead text-muted">{{ _('Hear from mothers who benefited from NeoMitra') }}</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 animate-on-scroll" data-animation="fadeInUp" data-delay="0.1">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="testimonial-avatar">
+                                <svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="100" fill="#6a5acd" />
+                                    <circle cx="100" cy="85" r="40" fill="white" />
+                                    <path d="M100,140 C65,140 40,160 40,190 L160,190 C160,160 135,140 100,140 Z" fill="white" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h5 class="text-center">Priya Sharma</h5>
+                        <p class="text-center text-muted small mb-3">Delhi</p>
+                        <p class="card-text">
+                            "NeoMitra detected my anemia early in pregnancy. The nutrition advice helped me improve my hemoglobin levels, and I delivered a healthy baby girl. The multilingual support made it easy to understand everything in Hindi."
+                        </p>
+                        <div class="text-center text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 animate-on-scroll" data-animation="fadeInUp" data-delay="0.2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="testimonial-avatar">
+                                <svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="100" fill="#4bc0c0" />
+                                    <circle cx="100" cy="85" r="40" fill="white" />
+                                    <path d="M100,140 C65,140 40,160 40,190 L160,190 C160,160 135,140 100,140 Z" fill="white" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h5 class="text-center">Lakshmi Nair</h5>
+                        <p class="text-center text-muted small mb-3">Chennai</p>
+                        <p class="card-text">
+                            "The risk assessment feature identified my high-risk pregnancy early, and I was able to take necessary precautions. The chatbot assistant was available 24/7 to answer my questions in Tamil, which was incredibly helpful."
+                        </p>
+                        <div class="text-center text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card testimonial-card h-100 animate-on-scroll" data-animation="fadeInUp" data-delay="0.3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="testimonial-avatar">
+                                <svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="100" cy="100" r="100" fill="#ff9f43" />
+                                    <circle cx="100" cy="85" r="40" fill="white" />
+                                    <path d="M100,140 C65,140 40,160 40,190 L160,190 C160,160 135,140 100,140 Z" fill="white" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h5 class="text-center">Fatima Rahman</h5>
+                        <p class="text-center text-muted small mb-3">Kolkata</p>
+                        <p class="card-text">
+                            "I live in a rural area with poor connectivity. NeoMitra's offline access feature was a lifesaver. I also learned about and applied for government schemes I wasn't aware of, which helped with medical expenses."
+                        </p>
+                        <div class="text-center text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 animate-on-scroll" data-animation="fadeInLeft">
+                <h2 class="display-5 fw-bold">{{ _('Ready to Start Your Journey?') }}</h2>
+                <p class="lead">{{ _('Join thousands of expecting mothers who trust NeoMitra for their maternal healthcare needs.') }}</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0 animate-on-scroll" data-animation="fadeInRight">
+                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-2 mb-2">
+                    <i class="fas fa-user-plus me-2"></i> {{ _('Sign Up Now') }}
+                </a>
+                <a href="{{ url_for('chatbot_page') }}" class="btn btn-outline-light btn-lg mb-2">
+                    <i class="fas fa-robot me-2"></i> {{ _('Try Assistant') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

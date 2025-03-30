@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Medical Guidelines - NeoMitra') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5 animate-on-scroll" data-animation="fadeInUp">
+        <h1 class="display-5 fw-bold text-primary">{{ _('Medical Guidelines') }}</h1>
+        <p class="lead text-muted">{{ _('Essential healthcare information for maternal well-being') }}</p>
+    </div>
+    
+    <!-- Guidelines Filter -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto animate-on-scroll" data-animation="fadeInUp">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">{{ _('Filter Guidelines') }}</h5>
+                    <div class="d-flex flex-wrap">
+                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn active" data-filter="all">
+                            {{ _('All Guidelines') }}
+                        </button>
+                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn" data-filter="Pregnancy">
+                            <i class="fas fa-baby me-1"></i> {{ _('Pregnancy') }}
+                        </button>
+                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn" data-filter="Anemia">
+                            <i class="fas fa-tint me-1"></i> {{ _('Anemia') }}
+                        </button>
+                        <button class="btn btn-outline-primary me-2 mb-2 filter-btn" data-filter="High-Risk Pregnancy">
+                            <i class="fas fa-exclamation-triangle me-1"></i> {{ _('High-Risk Pregnancy') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Guidelines Display -->
+    <div class="row">
+        {% for guideline in guidelines %}
+        <div class="col-lg-6 mb-4 guideline-item animate-on-scroll" data-animation="fadeInUp" data-category="{{ guideline.category }}" data-delay="{{ loop.index0 * 0.1 }}">
+            <div class="card h-100">
+                <div class="card-header bg-primary bg-opacity-10 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{{ guideline.title }}</h5>
+                    <span class="badge bg-primary">{{ guideline.category }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="guideline-content">
+                        <p>{{ guideline.content }}</p>
+                    </div>
+                    
+                    <!-- Download and Share Options -->
+                    <div class="d-flex mt-3">
+                        <button class="btn btn-sm btn-outline-primary me-2" onclick="saveForOffline({{ guideline.id }})">
+                            <i class="fas fa-download me-1"></i> {{ _('Save Offline') }}
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary me-2" onclick="shareGuideline({{ guideline.id }})">
+                            <i class="fas fa-share-alt me-1"></i> {{ _('Share') }}
+                        </button>
+                        <div class="dropdown ms-auto">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="translateDropdown{{ guideline.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-language me-1"></i> {{ _('Translate') }}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="translateDropdown{{ guideline.id }}">
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'en')">English</button></li>
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'hi')">हिंदी</button></li>
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'ta')">தமிழ்</button></li>
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'te')">తెలుగు</button></li>
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'bn')">বাংলা</button></li>
+                                <li><button class="dropdown-item" onclick="translateGuideline({{ guideline.id }}, 'mr')">मराठी</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>{{ _('Last updated') }}: {{ guideline.last_updated.strftime('%d %b, %Y') if guideline.last_updated else guideline.created_at.strftime('%d %b, %Y') }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Emergency Information Card -->
+    <div class="row mt-4">
+        <div class="col-12 animate-on-scroll" data-animation="fadeInUp">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <div class="me-3">
+                            <i class="fas fa-exclamation-circle fa-3x"></i>
+                        </div>
+                        <div>
+                            <h4 class="card-title">{{ _('Emergency Warning Signs During Pregnancy') }}</h4>
+                            <p class="card-text">{{ _('Seek immediate medical attention if you experience any of these symptoms:') }}</p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <ul class="mb-0">
+                                        <li>{{ _('Severe headache that won\'t go away') }}</li>
+                                        <li>{{ _('Dizziness or fainting') }}</li>
+                                        <li>{{ _('Vision changes including blurriness or spots') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="mb-0">
+                                        <li>{{ _('Severe abdominal or pelvic pain') }}</li>
+                                        <li>{{ _('Vaginal bleeding or fluid leakage') }}</li>
+                                        <li>{{ _('Severe swelling of face, hands, or feet') }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="mb-md-0 mb-0">
+                                        <li>{{ _('Fever over 100.4°F (38°C)') }}</li>
+                                        <li>{{ _('Rapid or difficulty breathing') }}</li>
+                                        <li>{{ _('Decreased or no fetal movement') }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Assistant Prompt -->
+    <div class="row mt-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="card animate-on-scroll" data-animation="fadeInUp">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-robot fa-3x text-primary"></i>
+                    </div>
+                    <h4>{{ _('Have Questions About These Guidelines?') }}</h4>
+                    <p class="mb-4">{{ _('Our AI assistant can explain any medical term or guideline in simple language.') }}</p>
+                    <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary">
+                        <i class="fas fa-comments me-2"></i> {{ _('Ask Our Assistant') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const guidelineItems = document.querySelectorAll('.guideline-item');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                // Filter guidelines
+                guidelineItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Animate visible items
+                setTimeout(() => {
+                    let delay = 0;
+                    guidelineItems.forEach(item => {
+                        if (item.style.display !== 'none') {
+                            gsap.from(item, {
+                                duration: 0.5,
+                                y: 20,
+                                opacity: 0,
+                                delay: delay,
+                                ease: 'power2.out'
+                            });
+                            delay += 0.1;
+                        }
+                    });
+                }, 100);
+            });
+        });
+    });
+    
+    // Function to save guideline for offline access
+    function saveForOffline(guidelineId) {
+        // In a real implementation, this would store the content in localStorage or IndexedDB
+        const guidelineElement = document.querySelector(`.guideline-item[data-category] .card`);
+        const title = guidelineElement.querySelector('.card-title').textContent;
+        const content = guidelineElement.querySelector('.guideline-content').textContent;
+        
+        // For demonstration, just show a success message
+        alert(`{{ _('Guideline "') }}${title}{{ _('" has been saved for offline access.') }}`);
+        
+        // In a real implementation:
+        // localStorage.setItem(`guideline_${guidelineId}`, JSON.stringify({
+        //     title: title,
+        //     content: content,
+        //     timestamp: new Date().toISOString()
+        // }));
+    }
+    
+    // Function to share guideline
+    function shareGuideline(guidelineId) {
+        const guidelineElement = document.querySelector(`.guideline-item[data-category] .card`);
+        const title = guidelineElement.querySelector('.card-title').textContent;
+        
+        // Check if Web Share API is available
+        if (navigator.share) {
+            navigator.share({
+                title: `NeoMitra - ${title}`,
+                text: `{{ _('Check out this important medical guideline from NeoMitra: ') }}${title}`,
+                url: window.location.href
+            })
+            .catch(error => console.log('Error sharing:', error));
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            alert(`{{ _('Share this link: ') }}${window.location.href}`);
+        }
+    }
+    
+    // Function to translate guideline (simplified demonstration)
+    function translateGuideline(guidelineId, language) {
+        const languageNames = {
+            'en': 'English',
+            'hi': 'Hindi',
+            'ta': 'Tamil',
+            'te': 'Telugu',
+            'bn': 'Bengali',
+            'mr': 'Marathi'
+        };
+        
+        alert(`{{ _('Translating to ') }}${languageNames[language]}... {{ _('This feature will be available soon.') }}`);
+        
+        // In a real implementation, this would call a translation API or use a translation library
+    }
+</script>
+{% endblock %}

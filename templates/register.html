@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _('Register - NeoMitra') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg animate-on-scroll" data-animation="fadeInUp">
+                <div class="card-body p-md-5">
+                    <div class="text-center mb-4">
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-user-plus me-2"></i> {{ _('Create an Account') }}
+                        </h1>
+                        <p class="text-muted">{{ _('Join NeoMitra for personalized maternal healthcare') }}</p>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('register') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.first_name(class="form-control", id="first_name", placeholder="First Name") }}
+                                    <label for="first_name">{{ _('First Name') }}</label>
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.last_name(class="form-control", id="last_name", placeholder="Last Name") }}
+                                    <label for="last_name">{{ _('Last Name') }}</label>
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.username(class="form-control", id="username", placeholder="Username") }}
+                            <label for="username">{{ _('Username') }}</label>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.email(class="form-control", id="email", placeholder="name@example.com") }}
+                            <label for="email">{{ _('Email address') }}</label>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.password(class="form-control", id="password", placeholder="Password") }}
+                                    <label for="password">{{ _('Password') }}</label>
+                                    {% if form.password.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.password.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.confirm_password(class="form-control", id="confirm_password", placeholder="Confirm Password") }}
+                                    <label for="confirm_password">{{ _('Confirm Password') }}</label>
+                                    {% if form.confirm_password.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.confirm_password.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.phone_number(class="form-control", id="phone_number", placeholder="Phone Number") }}
+                            <label for="phone_number">{{ _('Phone Number') }}</label>
+                            {% if form.phone_number.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.phone_number.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.date_of_birth(class="form-control", id="date_of_birth", type="date") }}
+                            <label for="date_of_birth">{{ _('Date of Birth') }}</label>
+                            {% if form.date_of_birth.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.date_of_birth.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.preferred_language(class="form-select", id="preferred_language") }}
+                            <label for="preferred_language">{{ _('Preferred Language') }}</label>
+                            {% if form.preferred_language.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.preferred_language.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="agree_terms" required>
+                            <label class="form-check-label" for="agree_terms">
+                                {{ _('I agree to the') }} <a href="#" class="text-primary">{{ _('Terms of Service') }}</a> {{ _('and') }} <a href="#" class="text-primary">{{ _('Privacy Policy') }}</a>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light p-4 text-center">
+                    <p class="mb-0">
+                        {{ _('Already have an account?') }} 
+                        <a href="{{ url_for('login') }}" class="text-primary fw-bold">{{ _('Sign in') }}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to form fields
+        const formFields = document.querySelectorAll('.form-floating');
+        gsap.from(formFields, {
+            duration: 0.5,
+            y: 20,
+            opacity: 0,
+            stagger: 0.05,
+            ease: 'power2.out',
+            delay: 0.2
+        });
+        
+        // Password strength validation
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const strengthIndicator = document.createElement('div');
+                strengthIndicator.className = 'password-strength mt-2';
+                
+                // Remove any existing strength indicator
+                const existingIndicator = this.parentElement.querySelector('.password-strength');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+                
+                if (password.length > 0) {
+                    // Calculate password strength
+                    let strength = 0;
+                    
+                    // Length check
+                    if (password.length >= 8) strength += 1;
+                    
+                    // Character variety checks
+                    if (password.match(/[A-Z]/)) strength += 1; // Uppercase
+                    if (password.match(/[a-z]/)) strength += 1; // Lowercase
+                    if (password.match(/[0-9]/)) strength += 1; // Numbers
+                    if (password.match(/[^A-Za-z0-9]/)) strength += 1; // Special characters
+                    
+                    // Display strength
+                    let strengthText = '';
+                    let strengthClass = '';
+                    
+                    if (strength <= 2) {
+                        strengthText = 'Weak';
+                        strengthClass = 'text-danger';
+                    } else if (strength <= 4) {
+                        strengthText = 'Moderate';
+                        strengthClass = 'text-warning';
+                    } else {
+                        strengthText = 'Strong';
+                        strengthClass = 'text-success';
+                    }
+                    
+                    strengthIndicator.innerHTML = `<div class="d-flex align-items-center">
+                        <div class="progress flex-grow-1" style="height: 8px;">
+                            <div class="progress-bar bg-${strengthClass.replace('text-', '')}" role="progressbar" style="width: ${(strength/5)*100}%" aria-valuenow="${strength}" aria-valuemin="0" aria-valuemax="5"></div>
+                        </div>
+                        <small class="${strengthClass} ms-2">${strengthText}</small>
+                    </div>`;
+                    
+                    this.parentElement.appendChild(strengthIndicator);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
