@@ -1,186 +1,355 @@
 /**
- * Voice Recognition Module for NeoMitra
- * Provides speech-to-text functionality for health data logging
+ * Voice Recognition Module for NeoMitra Healthcare Platform
+ * This module enables voice-based health data logging with natural language processing
  */
 
 class VoiceRecognition {
-    constructor(language = 'en-US') {
-        this.language = language;
-        this.isListening = false;
+    constructor(processingEndpoint = '/process_voice_recording') {
         this.recognition = null;
-        this.initSpeechRecognition();
+        this.isListening = false;
+        this.transcripts = [];
+        this.processingEndpoint = processingEndpoint;
+        this.setupRecognition();
+        this.speechSynthesis = window.speechSynthesis;
     }
 
-    initSpeechRecognition() {
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            // Initialize the Web Speech API
-            const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-            this.recognition = new SpeechRecognitionAPI();
-            
-            // Configure recognition
-            this.recognition.continuous = false;
-            this.recognition.interimResults = true;
-            this.recognition.lang = this.language;
-            
-            // Set up callbacks
-            this.recognition.onstart = () => {
-                this.isListening = true;
-                if (this.onStartCallback) this.onStartCallback();
-            };
-            
-            this.recognition.onresult = (event) => {
-                const transcript = Array.from(event.results)
-                    .map(result => result[0].transcript)
-                    .join('');
-                
-                const confidence = event.results[0][0].confidence;
-                
-                if (event.results[0].isFinal && this.onResultCallback) {
-                    this.onResultCallback(transcript, confidence);
-                }
-            };
-            
-            this.recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                this.isListening = false;
-                if (this.onErrorCallback) this.onErrorCallback(event.error);
-            };
-            
-            this.recognition.onend = () => {
-                this.isListening = false;
-                if (this.onEndCallback) this.onEndCallback();
-            };
-        } else {
-            console.error('Speech Recognition API not supported in this browser.');
-            throw new Error('Speech Recognition not supported');
+    setupRecognition() {
+        // Check if browser supports speech recognition
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            console.error('Speech recognition not supported in this browser');
+            return;
         }
+
+        // Initialize SpeechRecognition object
+        this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        this.recognition.continuous = true;
+        this.recognition.interimResults = true;
+        this.recognition.lang = document.documentElement.lang || 'en-US';
+
+        // Set up event handlers
+        this.recognition.onstart = () => {
+            this.isListening = true;
+            this.updateUI(true);
+            console.log('Voice recognition started');
+        };
+
+        this.recognition.onend = () => {
+            this.isListening = false;
+            this.updateUI(false);
+            console.log('Voice recognition ended');
+        };
+
+        this.recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                    this.transcripts.push(transcript.trim());
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            // Update UI with transcripts
+            this.updateTranscriptUI(finalTranscript, interimTranscript);
+
+            // If we have a final transcript, process it
+            if (finalTranscript) {
+                this.processTranscript(finalTranscript);
+            }
+        };
+
+        this.recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+            this.isListening = false;
+            this.updateUI(false);
+            
+            // Attempt to restart if there was a temporary error
+            if (event.error === 'network' || event.error === 'service-not-allowed') {
+                setTimeout(() => this.start(), 1000);
+            }
+        };
     }
 
     start() {
         if (!this.recognition) {
-            throw new Error('Speech Recognition not initialized');
+            this.setupRecognition();
+            if (!this.recognition) return; // Still not available
         }
-        
+
         try {
             this.recognition.start();
-        } catch (error) {
-            console.error('Failed to start speech recognition:', error);
+            this.speak("I'm listening. You can tell me about your health data now.");
+        } catch (e) {
+            console.error('Error starting speech recognition:', e);
+            // If already started, stop and start again
+            if (e.name === 'InvalidStateError') {
+                this.recognition.stop();
+                setTimeout(() => this.start(), 200);
+            }
         }
     }
 
     stop() {
-        if (this.recognition && this.isListening) {
-            this.recognition.stop();
-        }
-    }
-
-    setLanguage(language) {
-        this.language = language;
         if (this.recognition) {
-            this.recognition.lang = language;
+            try {
+                this.recognition.stop();
+                this.speak("Voice input stopped.");
+            } catch (e) {
+                console.error('Error stopping speech recognition:', e);
+            }
         }
     }
 
-    onStart(callback) {
-        this.onStartCallback = callback;
+    updateUI(isListening) {
+        // Find UI elements
+        const startButton = document.getElementById('startVoiceButton');
+        const stopButton = document.getElementById('stopVoiceButton');
+        const statusIndicator = document.getElementById('voiceStatusIndicator');
+        
+        if (startButton && stopButton) {
+            startButton.disabled = isListening;
+            stopButton.disabled = !isListening;
+        }
+        
+        if (statusIndicator) {
+            statusIndicator.className = isListening 
+                ? 'status-indicator active' 
+                : 'status-indicator';
+            statusIndicator.textContent = isListening 
+                ? 'Listening...' 
+                : 'Not listening';
+        }
     }
 
-    onResult(callback) {
-        this.onResultCallback = callback;
+    updateTranscriptUI(finalTranscript, interimTranscript) {
+        const transcriptElement = document.getElementById('voiceTranscript');
+        const interimElement = document.getElementById('interimTranscript');
+        
+        if (transcriptElement && finalTranscript) {
+            const p = document.createElement('p');
+            p.textContent = finalTranscript;
+            transcriptElement.appendChild(p);
+            transcriptElement.scrollTop = transcriptElement.scrollHeight;
+        }
+        
+        if (interimElement) {
+            interimElement.textContent = interimTranscript;
+        }
     }
 
-    onError(callback) {
-        this.onErrorCallback = callback;
+    processTranscript(transcript) {
+        // Send the transcript to the server for NLP processing
+        fetch(this.processingEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ transcript }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Processed data:', data);
+            this.handleProcessedData(data);
+        })
+        .catch(error => {
+            console.error('Error processing transcript:', error);
+        });
     }
 
-    onEnd(callback) {
-        this.onEndCallback = callback;
+    handleProcessedData(data) {
+        // Handle the processed data
+        if (data.success) {
+            // Update UI with extracted health data
+            this.updateExtractedDataUI(data.extractedData);
+            
+            // Provide voice feedback
+            if (data.response) {
+                this.speak(data.response);
+            }
+            
+            // If data was successfully saved
+            if (data.dataSaved) {
+                this.showSuccessMessage(data.message || "Health data successfully saved!");
+            }
+        } else {
+            // Handle error
+            this.showErrorMessage(data.message || "Could not process your health data.");
+            this.speak("I'm sorry, I couldn't understand your health data. Can you please try again?");
+        }
+    }
+
+    updateExtractedDataUI(extractedData) {
+        // Find the container to display extracted data
+        const container = document.getElementById('extractedHealthData');
+        if (!container) return;
+        
+        // Clear previous data
+        container.innerHTML = '';
+        
+        // Create a table for the extracted data
+        const table = document.createElement('table');
+        table.className = 'table table-striped mt-3';
+        
+        // Add headers
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headerKeys = document.createElement('th');
+        headerKeys.textContent = 'Health Metric';
+        const headerValues = document.createElement('th');
+        headerValues.textContent = 'Value';
+        headerRow.appendChild(headerKeys);
+        headerRow.appendChild(headerValues);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Add body with data
+        const tbody = document.createElement('tbody');
+        
+        for (const key in extractedData) {
+            if (extractedData.hasOwnProperty(key)) {
+                const row = document.createElement('tr');
+                
+                const keyCell = document.createElement('td');
+                keyCell.textContent = this.formatMetricName(key);
+                
+                const valueCell = document.createElement('td');
+                valueCell.textContent = extractedData[key];
+                
+                row.appendChild(keyCell);
+                row.appendChild(valueCell);
+                tbody.appendChild(row);
+            }
+        }
+        
+        table.appendChild(tbody);
+        container.appendChild(table);
+        
+        // Show the container if hidden
+        container.style.display = 'block';
+    }
+    
+    formatMetricName(key) {
+        // Convert camelCase to Title Case with spaces
+        return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim();
+    }
+
+    showSuccessMessage(message) {
+        this.showMessage(message, 'success');
+    }
+    
+    showErrorMessage(message) {
+        this.showMessage(message, 'danger');
+    }
+    
+    showMessage(message, type) {
+        // Find or create alert container
+        let alertContainer = document.getElementById('voiceAlertContainer');
+        if (!alertContainer) {
+            alertContainer = document.createElement('div');
+            alertContainer.id = 'voiceAlertContainer';
+            alertContainer.className = 'mt-3';
+            
+            // Find a place to insert it
+            const extractedData = document.getElementById('extractedHealthData');
+            if (extractedData) {
+                extractedData.parentNode.insertBefore(alertContainer, extractedData);
+            } else {
+                document.getElementById('voiceTranscript').parentNode.appendChild(alertContainer);
+            }
+        }
+        
+        // Create alert
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.role = 'alert';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Add to container
+        alertContainer.appendChild(alert);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+    
+    speak(text) {
+        if (!this.speechSynthesis) return;
+        
+        // Cancel any ongoing speech
+        this.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = document.documentElement.lang || 'en-US';
+        
+        // Find a female voice if available
+        const voices = this.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(voice => voice.name.includes('female'));
+        if (femaleVoice) utterance.voice = femaleVoice;
+        
+        this.speechSynthesis.speak(utterance);
+    }
+    
+    // Public method to clear transcripts
+    clearTranscripts() {
+        this.transcripts = [];
+        const transcriptElement = document.getElementById('voiceTranscript');
+        if (transcriptElement) {
+            transcriptElement.innerHTML = '';
+        }
+        const interimElement = document.getElementById('interimTranscript');
+        if (interimElement) {
+            interimElement.textContent = '';
+        }
     }
 }
 
-/**
- * Health Data Extractor
- * Parses voice transcripts to extract health-related information
- */
-class HealthDataExtractor {
-    constructor() {
-        this.patterns = {
-            weight: /\b(weight|weigh|weighs)\s+is\s+(\d+(?:\.\d+)?)\s*(kg|kilograms?|pounds?|lbs?)\b/i,
-            height: /\b(height|tall)\s+is\s+(\d+(?:\.\d+)?)\s*(cm|centimeters?|meters?|m|feet|foot|ft|inches?|in)\b/i,
-            blood_pressure: /\b(blood\s+pressure|bp)\s+is\s+(\d+)\s*(?:over|\/)\s*(\d+)\b/i,
-            hemoglobin: /\b(hemoglobin|hb|haemoglobin)\s+is\s+(\d+(?:\.\d+)?)\b/i,
-            blood_sugar: /\b(blood\s+sugar|glucose|sugar\s+level)\s+is\s+(\d+(?:\.\d+)?)\b/i,
-            pregnancy: /\b(i\s*am|i'm)\s+(pregnant)\b/i,
-            pregnancy_week: /\b(pregnant|pregnancy).+?(\d+)\s*(weeks?|wks?)\b/i
-        };
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Create global instance
+    window.voiceRecognition = new VoiceRecognition();
+    
+    // Set up event listeners for voice control buttons
+    const startButton = document.getElementById('startVoiceButton');
+    if (startButton) {
+        startButton.addEventListener('click', () => {
+            window.voiceRecognition.start();
+        });
     }
-
-    extract(transcript) {
-        const extractedData = {};
-        
-        // Extract weight
-        const weightMatch = transcript.match(this.patterns.weight);
-        if (weightMatch) {
-            let weight = parseFloat(weightMatch[2]);
-            const unit = weightMatch[3].toLowerCase();
-            
-            // Convert to kg if needed
-            if (unit.startsWith('lb') || unit.startsWith('pound')) {
-                weight = weight * 0.453592; // Convert lbs to kg
-            }
-            
-            extractedData.weight = weight;
-        }
-        
-        // Extract height
-        const heightMatch = transcript.match(this.patterns.height);
-        if (heightMatch) {
-            let height = parseFloat(heightMatch[2]);
-            const unit = heightMatch[3].toLowerCase();
-            
-            // Convert to cm if needed
-            if (unit === 'm' || unit.startsWith('meter')) {
-                height = height * 100; // Convert meters to cm
-            } else if (unit === 'ft' || unit.startsWith('foot') || unit.startsWith('feet')) {
-                height = height * 30.48; // Convert feet to cm
-            } else if (unit === 'in' || unit.startsWith('inch')) {
-                height = height * 2.54; // Convert inches to cm
-            }
-            
-            extractedData.height = height;
-        }
-        
-        // Extract blood pressure
-        const bpMatch = transcript.match(this.patterns.blood_pressure);
-        if (bpMatch) {
-            extractedData.blood_pressure_systolic = parseInt(bpMatch[2]);
-            extractedData.blood_pressure_diastolic = parseInt(bpMatch[3]);
-        }
-        
-        // Extract hemoglobin
-        const hbMatch = transcript.match(this.patterns.hemoglobin);
-        if (hbMatch) {
-            extractedData.hemoglobin = parseFloat(hbMatch[2]);
-        }
-        
-        // Extract blood sugar
-        const bsMatch = transcript.match(this.patterns.blood_sugar);
-        if (bsMatch) {
-            extractedData.blood_sugar = parseFloat(bsMatch[2]);
-        }
-        
-        // Extract pregnancy status
-        const pregnancyMatch = transcript.match(this.patterns.pregnancy);
-        if (pregnancyMatch) {
-            extractedData.is_pregnant = true;
-        }
-        
-        // Extract pregnancy week
-        const pregnancyWeekMatch = transcript.match(this.patterns.pregnancy_week);
-        if (pregnancyWeekMatch) {
-            extractedData.pregnancy_week = parseInt(pregnancyWeekMatch[2]);
-        }
-        
-        return extractedData;
+    
+    const stopButton = document.getElementById('stopVoiceButton');
+    if (stopButton) {
+        stopButton.addEventListener('click', () => {
+            window.voiceRecognition.stop();
+        });
     }
-}
+    
+    const clearButton = document.getElementById('clearVoiceButton');
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            window.voiceRecognition.clearTranscripts();
+            
+            // Also clear extracted data
+            const extractedData = document.getElementById('extractedHealthData');
+            if (extractedData) {
+                extractedData.innerHTML = '';
+                extractedData.style.display = 'none';
+            }
+        });
+    }
+});

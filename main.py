@@ -40,9 +40,9 @@ def chatbot_api():
 
 # Voice processing endpoint
 @app.route('/api/voice/process', methods=['POST'])
-def process_voice_input():
+def process_voice_api():
     """
-    Process voice transcripts and extract health data using NLP
+    API endpoint to process voice transcripts and extract health data using NLP
     """
     data = request.json
     
@@ -4680,8 +4680,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=PMSMA" alt="PMSMA Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h5>
-                                            <p class="card-text">Provides free antenatal care to pregnant women on the 9th of every month with the aim of detecting high-risk pregnancies.</p>
+                                            <h5 class="card-title text-light">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h5>
+                                            <p class="card-text text-light">Provides free antenatal care to pregnant women on the 9th of every month with the aim of detecting high-risk pregnancies.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Pregnancy Care</span>
                                                 <span class="badge bg-info">Free Check-ups</span>
@@ -4697,8 +4697,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=JSY" alt="JSY Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title">Janani Suraksha Yojana (JSY)</h5>
-                                            <p class="card-text">Promotes institutional delivery among poor pregnant women with cash assistance, reducing maternal and infant mortality.</p>
+                                            <h5 class="card-title text-light">Janani Suraksha Yojana (JSY)</h5>
+                                            <p class="card-text text-light">Promotes institutional delivery among poor pregnant women with cash assistance, reducing maternal and infant mortality.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Pregnancy Care</span>
                                                 <span class="badge bg-info">Cash Benefits</span>
@@ -4713,8 +4713,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=PMJAY" alt="PMJAY Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title">Pradhan Mantri Jan Arogya Yojana (PMJAY)</h5>
-                                            <p class="card-text">Health insurance scheme providing coverage up to ₹5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
+                                            <h5 class="card-title text-light">Pradhan Mantri Jan Arogya Yojana (PMJAY)</h5>
+                                            <p class="card-text text-light">Health insurance scheme providing coverage up to ₹5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Health Insurance</span>
                                                 <span class="badge bg-info">All Conditions</span>
@@ -4729,8 +4729,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=RBSK" alt="RBSK Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title">Rashtriya Bal Swasthya Karyakram (RBSK)</h5>
-                                            <p class="card-text">Child health screening and early intervention services for children from birth to 18 years to provide comprehensive care.</p>
+                                            <h5 class="card-title text-light">Rashtriya Bal Swasthya Karyakram (RBSK)</h5>
+                                            <p class="card-text text-light">Child health screening and early intervention services for children from birth to 18 years to provide comprehensive care.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Child Health</span>
                                                 <span class="badge bg-info">Screening</span>
@@ -4745,8 +4745,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=NPCDCS" alt="NPCDCS Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title">National Programme for Prevention and Control of Diabetes</h5>
-                                            <p class="card-text">Provides free screening, diagnosis, and management of diabetes and related non-communicable diseases.</p>
+                                            <h5 class="card-title text-light">National Programme for Prevention and Control of Diabetes</h5>
+                                            <p class="card-text text-light">Provides free screening, diagnosis, and management of diabetes and related non-communicable diseases.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Diabetes</span>
                                                 <span class="badge bg-info">Free Treatment</span>
@@ -4854,6 +4854,1266 @@ def government_schemes():
         </div>
         
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+@app.route('/profile')
+def profile():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profile - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .profile-header {
+                padding: 2rem 0;
+                margin-bottom: 2rem;
+                border-radius: 10px;
+            }
+            .avatar-upload {
+                position: relative;
+                max-width: 150px;
+                margin: 0 auto;
+            }
+            .avatar-edit {
+                position: absolute;
+                right: 5px;
+                bottom: 5px;
+                width: 36px;
+                height: 36px;
+                border-radius: 100%;
+                background: var(--bs-primary);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+            .avatar-preview {
+                width: 150px;
+                height: 150px;
+                position: relative;
+                border-radius: 100%;
+                overflow: hidden;
+                background: #666;
+                border: 5px solid var(--bs-primary);
+            }
+            .avatar-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item active" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Your Profile</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Profile Picture</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-edit">
+                                            <label for="imageUpload" class="text-white">
+                                                <i class="bi bi-pencil"></i>
+                                            </label>
+                                            <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" style="display: none;" />
+                                        </div>
+                                        <div class="avatar-preview">
+                                            <img src="https://via.placeholder.com/150" alt="Profile Picture" id="imagePreview">
+                                        </div>
+                                    </div>
+                                    <h4 class="mt-3">{{ username }}</h4>
+                                    <p class="text-muted">Member since {{ user_data.get('created_at', 'January 2023') }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Account Security</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>••••••••</span>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Two-Factor Authentication</label>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-danger">Not enabled</span>
+                                            <button class="btn btn-sm btn-outline-primary">Enable</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Personal Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="profileForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="firstName" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="firstName" value="{{ user_data.get('first_name', '') }}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="lastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="lastName" value="{{ user_data.get('last_name', '') }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="email" class="form-label">Email Address</label>
+                                                <input type="email" class="form-control" id="email" value="{{ user_data.get('email', '') }}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="phone" class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="phone" value="{{ user_data.get('phone', '') }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="dob" class="form-label">Date of Birth</label>
+                                                <input type="date" class="form-control" id="dob" value="{{ user_data.get('dob', '') }}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="gender" class="form-label">Gender</label>
+                                                <select class="form-select" id="gender">
+                                                    <option value="female" {{ 'selected' if user_data.get('gender') == 'female' else '' }}>Female</option>
+                                                    <option value="male" {{ 'selected' if user_data.get('gender') == 'male' else '' }}>Male</option>
+                                                    <option value="other" {{ 'selected' if user_data.get('gender') == 'other' else '' }}>Other</option>
+                                                    <option value="prefer_not_to_say" {{ 'selected' if user_data.get('gender') == 'prefer_not_to_say' else '' }}>Prefer not to say</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" rows="3">{{ user_data.get('address', '') }}</textarea>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="preferredLanguage" class="form-label">Preferred Language</label>
+                                                <select class="form-select" id="preferredLanguage">
+                                                    <option value="en" {{ 'selected' if user_data.get('preferred_language') == 'en' else '' }}>English</option>
+                                                    <option value="hi" {{ 'selected' if user_data.get('preferred_language') == 'hi' else '' }}>Hindi</option>
+                                                    <option value="ta" {{ 'selected' if user_data.get('preferred_language') == 'ta' else '' }}>Tamil</option>
+                                                    <option value="te" {{ 'selected' if user_data.get('preferred_language') == 'te' else '' }}>Telugu</option>
+                                                    <option value="mr" {{ 'selected' if user_data.get('preferred_language') == 'mr' else '' }}>Marathi</option>
+                                                    <option value="bn" {{ 'selected' if user_data.get('preferred_language') == 'bn' else '' }}>Bengali</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="emergencyContact" class="form-label">Emergency Contact</label>
+                                                <input type="tel" class="form-control" id="emergencyContact" value="{{ user_data.get('emergency_contact', '') }}">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="text-end">
+                                            <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title">Healthcare Provider Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="primaryDoctor" class="form-label">Primary Doctor/OBGYN</label>
+                                        <input type="text" class="form-control" id="primaryDoctor" value="{{ user_data.get('primary_doctor', '') }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="healthcareCenter" class="form-label">Healthcare Center</label>
+                                        <input type="text" class="form-control" id="healthcareCenter" value="{{ user_data.get('healthcare_center', '') }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="healthInsurance" class="form-label">Health Insurance ID</label>
+                                        <input type="text" class="form-control" id="healthInsurance" value="{{ user_data.get('health_insurance', '') }}">
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-primary" onclick="saveHealthcareInfo()">Save Healthcare Info</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm">
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required minlength="8">
+                                <div class="form-text">Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="changePassword()">Update Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Preview profile image before upload
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('imagePreview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            
+            document.getElementById('imageUpload').addEventListener('change', function() {
+                readURL(this);
+            });
+            
+            // Save profile information
+            function saveProfile() {
+                // Get form data
+                const formData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    dob: document.getElementById('dob').value,
+                    gender: document.getElementById('gender').value,
+                    address: document.getElementById('address').value,
+                    preferredLanguage: document.getElementById('preferredLanguage').value,
+                    emergencyContact: document.getElementById('emergencyContact').value
+                };
+                
+                // Normally this would be sent to the server
+                // For demo purposes, we'll just show a success message
+                alert('Profile updated successfully!');
+            }
+            
+            // Save healthcare information
+            function saveHealthcareInfo() {
+                // Get healthcare form data
+                const healthcareData = {
+                    primaryDoctor: document.getElementById('primaryDoctor').value,
+                    healthcareCenter: document.getElementById('healthcareCenter').value,
+                    healthInsurance: document.getElementById('healthInsurance').value
+                };
+                
+                // Normally this would be sent to the server
+                // For demo purposes, we'll just show a success message
+                alert('Healthcare information updated successfully!');
+            }
+            
+            // Change password
+            function changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Validate passwords match
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match!');
+                    return;
+                }
+                
+                // Normally this would be sent to the server for validation and updating
+                // For demo purposes, we'll just show a success message
+                alert('Password updated successfully!');
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                modal.hide();
+            }
+        </script>
+        
+        <!-- Floating Chatbot Button -->
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <a href="/chatbot" class="btn btn-primary rounded-circle shadow-lg p-3">
+                <i class="bi bi-chat-dots-fill fs-4"></i>
+            </a>
+        </div>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'), user_data={})
+
+@app.route('/process_voice_recording', methods=['POST'])
+def process_voice_recording():
+    """
+    Process voice transcripts and extract health data using NLP
+    """
+    if not request.is_json:
+        return jsonify({"success": False, "message": "Request must be JSON"}), 400
+    
+    # Get transcript from request
+    data = request.get_json()
+    transcript = data.get('transcript', '')
+    
+    if not transcript:
+        return jsonify({"success": False, "message": "No transcript provided"}), 400
+    
+    # Example of basic NLP to extract health data
+    extracted_data = {}
+    
+    # Check for weight
+    weight_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:kg|kilograms?|kilos)', transcript, re.IGNORECASE)
+    if weight_match:
+        extracted_data['weight'] = float(weight_match.group(1))
+    
+    # Check for blood pressure
+    bp_match = re.search(r'(\d+)[\/\\](\d+)', transcript)
+    if bp_match:
+        extracted_data['bloodPressure'] = f"{bp_match.group(1)}/{bp_match.group(2)}"
+    
+    # Check for blood sugar
+    sugar_match = re.search(r'blood sugar (?:is|of|at)?\s*(\d+(?:\.\d+)?)', transcript, re.IGNORECASE)
+    if sugar_match:
+        extracted_data['bloodSugar'] = float(sugar_match.group(1))
+    
+    # Check for hemoglobin
+    hb_match = re.search(r'(?:hemoglobin|hb) (?:is|of|at)?\s*(\d+(?:\.\d+)?)', transcript, re.IGNORECASE)
+    if hb_match:
+        extracted_data['hemoglobin'] = float(hb_match.group(1))
+    
+    # Check for glucose
+    glucose_match = re.search(r'glucose (?:is|of|at)?\s*(\d+(?:\.\d+)?)', transcript, re.IGNORECASE)
+    if glucose_match:
+        extracted_data['glucose'] = float(glucose_match.group(1))
+    
+    # Check for heart rate
+    hr_match = re.search(r'(?:heart rate|pulse) (?:is|of|at)?\s*(\d+)', transcript, re.IGNORECASE)
+    if hr_match:
+        extracted_data['heartRate'] = int(hr_match.group(1))
+    
+    # Check for temperature
+    temp_match = re.search(r'temperature (?:is|of|at)?\s*(\d+(?:\.\d+)?)', transcript, re.IGNORECASE)
+    if temp_match:
+        extracted_data['temperature'] = float(temp_match.group(1))
+    
+    # Check for pregnancy week
+    preg_week_match = re.search(r'(\d+)(?:st|nd|rd|th)? week (?:of pregnancy|pregnant)', transcript, re.IGNORECASE)
+    if preg_week_match:
+        extracted_data['pregnancyWeek'] = int(preg_week_match.group(1))
+    
+    # Check for due date
+    due_date_match = re.search(r'due date (?:is|of)?\s*(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})', transcript, re.IGNORECASE)
+    if due_date_match:
+        day = int(due_date_match.group(1))
+        month = int(due_date_match.group(2))
+        year = int(due_date_match.group(3))
+        if year < 100:  # Convert 2-digit year to 4-digit
+            year += 2000
+        extracted_data['dueDate'] = f"{year}-{month:02d}-{day:02d}"
+    
+    # Check for symptoms
+    symptoms = []
+    symptom_patterns = [
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(headache|migraine)', 'headache'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(nausea|vomiting)', 'nausea'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(fatigue|tired|exhaustion)', 'fatigue'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(dizziness|vertigo|lightheaded)', 'dizziness'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(swelling|edema)', 'swelling'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(cramps|contractions)', 'cramps'),
+        (r'(?:have|having|experiencing|suffering from|feeling)?\s*(?:a|some|bad|severe)?\s*(backache|back pain)', 'back pain')
+    ]
+    
+    for pattern, symptom_name in symptom_patterns:
+        if re.search(pattern, transcript, re.IGNORECASE):
+            symptoms.append(symptom_name)
+    
+    if symptoms:
+        extracted_data['symptoms'] = ', '.join(symptoms)
+    
+    response_message = ""
+    
+    if extracted_data:
+        # Format a readable response
+        readable_data = []
+        for key, value in extracted_data.items():
+            # Format camelCase to normal text
+            formatted_key = ''.join([' ' + c.lower() if c.isupper() else c for c in key]).strip()
+            readable_data.append(f"{formatted_key}: {value}")
+        
+        response_message = f"I've recorded the following health data: {', '.join(readable_data)}"
+        
+        return jsonify({
+            "success": True,
+            "extractedData": extracted_data,
+            "response": response_message,
+            "dataSaved": True,
+            "message": "Health data saved successfully!"
+        })
+    else:
+        return jsonify({
+            "success": False,
+            "message": "Could not extract any health data from your input. Please try again with specific health measurements like weight, blood pressure, or symptoms."
+        })
+
+@app.route('/voice_input', methods=['GET'])
+def voice_input_page():
+    """
+    Page for voice-assisted health logging
+    """
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Voice Health Logging - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .voice-container {
+                border-radius: 15px;
+                background-color: rgba(var(--bs-primary-rgb), 0.05);
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+            .status-indicator {
+                display: inline-block;
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                background-color: #dc3545;
+                margin-right: 0.5rem;
+            }
+            .status-indicator.active {
+                background-color: #28a745;
+                animation: pulse 1.5s infinite;
+            }
+            .voice-transcript {
+                max-height: 250px;
+                overflow-y: auto;
+                background-color: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+            .voice-transcript p {
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .voice-tutorial {
+                background-color: rgba(var(--bs-info-rgb), 0.1);
+                border-radius: 10px;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .voice-button {
+                min-width: 100px;
+            }
+            @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/voice_input" class="nav-link active">
+                                    <i class="bi bi-mic-fill me-2"></i>
+                                    Voice Health Logging
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Voice Health Logging</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-8">
+                            <!-- Voice Input Card -->
+                            <div class="voice-container">
+                                <h4 class="mb-4">
+                                    <i class="bi bi-mic-fill me-2"></i>
+                                    Record Health Data Using Voice
+                                </h4>
+                                
+                                <div class="d-flex align-items-center mb-3">
+                                    <div>
+                                        <span class="status-indicator" id="voiceStatusIndicator"></span>
+                                        <span id="voiceStatus">Not listening</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex gap-2 mb-4">
+                                    <button class="btn btn-primary voice-button" id="startVoiceButton">
+                                        <i class="bi bi-mic-fill me-2"></i>
+                                        Start
+                                    </button>
+                                    <button class="btn btn-danger voice-button" id="stopVoiceButton" disabled>
+                                        <i class="bi bi-mic-mute-fill me-2"></i>
+                                        Stop
+                                    </button>
+                                    <button class="btn btn-secondary voice-button" id="clearVoiceButton">
+                                        <i class="bi bi-trash me-2"></i>
+                                        Clear
+                                    </button>
+                                </div>
+                                
+                                <h5>What you're saying:</h5>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <p id="interimTranscript" class="fst-italic text-muted"></p>
+                                    </div>
+                                </div>
+                                
+                                <h5>Recorded Statements:</h5>
+                                <div class="voice-transcript mb-4" id="voiceTranscript"></div>
+                                
+                                <div id="extractedHealthData"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <!-- Tutorial Card -->
+                            <div class="voice-tutorial">
+                                <h5>How To Use Voice Logging</h5>
+                                <ol class="mt-3">
+                                    <li class="mb-2">Click the <strong>Start</strong> button and allow microphone access if prompted.</li>
+                                    <li class="mb-2">Speak clearly about your health measurements or symptoms.</li>
+                                    <li class="mb-2">Click <strong>Stop</strong> when you're done.</li>
+                                    <li class="mb-2">Review the extracted health data for accuracy.</li>
+                                </ol>
+                                
+                                <h6 class="mt-4">Example Phrases:</h6>
+                                <ul>
+                                    <li>"My weight is 65 kg"</li>
+                                    <li>"My blood pressure is 120/80"</li>
+                                    <li>"My blood sugar is 95"</li>
+                                    <li>"My hemoglobin level is 13.5"</li>
+                                    <li>"I'm in my 24th week of pregnancy"</li>
+                                    <li>"I'm experiencing headaches and fatigue"</li>
+                                </ul>
+                                
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    All your health data will be saved to your medical record after verification.
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Access Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Quick Access</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <a href="/health-records" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>View Health Records</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="/chatbot" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Ask Health Assistant</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/js/voice-recognition.js"></script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+@app.route('/settings')
+def settings():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Settings - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .settings-card {
+                transition: all 0.3s ease;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+            .form-switch .form-check-input {
+                width: 3em;
+                height: 1.5em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chatbot" class="nav-link">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Chatbot Assistant
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item active" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Settings</h2>
+                        <a href="/dashboard" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-8">
+                            <!-- Appearance Settings -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-palette me-2"></i> Appearance</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Theme Mode</h6>
+                                            <p class="text-muted mb-0 small">Choose between light and dark mode</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="themeMode" checked>
+                                            <label class="form-check-label" for="themeMode">Dark Mode</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">High Contrast</h6>
+                                            <p class="text-muted mb-0 small">Increase contrast for better visibility</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="highContrast">
+                                            <label class="form-check-label" for="highContrast">Off</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fontSizeRange" class="form-label">Text Size</label>
+                                        <input type="range" class="form-range" min="1" max="3" step="1" id="fontSizeRange" value="2">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Small</span>
+                                            <span>Medium</span>
+                                            <span>Large</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Notifications Settings -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-bell me-2"></i> Notifications</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">App Notifications</h6>
+                                            <p class="text-muted mb-0 small">Receive notifications in app</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="appNotifications" checked>
+                                            <label class="form-check-label" for="appNotifications">On</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Email Notifications</h6>
+                                            <p class="text-muted mb-0 small">Receive notifications via email</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="emailNotifications" checked>
+                                            <label class="form-check-label" for="emailNotifications">On</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">SMS Notifications</h6>
+                                            <p class="text-muted mb-0 small">Receive notifications via SMS</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="smsNotifications">
+                                            <label class="form-check-label" for="smsNotifications">Off</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Health Reminders</h6>
+                                            <p class="text-muted mb-0 small">Medication, checkups, and appointments</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="healthReminders" checked>
+                                            <label class="form-check-label" for="healthReminders">On</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Privacy Settings -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-shield-lock me-2"></i> Privacy & Security</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Two-Factor Authentication</h6>
+                                            <p class="text-muted mb-0 small">Add an extra layer of security</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="twoFactor">
+                                            <label class="form-check-label" for="twoFactor">Off</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Data Analytics</h6>
+                                            <p class="text-muted mb-0 small">Help improve app by sharing anonymous usage data</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="dataAnalytics" checked>
+                                            <label class="form-check-label" for="dataAnalytics">On</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Profile Visibility</h6>
+                                            <p class="text-muted mb-0 small">Control who can see your profile</p>
+                                        </div>
+                                        <select class="form-select form-select-sm" style="width: 150px;" id="profileVisibility">
+                                            <option value="private">Private</option>
+                                            <option value="healthcare">Healthcare Providers</option>
+                                            <option value="public">Public</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Language & Region -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-globe me-2"></i> Language & Region</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="language" class="form-label">Language</label>
+                                        <select class="form-select" id="language">
+                                            <option value="en">English</option>
+                                            <option value="hi">Hindi</option>
+                                            <option value="ta">Tamil</option>
+                                            <option value="te">Telugu</option>
+                                            <option value="mr">Marathi</option>
+                                            <option value="bn">Bengali</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="region" class="form-label">Region</label>
+                                        <select class="form-select" id="region">
+                                            <option value="in">India</option>
+                                            <option value="bd">Bangladesh</option>
+                                            <option value="np">Nepal</option>
+                                            <option value="lk">Sri Lanka</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-end mt-4">
+                                <button class="btn btn-secondary me-2">Reset to Default</button>
+                                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <!-- Account Actions -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-person-gear me-2"></i> Account</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <a href="/profile" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Edit Profile</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                            <span>Change Password</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Linked Accounts</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Data & Privacy</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Help & Support -->
+                            <div class="card settings-card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-question-circle me-2"></i> Help & Support</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>FAQs</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Contact Support</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Report a Problem</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Terms & Policies</span>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- App Info -->
+                            <div class="card settings-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">App Version</h6>
+                                        <span class="text-muted">2.5.0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">Last Updated</h6>
+                                        <span class="text-muted">March 25, 2025</span>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="btn btn-sm btn-outline-secondary">Check for Updates</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm">
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required minlength="8">
+                                <div class="form-text">Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="changePassword()">Update Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Toggle theme mode
+            document.getElementById('themeMode').addEventListener('change', function() {
+                if (this.checked) {
+                    document.querySelector('label[for="themeMode"]').textContent = 'Dark Mode';
+                    // Apply dark mode
+                } else {
+                    document.querySelector('label[for="themeMode"]').textContent = 'Light Mode';
+                    // Apply light mode
+                }
+            });
+            
+            // Toggle high contrast
+            document.getElementById('highContrast').addEventListener('change', function() {
+                if (this.checked) {
+                    document.querySelector('label[for="highContrast"]').textContent = 'On';
+                    // Apply high contrast
+                } else {
+                    document.querySelector('label[for="highContrast"]').textContent = 'Off';
+                    // Remove high contrast
+                }
+            });
+            
+            // Toggle notifications switches labels
+            document.querySelectorAll('.form-check-input').forEach(function(switchInput) {
+                switchInput.addEventListener('change', function() {
+                    const label = document.querySelector(`label[for="${this.id}"]`);
+                    if (this.checked) {
+                        label.textContent = 'On';
+                    } else {
+                        label.textContent = 'Off';
+                    }
+                });
+            });
+            
+            // Save settings
+            function saveSettings() {
+                // Get settings data
+                const settingsData = {
+                    themeMode: document.getElementById('themeMode').checked ? 'dark' : 'light',
+                    highContrast: document.getElementById('highContrast').checked,
+                    fontSize: document.getElementById('fontSizeRange').value,
+                    appNotifications: document.getElementById('appNotifications').checked,
+                    emailNotifications: document.getElementById('emailNotifications').checked,
+                    smsNotifications: document.getElementById('smsNotifications').checked,
+                    healthReminders: document.getElementById('healthReminders').checked,
+                    twoFactor: document.getElementById('twoFactor').checked,
+                    dataAnalytics: document.getElementById('dataAnalytics').checked,
+                    profileVisibility: document.getElementById('profileVisibility').value,
+                    language: document.getElementById('language').value,
+                    region: document.getElementById('region').value
+                };
+                
+                // Normally this would be sent to the server
+                // For demo purposes, we'll just show a success message
+                alert('Settings saved successfully!');
+                console.log(settingsData);
+            }
+            
+            // Change password
+            function changePassword() {
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Validate passwords match
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match!');
+                    return;
+                }
+                
+                // Normally this would be sent to the server for validation and updating
+                // For demo purposes, we'll just show a success message
+                alert('Password updated successfully!');
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                modal.hide();
+            }
+        </script>
+        
+        <!-- Floating Chatbot Button -->
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <a href="/chatbot" class="btn btn-primary rounded-circle shadow-lg p-3">
+                <i class="bi bi-chat-dots-fill fs-4"></i>
+            </a>
+        </div>
     </body>
     </html>
     """, username=session.get('username', 'User'))
@@ -5986,7 +7246,6 @@ def dashboard():
                             <a class="nav-link" href="#">Health Records</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/chatbot">Health Assistant</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Resources</a>
