@@ -48,6 +48,1975 @@ def process_voice_input():
     
     if not data or 'transcript' not in data:
         return jsonify({"error": "No transcript provided"}), 400
+
+# Routes for Nutrition page subpages
+@app.route('/nutrition/meal-planner')
+def meal_planner():
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Meal Planner - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .meal-card {
+                border-radius: 12px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                margin-bottom: 1.5rem;
+            }
+            .meal-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .meal-img {
+                height: 180px;
+                object-fit: cover;
+            }
+            .meal-planner-week {
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 2rem;
+            }
+            .meal-day {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+            .meal-time {
+                font-weight: 600;
+                color: var(--bs-primary);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+            }
+            .meal-time i {
+                margin-right: 0.5rem;
+            }
+            /* Floating chatbot button */
+            .chatbot-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: var(--bs-primary);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+            }
+            .chatbot-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .chatbot-popup {
+                position: fixed;
+                bottom: 90px;
+                right: 20px;
+                width: 350px;
+                height: 500px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+                display: none;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .chatbot-header {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .chatbot-messages {
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+            }
+            .chatbot-input {
+                border-top: 1px solid #e0e0e0;
+                padding: 10px;
+                display: flex;
+            }
+            .chatbot-input input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .message {
+                margin-bottom: 10px;
+                max-width: 80%;
+            }
+            .user-message {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 18px 18px 0 18px;
+                align-self: flex-end;
+                margin-left: auto;
+            }
+            .bot-message {
+                background-color: #f1f1f1;
+                color: #333;
+                padding: 10px 15px;
+                border-radius: 18px 18px 18px 0;
+                align-self: flex-start;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link active">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Personalized Meal Plan</h2>
+                        <div>
+                            <a href="/nutrition" class="btn btn-outline-primary me-2">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Back to Nutrition Guide
+                            </a>
+                            <a href="/nutrition/shopping-list" class="btn btn-primary">
+                                <i class="bi bi-cart me-2"></i>
+                                Get Shopping List
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-primary mt-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                            <div>
+                                <strong>Personalized for your needs</strong>
+                                <p class="mb-0">This meal plan is customized based on your health profile, considering your pregnancy stage and hemoglobin levels to provide optimal nutrition.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weekly Meal Planner -->
+                    <h4 class="mt-4 mb-3">Week of March 30 - April 5, 2025</h4>
+                    
+                    <!-- Monday -->
+                    <div class="meal-planner-week">
+                        <h5><i class="bi bi-calendar-date me-2"></i>Monday</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-sunrise"></i> Breakfast
+                                    </div>
+                                    <p><strong>Spinach and Feta Omelette</strong></p>
+                                    <ul class="small">
+                                        <li>2 eggs</li>
+                                        <li>1 cup fresh spinach</li>
+                                        <li>30g feta cheese</li>
+                                        <li>Whole grain toast</li>
+                                        <li>1 orange</li>
+                                    </ul>
+                                    <div class="text-muted small">High in iron, protein, and vitamin C</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-sun"></i> Lunch
+                                    </div>
+                                    <p><strong>Lentil & Vegetable Soup</strong></p>
+                                    <ul class="small">
+                                        <li>1 cup cooked lentils</li>
+                                        <li>Mixed vegetables (carrots, celery, onions)</li>
+                                        <li>Whole grain roll</li>
+                                        <li>Side salad with olive oil dressing</li>
+                                    </ul>
+                                    <div class="text-muted small">Rich in iron, fiber, and plant-based protein</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-moon"></i> Dinner
+                                    </div>
+                                    <p><strong>Grilled Salmon with Quinoa</strong></p>
+                                    <ul class="small">
+                                        <li>150g salmon fillet</li>
+                                        <li>1/2 cup cooked quinoa</li>
+                                        <li>Steamed broccoli</li>
+                                        <li>Lemon-herb sauce</li>
+                                    </ul>
+                                    <div class="text-muted small">Excellent source of omega-3 fatty acids and protein</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-cup-hot"></i> Snacks
+                                    </div>
+                                    <ul>
+                                        <li><strong>Mid-morning:</strong> Greek yogurt with mixed berries and honey</li>
+                                        <li><strong>Afternoon:</strong> Handful of mixed nuts and dried apricots</li>
+                                    </ul>
+                                    <div class="text-muted small">Good sources of protein, calcium, and iron</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-droplet-fill"></i> Hydration
+                                    </div>
+                                    <p><strong>Aim for 8-10 glasses of fluid:</strong></p>
+                                    <ul>
+                                        <li>Water (6-8 glasses)</li>
+                                        <li>Lemon water (1 glass)</li>
+                                        <li>Herbal tea (1 glass)</li>
+                                    </ul>
+                                    <div class="text-muted small">Adequate hydration is essential for blood volume expansion during pregnancy</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tuesday -->
+                    <div class="meal-planner-week">
+                        <h5><i class="bi bi-calendar-date me-2"></i>Tuesday</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-sunrise"></i> Breakfast
+                                    </div>
+                                    <p><strong>Oatmeal with Fortified Toppings</strong></p>
+                                    <ul class="small">
+                                        <li>1 cup cooked oatmeal</li>
+                                        <li>1 tbsp ground flaxseeds</li>
+                                        <li>1 tbsp chia seeds</li>
+                                        <li>Mixed berries</li>
+                                        <li>1 tbsp honey</li>
+                                    </ul>
+                                    <div class="text-muted small">High in fiber, omega-3 fatty acids, and antioxidants</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-sun"></i> Lunch
+                                    </div>
+                                    <p><strong>Chicken and Spinach Wrap</strong></p>
+                                    <ul class="small">
+                                        <li>100g grilled chicken breast</li>
+                                        <li>Whole grain wrap</li>
+                                        <li>Fresh spinach</li>
+                                        <li>Red bell peppers</li>
+                                        <li>Hummus spread</li>
+                                    </ul>
+                                    <div class="text-muted small">Good source of lean protein and iron</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="meal-day">
+                                    <div class="meal-time">
+                                        <i class="bi bi-moon"></i> Dinner
+                                    </div>
+                                    <p><strong>Beef and Vegetable Stir-Fry</strong></p>
+                                    <ul class="small">
+                                        <li>100g lean beef strips</li>
+                                        <li>Stir-fried vegetables (broccoli, carrots, snow peas)</li>
+                                        <li>Brown rice</li>
+                                        <li>Ginger-soy sauce</li>
+                                    </ul>
+                                    <div class="text-muted small">Excellent source of heme iron and vitamin C</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Dietary Notes & Recommendations</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="bi bi-check-circle-fill text-success me-2"></i>Focus on Iron-Rich Foods</h6>
+                                    <p>Based on your health profile, we've included plenty of iron-rich foods to help prevent anemia. Combining vitamin C with iron-rich foods enhances iron absorption.</p>
+                                    
+                                    <h6><i class="bi bi-check-circle-fill text-success me-2"></i>Protein Requirements</h6>
+                                    <p>During pregnancy, your protein needs increase. This meal plan provides adequate protein from both animal and plant sources.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="bi bi-check-circle-fill text-success me-2"></i>Calcium-Rich Foods</h6>
+                                    <p>Calcium is essential for your baby's bone development. We've included various calcium sources like dairy products, fortified plant milks, and leafy greens.</p>
+                                    
+                                    <h6><i class="bi bi-check-circle-fill text-success me-2"></i>Portion Size Flexibility</h6>
+                                    <p>Adjust portion sizes based on your hunger levels. Listen to your body's signals and eat until you're comfortably full.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Important Note:</strong> This meal plan is a general guide. Always consult with your healthcare provider or a registered dietitian for personalized nutrition advice.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        
+        <!-- Chatbot Popup -->
+        <div class="chatbot-popup" id="chatbotPopup">
+            <div class="chatbot-header">
+                <div>
+                    <i class="bi bi-robot me-2"></i>
+                    NeoMitra Assistant
+                </div>
+                <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hello! I'm your NeoMitra nutrition assistant. How can I help you with your meal plan today?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Chatbot functionality
+            let chatbotOpen = false;
+            
+            function toggleChatbot() {
+                chatbotOpen = !chatbotOpen;
+                document.getElementById('chatbotPopup').style.display = chatbotOpen ? 'flex' : 'none';
+                if (chatbotOpen) {
+                    document.getElementById('chatbotInput').focus();
+                }
+            }
+            
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            }
+            
+            function sendMessage() {
+                const input = document.getElementById('chatbotInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    input.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        let response = '';
+                        
+                        if (message.toLowerCase().includes('iron')) {
+                            response = "Iron-rich foods in your meal plan include spinach, lentils, lean red meat, and fortified cereals. These are important for preventing anemia, especially during pregnancy.";
+                        } else if (message.toLowerCase().includes('portion')) {
+                            response = "Portion sizes should be adjusted based on your individual needs. Generally, fill half your plate with vegetables, a quarter with protein, and a quarter with whole grains.";
+                        } else if (message.toLowerCase().includes('substitute') || message.toLowerCase().includes('alternative')) {
+                            response = "You can substitute ingredients based on your preferences or dietary restrictions. For example, if you don't eat fish, you can replace salmon with tofu or legumes for protein.";
+                        } else if (message.toLowerCase().includes('vegetarian') || message.toLowerCase().includes('vegan')) {
+                            response = "For a vegetarian version of this meal plan, you can replace meat with plant-based proteins like tofu, tempeh, legumes, and quinoa. Make sure to include vitamin B12 supplementation for vegan diets.";
+                        } else {
+                            response = "Thank you for your question about the meal plan. Is there something specific you'd like to know about nutrition during pregnancy or how to adapt these recipes?";
+                        }
+                        
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            function addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatbotMessages');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageElement.textContent = text;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        </script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+    
+@app.route('/nutrition/shopping-list')
+def shopping_list():
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopping List - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .shopping-category {
+                margin-bottom: 2rem;
+            }
+            .shopping-item {
+                padding: 1rem;
+                border-radius: 8px;
+                background-color: white;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                transition: all 0.2s;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            .shopping-item:hover {
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+            .shopping-item label {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                width: 100%;
+                cursor: pointer;
+            }
+            .item-checkbox {
+                margin-right: 1rem;
+                width: 20px;
+                height: 20px;
+            }
+            .item-info {
+                flex: 1;
+            }
+            .item-quantity {
+                color: #6c757d;
+                font-size: 0.9rem;
+                margin-left: auto;
+                padding-left: 10px;
+            }
+            .item-checked {
+                text-decoration: line-through;
+                opacity: 0.6;
+            }
+            .print-section {
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 10px;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .list-stats {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+            .stat-item {
+                text-align: center;
+                padding: 1rem;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            .stat-number {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: var(--bs-primary);
+            }
+            .stat-label {
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+            /* Floating chatbot button */
+            .chatbot-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: var(--bs-primary);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+            }
+            .chatbot-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .chatbot-popup {
+                position: fixed;
+                bottom: 90px;
+                right: 20px;
+                width: 350px;
+                height: 500px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+                display: none;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .chatbot-header {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .chatbot-messages {
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+            }
+            .chatbot-input {
+                border-top: 1px solid #e0e0e0;
+                padding: 10px;
+                display: flex;
+            }
+            .chatbot-input input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .message {
+                margin-bottom: 10px;
+                max-width: 80%;
+            }
+            .user-message {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 18px 18px 0 18px;
+                align-self: flex-end;
+                margin-left: auto;
+            }
+            .bot-message {
+                background-color: #f1f1f1;
+                color: #333;
+                padding: 10px 15px;
+                border-radius: 18px 18px 18px 0;
+                align-self: flex-start;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link active">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Shopping List</h2>
+                        <div>
+                            <a href="/nutrition" class="btn btn-outline-primary me-2">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Back to Nutrition Guide
+                            </a>
+                            <a href="/nutrition/meal-planner" class="btn btn-outline-primary me-2">
+                                <i class="bi bi-calendar-week me-2"></i>
+                                View Meal Plan
+                            </a>
+                            <button class="btn btn-primary" onclick="window.print()">
+                                <i class="bi bi-printer me-2"></i>
+                                Print List
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="print-section mt-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>Weekly Shopping List: March 30 - April 5, 2025</h5>
+                                <p>This shopping list is generated based on your personalized meal plan, focusing on iron-rich foods to support your current health needs.</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showCheckedItems" checked>
+                                    <label class="form-check-label" for="showCheckedItems">Show checked items</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-number">32</div>
+                                    <div class="stat-label">Total Items</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-number">15</div>
+                                    <div class="stat-label">Iron-Rich Items</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <div class="stat-number">12</div>
+                                    <div class="stat-label">Vitamin-Rich Items</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Produce Section -->
+                            <div class="shopping-category">
+                                <h4><i class="bi bi-flower1 text-success me-2"></i>Produce</h4>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Fresh Spinach</div>
+                                        <div class="item-quantity">2 bunches</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Broccoli</div>
+                                        <div class="item-quantity">1 head</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Carrots</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Bell Peppers (assorted colors)</div>
+                                        <div class="item-quantity">3</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Onions</div>
+                                        <div class="item-quantity">3</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Garlic</div>
+                                        <div class="item-quantity">1 head</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Lemons</div>
+                                        <div class="item-quantity">2</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Mixed Berries</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Oranges</div>
+                                        <div class="item-quantity">4</div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Proteins Section -->
+                            <div class="shopping-category">
+                                <h4><i class="bi bi-egg me-2 text-warning"></i>Proteins</h4>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Eggs</div>
+                                        <div class="item-quantity">1 dozen</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Chicken Breast</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Salmon Fillets</div>
+                                        <div class="item-quantity">300g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Lean Beef</div>
+                                        <div class="item-quantity">250g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Tofu (firm)</div>
+                                        <div class="item-quantity">1 block</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <!-- Grains & Legumes Section -->
+                            <div class="shopping-category">
+                                <h4><i class="bi bi-grid me-2 text-warning"></i>Grains & Legumes</h4>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Lentils (dry)</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Quinoa</div>
+                                        <div class="item-quantity">250g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Brown Rice</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Whole Grain Bread</div>
+                                        <div class="item-quantity">1 loaf</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Rolled Oats</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Whole Grain Wraps</div>
+                                        <div class="item-quantity">1 pack</div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Dairy & Alternatives Section -->
+                            <div class="shopping-category">
+                                <h4><i class="bi bi-cup me-2 text-info"></i>Dairy & Alternatives</h4>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Greek Yogurt</div>
+                                        <div class="item-quantity">500g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Feta Cheese</div>
+                                        <div class="item-quantity">200g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Milk (low-fat)</div>
+                                        <div class="item-quantity">1L</div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Pantry Items Section -->
+                            <div class="shopping-category">
+                                <h4><i class="bi bi-basket me-2 text-secondary"></i>Pantry Items</h4>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Olive Oil</div>
+                                        <div class="item-quantity">1 bottle</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Flaxseeds</div>
+                                        <div class="item-quantity">100g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Chia Seeds</div>
+                                        <div class="item-quantity">100g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Mixed Nuts</div>
+                                        <div class="item-quantity">250g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Dried Apricots</div>
+                                        <div class="item-quantity">100g</div>
+                                    </label>
+                                </div>
+                                
+                                <div class="shopping-item">
+                                    <label>
+                                        <input type="checkbox" class="item-checkbox">
+                                        <div class="item-info">Honey</div>
+                                        <div class="item-quantity">1 jar</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        
+        <!-- Chatbot Popup -->
+        <div class="chatbot-popup" id="chatbotPopup">
+            <div class="chatbot-header">
+                <div>
+                    <i class="bi bi-robot me-2"></i>
+                    NeoMitra Assistant
+                </div>
+                <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hello! I'm your NeoMitra shopping assistant. Need help finding alternatives or understanding why certain items are on your list?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Shopping list functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const checkboxes = document.querySelectorAll('.item-checkbox');
+                const showCheckedItems = document.getElementById('showCheckedItems');
+                
+                // Handle checkbox changes
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const item = this.closest('.shopping-item');
+                        if (this.checked) {
+                            item.classList.add('item-checked');
+                        } else {
+                            item.classList.remove('item-checked');
+                        }
+                        updateVisibility();
+                    });
+                });
+                
+                // Handle show/hide toggle
+                showCheckedItems.addEventListener('change', updateVisibility);
+                
+                function updateVisibility() {
+                    const hideChecked = !showCheckedItems.checked;
+                    document.querySelectorAll('.item-checked').forEach(item => {
+                        item.style.display = hideChecked ? 'none' : 'flex';
+                    });
+                }
+            });
+            
+            // Chatbot functionality
+            let chatbotOpen = false;
+            
+            function toggleChatbot() {
+                chatbotOpen = !chatbotOpen;
+                document.getElementById('chatbotPopup').style.display = chatbotOpen ? 'flex' : 'none';
+                if (chatbotOpen) {
+                    document.getElementById('chatbotInput').focus();
+                }
+            }
+            
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            }
+            
+            function sendMessage() {
+                const input = document.getElementById('chatbotInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    input.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        let response = '';
+                        
+                        if (message.toLowerCase().includes('iron')) {
+                            response = "Iron-rich foods on your shopping list include spinach, lentils, lean beef, and dried apricots. These are important for preventing anemia, especially during pregnancy.";
+                        } else if (message.toLowerCase().includes('substitute') || message.toLowerCase().includes('alternative')) {
+                            response = "You can substitute any items based on availability. For example, if spinach is not available, you can use kale or swiss chard as an alternative source of iron and other nutrients.";
+                        } else if (message.toLowerCase().includes('vegetarian') || message.toLowerCase().includes('vegan')) {
+                            response = "For a vegetarian shopping list, you can skip the meat and fish items and add more plant-based proteins like chickpeas, black beans, and meat alternatives. Make sure to include vitamin B12 supplementation for vegan diets.";
+                        } else if (message.toLowerCase().includes('budget') || message.toLowerCase().includes('cheap')) {
+                            response = "To make this shopping list more budget-friendly, you can prioritize seasonal produce, buy in bulk when possible, and replace some fresh items with frozen alternatives, which are often more affordable and just as nutritious.";
+                        } else {
+                            response = "Thank you for your question about the shopping list. Is there something specific you'd like to know about certain ingredients or how to modify the list to suit your needs?";
+                        }
+                        
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            function addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatbotMessages');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageElement.textContent = text;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        </script>
+    </body>
+    </html>
+    """, username=session.get('username', 'User'))
+
+# Routes for government scheme details
+@app.route('/scheme/<scheme_id>')
+def scheme_details(scheme_id):
+    if not session.get('logged_in'):
+        return redirect('/login')
+    
+    # Dictionary of scheme details
+    schemes = {
+        'pmsma': {
+            'name': 'Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)',
+            'logo': 'https://via.placeholder.com/150x150?text=PMSMA',
+            'description': 'The Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA) is an initiative to provide free antenatal care to pregnant women on the 9th of every month throughout the country. The program aims to improve the quality and coverage of antenatal care, including early detection and management of high-risk pregnancies.',
+            'eligibility': [
+                'All pregnant women',
+                'No income criteria',
+                'Special focus on rural, tribal, and urban slum areas',
+                'Priority for women who have not received antenatal care'
+            ],
+            'benefits': [
+                'Free comprehensive antenatal check-ups by specialists/physicians',
+                'Free screening for anemia, blood pressure, blood sugar, and other pregnancy complications',
+                'Free ultrasound scans',
+                'Identification and follow-up of high-risk pregnancies',
+                'Counseling on nutrition, birth preparedness, and complications readiness'
+            ],
+            'process': [
+                'Visit your nearest health facility (Primary Health Center, Community Health Center, or District Hospital) on the 9th of any month',
+                'Bring any existing health records and your Mother and Child Protection (MCP) card if available',
+                'Register at the facility for the check-up',
+                'Complete the check-up with the available specialists'
+            ],
+            'documents': [
+                'Identity proof (Aadhaar card, voter ID, or any government-issued ID)',
+                'Address proof',
+                'Previous medical/pregnancy records (if available)',
+                'Mother and Child Protection (MCP) card (if already issued)'
+            ],
+            'contact': {
+                'website': 'https://www.pmsma.nhp.gov.in/',
+                'helpline': '1800-180-1104',
+                'email': 'pmsma@gov.in'
+            }
+        },
+        'jsy': {
+            'name': 'Janani Suraksha Yojana (JSY)',
+            'logo': 'https://via.placeholder.com/150x150?text=JSY',
+            'description': 'Janani Suraksha Yojana (JSY) is a safe motherhood intervention under the National Health Mission. It promotes institutional delivery among pregnant women, especially those from low-income households, to reduce maternal and neonatal mortality by providing cash assistance.',
+            'eligibility': [
+                'Pregnant women from Below Poverty Line (BPL) families',
+                'Scheduled Caste/Scheduled Tribe women',
+                'Women from rural areas delivering in public health facilities',
+                'In urban areas, BPL women who deliver in public or accredited private institutions'
+            ],
+            'benefits': [
+                'Cash assistance of ₹1,400 in rural areas and ₹1,000 in urban areas for non-high focus states',
+                'Cash assistance of ₹1,000 in rural areas and ₹600 in urban areas for high focus states',
+                'Free delivery services including cesarean section',
+                'Free transport from home to institution and back',
+                'Free diet during stay in the facility'
+            ],
+            'process': [
+                'Register at the nearest Anganwadi center or with ASHA worker during pregnancy',
+                'Carry out at least three antenatal check-ups',
+                'Deliver at a government health facility or an accredited private institution',
+                'Submit the required documents after delivery to claim the cash assistance'
+            ],
+            'documents': [
+                'BPL card or SC/ST certificate',
+                'Identity proof (Aadhaar card, voter ID)',
+                'Mother and Child Protection (MCP) card',
+                'ANC check-up records',
+                'Birth certificate of the child'
+            ],
+            'contact': {
+                'website': 'https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=841&lid=309',
+                'helpline': '1800-180-1104',
+                'email': 'jsy@gov.in'
+            }
+        },
+        'pmjay': {
+            'name': 'Pradhan Mantri Jan Arogya Yojana (PMJAY)',
+            'logo': 'https://via.placeholder.com/150x150?text=PMJAY',
+            'description': 'Pradhan Mantri Jan Arogya Yojana (PMJAY), also known as Ayushman Bharat, is a health insurance scheme that aims to provide free access to healthcare for low-income earners in the country. The scheme provides a cover of ₹5 lakhs per family per year for secondary and tertiary care hospitalization.',
+            'eligibility': [
+                'Families identified through Socio-Economic Caste Census (SECC) data',
+                'No cap on family size and age of members',
+                'Covers both rural and urban families who fall under the deprivation criteria',
+                'Families covered under existing RSBY scheme'
+            ],
+            'benefits': [
+                'Health coverage up to ₹5 lakh per family per year',
+                'Coverage for pre and post-hospitalization expenses',
+                'All pre-existing conditions covered from day one',
+                'Cashless and paperless access to services',
+                'More than 1,393 procedures covered, including maternal health services'
+            ],
+            'process': [
+                'Check eligibility through PMJAY website or app',
+                'Visit the nearest empaneled hospital with valid identification',
+                'Get verified through your Aadhaar number or ration card',
+                'After verification, receive treatment without paying anything upfront'
+            ],
+            'documents': [
+                'Aadhaar card (preferred) or alternative government ID',
+                'PMJAY e-card (if already issued)',
+                'Proof of residence',
+                'BPL card or ration card (if applicable)'
+            ],
+            'contact': {
+                'website': 'https://pmjay.gov.in/',
+                'helpline': '14555 or 1800-111-565',
+                'email': 'pmjay@nha.gov.in'
+            }
+        },
+        'rbsk': {
+            'name': 'Rashtriya Bal Swasthya Karyakram (RBSK)',
+            'logo': 'https://via.placeholder.com/150x150?text=RBSK',
+            'description': 'Rashtriya Bal Swasthya Karyakram (RBSK) is a child health screening and early intervention service program under the National Health Mission. It aims to identify and manage children from birth to 18 years for 4 Ds - Defects at birth, Diseases, Deficiencies, and Developmental delays including disabilities.',
+            'eligibility': [
+                'All children from birth to 18 years of age',
+                'Children enrolled in anganwadis',
+                'Students in government and government-aided schools',
+                'Out-of-school children'
+            ],
+            'benefits': [
+                'Free health screening for early detection of 4 Ds',
+                'Free referral support, treatment, and management at tertiary facilities',
+                'Free surgeries for birth defects like congenital heart disease, club foot, etc.',
+                'Child health screening and intervention services',
+                'Provision of mobility aids, hearing aids, and other assistive devices as needed'
+            ],
+            'process': [
+                'Children are screened at birthing facilities, anganwadis, or schools by RBSK mobile health teams',
+                'If any health condition is detected, the child is referred to higher facilities',
+                'District Early Intervention Centers (DEICs) provide comprehensive management and follow-up',
+                'Regular follow-ups are conducted to monitor progress'
+            ],
+            'documents': [
+                'Birth certificate or age proof',
+                'Identity card of parent/guardian',
+                'Address proof',
+                'RBSK health card (if already issued)'
+            ],
+            'contact': {
+                'website': 'https://nhm.gov.in/index1.php?lang=1&level=4&sublinkid=1190&lid=583',
+                'helpline': '1800-180-1104',
+                'email': 'rbsk@gov.in'
+            }
+        },
+        'npcdcs': {
+            'name': 'National Programme for Prevention and Control of Diabetes',
+            'logo': 'https://via.placeholder.com/150x150?text=NPCDCS',
+            'description': 'The National Programme for Prevention and Control of Cancer, Diabetes, Cardiovascular Diseases and Stroke (NPCDCS) aims to prevent and control major non-communicable diseases (NCDs) through health promotion, early diagnosis, and management of common NCDs. It has a special focus on diabetes management and prevention.',
+            'eligibility': [
+                'All citizens, with a focus on those at risk of diabetes and other NCDs',
+                'Individuals with a family history of diabetes',
+                'People with obesity, high blood pressure, or sedentary lifestyle',
+                'Pregnant women for gestational diabetes screening'
+            ],
+            'benefits': [
+                'Free screening for diabetes and other NCDs',
+                'Free or subsidized treatment for diagnosed cases',
+                'Regular follow-up and monitoring',
+                'Health education and counseling on lifestyle modification',
+                'Support for management of complications'
+            ],
+            'process': [
+                'Visit the nearest NCD clinic or health center for screening',
+                'Complete the risk assessment form',
+                'Undergo free blood sugar testing and other relevant examinations',
+                'If diagnosed, register for treatment and follow-up services',
+                'Attend regular check-ups as advised by healthcare providers'
+            ],
+            'documents': [
+                'Identity proof',
+                'Address proof',
+                'Previous medical records (if available)',
+                'Family history documentation (if available)'
+            ],
+            'contact': {
+                'website': 'https://npcdcs.nhp.gov.in/',
+                'helpline': '1800-180-1104',
+                'email': 'npcdcs@gov.in'
+            }
+        }
+    }
+    
+    # Get the scheme details or return 404 if not found
+    scheme = schemes.get(scheme_id)
+    if not scheme:
+        return render_template_string("Scheme not found"), 404
+    
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ scheme.name }} - NeoMitra</title>
+        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            .sidebar {
+                min-height: 100vh;
+                border-right: 1px solid #e0e0e0;
+            }
+            .page-header {
+                padding: 1.5rem 0;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .scheme-banner {
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 12px;
+                padding: 30px;
+                margin-bottom: 30px;
+                display: flex;
+                align-items: center;
+                gap: 30px;
+            }
+            .scheme-logo {
+                max-width: 150px;
+                max-height: 150px;
+                border-radius: 10px;
+            }
+            .scheme-header h2 {
+                margin-bottom: 10px;
+            }
+            .scheme-meta {
+                display: flex;
+                gap: 15px;
+                margin-top: 15px;
+            }
+            .scheme-meta-item {
+                display: flex;
+                align-items: center;
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+            .scheme-meta-item i {
+                margin-right: 5px;
+                font-size: 1.1rem;
+                color: var(--bs-primary);
+            }
+            .section-card {
+                margin-bottom: 20px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+            .section-header {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 15px 20px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+            }
+            .section-header i {
+                margin-right: 10px;
+                font-size: 1.2rem;
+            }
+            .section-body {
+                padding: 20px;
+                background-color: white;
+            }
+            .list-custom {
+                padding-left: 0;
+                list-style: none;
+            }
+            .list-custom li {
+                position: relative;
+                padding-left: 30px;
+                margin-bottom: 10px;
+                line-height: 1.5;
+            }
+            .list-custom li:before {
+                content: '\\2713';
+                position: absolute;
+                left: 0;
+                top: 0;
+                color: var(--bs-primary);
+                font-weight: bold;
+            }
+            .process-step {
+                display: flex;
+                margin-bottom: 15px;
+            }
+            .step-number {
+                width: 30px;
+                height: 30px;
+                background-color: var(--bs-primary);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                margin-right: 15px;
+                flex-shrink: 0;
+            }
+            .step-content {
+                flex: 1;
+            }
+            .contact-item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+            .contact-icon {
+                width: 40px;
+                height: 40px;
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                color: var(--bs-primary);
+                font-size: 1.2rem;
+            }
+            .apply-section {
+                background-color: #f8f9fa;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 30px;
+                text-align: center;
+            }
+            .print-section {
+                display: flex;
+                justify-content: center;
+                margin-top: 30px;
+                padding: 15px;
+                border-top: 1px solid #e0e0e0;
+            }
+            /* Floating chatbot button */
+            .chatbot-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: var(--bs-primary);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+            }
+            .chatbot-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .chatbot-popup {
+                position: fixed;
+                bottom: 90px;
+                right: 20px;
+                width: 350px;
+                height: 500px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+                display: none;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .chatbot-header {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .chatbot-messages {
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+            }
+            .chatbot-input {
+                border-top: 1px solid #e0e0e0;
+                padding: 10px;
+                display: flex;
+            }
+            .chatbot-input input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .message {
+                margin-bottom: 10px;
+                max-width: 80%;
+            }
+            .user-message {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 18px 18px 0 18px;
+                align-self: flex-end;
+                margin-left: auto;
+            }
+            .bot-message {
+                background-color: #f1f1f1;
+                color: #333;
+                padding: 10px 15px;
+                border-radius: 18px 18px 18px 0;
+                align-self: flex-start;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-3 p-0 sidebar">
+                    <div class="d-flex flex-column p-3">
+                        <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <i class="bi bi-heart-pulse-fill text-primary me-2 fs-4"></i>
+                            <span class="fs-4 fw-bold text-primary">NeoMitra</span>
+                        </a>
+                        <hr>
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">
+                                    <i class="bi bi-speedometer2 me-2"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/health-records" class="nav-link">
+                                    <i class="bi bi-journal-medical me-2"></i>
+                                    Health Records
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/risk_assessment" class="nav-link">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    Risk Assessment
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/appointments" class="nav-link">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/nutrition" class="nav-link">
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                    Nutrition Guide
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/government_schemes" class="nav-link active">
+                                    <i class="bi bi-bank me-2"></i>
+                                    Government Schemes
+                                </a>
+                            </li>
+                        </ul>
+                        <hr>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
+                                <img src="https://via.placeholder.com/32" alt="User" width="32" height="32" class="rounded-circle me-2">
+                                <strong>{{ username }}</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-9 p-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h2>Government Scheme Details</h2>
+                        <div>
+                            <a href="/government_schemes" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Back to Schemes
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Scheme Banner -->
+                    <div class="scheme-banner">
+                        <img src="{{ scheme.logo }}" alt="{{ scheme.name }} Logo" class="scheme-logo">
+                        <div class="scheme-header">
+                            <h2>{{ scheme.name }}</h2>
+                            <p class="text-muted">Government of India Initiative</p>
+                            <div class="scheme-meta">
+                                <div class="scheme-meta-item">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>Official Program</span>
+                                </div>
+                                <div class="scheme-meta-item">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Nationwide Coverage</span>
+                                </div>
+                                <div class="scheme-meta-item">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span>High Priority Scheme</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Description Section -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-info-circle"></i>
+                                    About the Scheme
+                                </div>
+                                <div class="section-body">
+                                    <p>{{ scheme.description }}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Eligibility Section -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-person-check"></i>
+                                    Eligibility Criteria
+                                </div>
+                                <div class="section-body">
+                                    <ul class="list-custom">
+                                        {% for item in scheme.eligibility %}
+                                        <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Benefits Section -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-gift"></i>
+                                    Benefits
+                                </div>
+                                <div class="section-body">
+                                    <ul class="list-custom">
+                                        {% for item in scheme.benefits %}
+                                        <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Application Process Section -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-clipboard-check"></i>
+                                    How to Apply
+                                </div>
+                                <div class="section-body">
+                                    {% for item in scheme.process %}
+                                    <div class="process-step">
+                                        <div class="step-number">{{ loop.index }}</div>
+                                        <div class="step-content">{{ item }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <!-- Required Documents -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    Required Documents
+                                </div>
+                                <div class="section-body">
+                                    <ul class="list-custom">
+                                        {% for item in scheme.documents %}
+                                        <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-telephone"></i>
+                                    Contact Information
+                                </div>
+                                <div class="section-body">
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="bi bi-globe"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Website</strong><br>
+                                            <a href="{{ scheme.contact.website }}" target="_blank">{{ scheme.contact.website }}</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="bi bi-telephone"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Helpline</strong><br>
+                                            {{ scheme.contact.helpline }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-item">
+                                        <div class="contact-icon">
+                                            <i class="bi bi-envelope"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Email</strong><br>
+                                            <a href="mailto:{{ scheme.contact.email }}">{{ scheme.contact.email }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Nearby Facilities -->
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <i class="bi bi-geo-alt"></i>
+                                    Nearby Application Centers
+                                </div>
+                                <div class="section-body">
+                                    <p>Based on your location, here are the nearest facilities where you can apply for this scheme:</p>
+                                    
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Primary Health Center, Sector 10</h6>
+                                                <small>1.2 km</small>
+                                            </div>
+                                            <small class="text-muted">Open 9:00 AM - 5:00 PM</small>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Community Health Center, Main Road</h6>
+                                                <small>3.5 km</small>
+                                            </div>
+                                            <small class="text-muted">Open 8:00 AM - 8:00 PM</small>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">District Hospital, Central Area</h6>
+                                                <small>5.8 km</small>
+                                            </div>
+                                            <small class="text-muted">Open 24 hours</small>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Apply Section -->
+                            <div class="apply-section">
+                                <h5 class="mb-3">Ready to Apply?</h5>
+                                <p>Our NeoMitra assistant can help you complete the application process step by step.</p>
+                                <button class="btn btn-primary" id="applyButton">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Start Application Process
+                                </button>
+                            </div>
+                            
+                            <!-- Print Section -->
+                            <div class="print-section">
+                                <button class="btn btn-outline-primary" onclick="window.print()">
+                                    <i class="bi bi-printer me-2"></i>
+                                    Print Scheme Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        
+        <!-- Chatbot Popup -->
+        <div class="chatbot-popup" id="chatbotPopup">
+            <div class="chatbot-header">
+                <div>
+                    <i class="bi bi-robot me-2"></i>
+                    NeoMitra Assistant
+                </div>
+                <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hello! I can help you understand and apply for the {{ scheme.name }}. What would you like to know about this scheme?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Chatbot functionality
+            let chatbotOpen = false;
+            
+            function toggleChatbot() {
+                chatbotOpen = !chatbotOpen;
+                document.getElementById('chatbotPopup').style.display = chatbotOpen ? 'flex' : 'none';
+                if (chatbotOpen) {
+                    document.getElementById('chatbotInput').focus();
+                }
+            }
+            
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            }
+            
+            // Apply button also opens chatbot
+            document.getElementById('applyButton').addEventListener('click', function() {
+                if (!chatbotOpen) toggleChatbot();
+                setTimeout(() => {
+                    addMessage("I want to apply for this scheme. Can you guide me through the process?", 'user');
+                    setTimeout(() => {
+                        addMessage("I'd be happy to help you apply for the {{ scheme.name }}. Let's start with checking your eligibility. Could you please tell me if you meet these criteria: {{ scheme.eligibility[0] }}?", 'bot');
+                    }, 1000);
+                }, 500);
+            });
+            
+            function sendMessage() {
+                const input = document.getElementById('chatbotInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    input.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        let response = '';
+                        
+                        if (message.toLowerCase().includes('eligibility') || message.toLowerCase().includes('qualify')) {
+                            response = "To be eligible for {{ scheme.name }}, you should meet these criteria: {% for item in scheme.eligibility %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}.";
+                        } else if (message.toLowerCase().includes('document') || message.toLowerCase().includes('paper')) {
+                            response = "You'll need the following documents: {% for item in scheme.documents %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}.";
+                        } else if (message.toLowerCase().includes('benefit') || message.toLowerCase().includes('advantage')) {
+                            response = "This scheme provides several benefits including: {% for item in scheme.benefits %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}.";
+                        } else if (message.toLowerCase().includes('apply') || message.toLowerCase().includes('how to')) {
+                            response = "To apply, follow these steps: {% for item in scheme.process %}{{ loop.index }}. {{ item }}{% if not loop.last %}, {% endif %}{% endfor %}.";
+                        } else if (message.toLowerCase().includes('contact') || message.toLowerCase().includes('helpline')) {
+                            response = "You can contact the scheme administrators via: Helpline: {{ scheme.contact.helpline }}, Email: {{ scheme.contact.email }}, or visit their website: {{ scheme.contact.website }}.";
+                        } else {
+                            response = "Thank you for your question about {{ scheme.name }}. Is there something specific about the eligibility, benefits, application process, or required documents that you'd like to know?";
+                        }
+                        
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            function addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatbotMessages');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageElement.textContent = text;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        </script>
+    </body>
+    </html>
+    """, scheme=scheme, username=session.get('username', 'User'))
     
     transcript = data.get('transcript', '')
     user_language = data.get('language', 'en')
@@ -1781,6 +3750,127 @@ def risk_assessment():
                 background-color: rgba(25, 135, 84, 0.1);
                 border-left: 4px solid #198754;
             }
+            .assessment-type-card {
+                border-radius: 10px;
+                border: 2px solid transparent;
+                padding: 20px;
+                margin-bottom: 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .assessment-type-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            .assessment-type-card.active {
+                border-color: var(--bs-primary);
+                background-color: rgba(var(--bs-primary-rgb), 0.05);
+            }
+            .assessment-icon {
+                width: 60px;
+                height: 60px;
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 15px;
+                font-size: 24px;
+                color: var(--bs-primary);
+            }
+            .assessment-forms {
+                display: none;
+            }
+            .assessment-forms.active {
+                display: block;
+            }
+            .assessment-summary {
+                background-color: rgba(var(--bs-primary-rgb), 0.05);
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            /* Floating chatbot button */
+            .chatbot-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background-color: var(--bs-primary);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s;
+            }
+            .chatbot-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            }
+            .chatbot-popup {
+                position: fixed;
+                bottom: 90px;
+                right: 20px;
+                width: 350px;
+                height: 500px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+                display: none;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .chatbot-header {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .chatbot-messages {
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+            }
+            .chatbot-input {
+                border-top: 1px solid #e0e0e0;
+                padding: 10px;
+                display: flex;
+            }
+            .chatbot-input input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .message {
+                margin-bottom: 10px;
+                max-width: 80%;
+            }
+            .user-message {
+                background-color: var(--bs-primary);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 18px 18px 0 18px;
+                align-self: flex-end;
+                margin-left: auto;
+            }
+            .bot-message {
+                background-color: #f1f1f1;
+                color: #333;
+                padding: 10px 15px;
+                border-radius: 18px 18px 18px 0;
+                align-self: flex-start;
+            }
         </style>
     </head>
     <body>
@@ -1831,12 +3921,6 @@ def risk_assessment():
                                     Government Schemes
                                 </a>
                             </li>
-                            <li>
-                                <a href="/chatbot" class="nav-link">
-                                    <i class="bi bi-chat-dots me-2"></i>
-                                    Chatbot Assistant
-                                </a>
-                            </li>
                         </ul>
                         <hr>
                         <div class="dropdown">
@@ -1864,158 +3948,435 @@ def risk_assessment():
                         </a>
                     </div>
                     
+                    <div class="assessment-summary mt-4">
+                        <h5>Choose Your Health Assessment</h5>
+                        <p>Select the type of health assessment you'd like to complete to get personalized insights and recommendations.</p>
+                    </div>
+                    
                     <div class="row mt-4">
-                        <div class="col-md-7">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="card-title">Complete Health Assessment</h5>
+                        <div class="col-md-4 mb-4">
+                            <div class="assessment-type-card active" id="pregnancy-card" onclick="selectAssessmentType('pregnancy')">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="assessment-icon">
+                                        <i class="bi bi-heart"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">High-Risk Pregnancy</h5>
+                                        <p class="mb-0 text-muted">Identify pregnancy-related risks early</p>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <form action="/submit_assessment" method="post" id="riskAssessmentForm">
-                                        <h5 class="mb-3">Demographic Information</h5>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="ageAbove35">
-                                            <label class="form-check-label" for="ageAbove35">Are you over 35 years old?</label>
-                                        </div>
-                                        
-                                        <h5 class="mb-3 mt-4">Pregnancy Factors</h5>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="isPregnant">
-                                            <label class="form-check-label" for="isPregnant">Are you currently pregnant?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="multiplePregnancy">
-                                            <label class="form-check-label" for="multiplePregnancy">Are you carrying multiple babies (twins, triplets, etc.)?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="previousCSection">
-                                            <label class="form-check-label" for="previousCSection">Have you had a previous C-section?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="previousPretermBirth">
-                                            <label class="form-check-label" for="previousPretermBirth">Have you had a previous preterm birth?</label>
-                                        </div>
-                                        
-                                        <h5 class="mb-3 mt-4">Existing Medical Conditions</h5>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="diabetes">
-                                            <label class="form-check-label" for="diabetes">Do you have diabetes?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="hypertension">
-                                            <label class="form-check-label" for="hypertension">Do you have high blood pressure?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="heartDisease">
-                                            <label class="form-check-label" for="heartDisease">Do you have heart disease?</label>
-                                        </div>
-                                        
-                                        <h5 class="mb-3 mt-4">Anemia Risk Factors</h5>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="fatigue">
-                                            <label class="form-check-label" for="fatigue">Do you often feel fatigued or weak?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="dizzySpells">
-                                            <label class="form-check-label" for="dizzySpells">Do you experience dizziness or fainting?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="paleSkin">
-                                            <label class="form-check-label" for="paleSkin">Have you noticed that your skin is paler than usual?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="poorDiet">
-                                            <label class="form-check-label" for="poorDiet">Do you have limited access to iron-rich foods?</label>
-                                        </div>
-                                        
-                                        <h5 class="mb-3 mt-4">Lifestyle Factors</h5>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="smoking">
-                                            <label class="form-check-label" for="smoking">Do you smoke?</label>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="alcohol">
-                                            <label class="form-check-label" for="alcohol">Do you consume alcohol?</label>
-                                        </div>
-                                        
-                                        <div class="mb-3 mt-4">
-                                            <label for="additionalNotes" class="form-label">Additional Notes or Concerns</label>
-                                            <textarea class="form-control" id="additionalNotes" rows="3"></textarea>
-                                        </div>
-                                        
-                                        <button type="button" class="btn btn-primary" onclick="calculateRisk()">Submit Assessment</button>
-                                    </form>
-                                </div>
+                                <p>Evaluates factors that might lead to pregnancy complications, helping you take preventive measures early.</p>
                             </div>
                         </div>
                         
-                        <div class="col-md-5">
-                            <div class="card mb-4" id="resultsCard" style="display: none;">
-                                <div class="card-header">
-                                    <h5 class="card-title">Assessment Results</h5>
+                        <div class="col-md-4 mb-4">
+                            <div class="assessment-type-card" id="anemia-card" onclick="selectAssessmentType('anemia')">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="assessment-icon">
+                                        <i class="bi bi-droplet"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Anemia Prevention</h5>
+                                        <p class="mb-0 text-muted">Check your risk for anemia</p>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="result-card p-3 risk-moderate">
-                                        <h5>Pregnancy Risk</h5>
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span>Risk Level:</span>
-                                            <span class="badge bg-warning" id="pregnancyRiskLevel">Moderate</span>
-                                        </div>
-                                        <div class="progress mb-3">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 65%" id="pregnancyRiskBar"></div>
-                                        </div>
-                                        <div id="pregnancyRecommendations">
-                                            <h6>Recommendations:</h6>
-                                            <ul>
-                                                <li>Regular prenatal check-ups every 2 weeks</li>
-                                                <li>Monitor blood pressure daily</li>
-                                                <li>Follow a balanced diet rich in iron and folic acid</li>
-                                                <li>Moderate physical activity as recommended by your doctor</li>
-                                            </ul>
-                                        </div>
+                                <p>Assess your risk for anemia based on symptoms and lifestyle factors, especially important during pregnancy.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4">
+                            <div class="assessment-type-card" id="nutrition-card" onclick="selectAssessmentType('nutrition')">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="assessment-icon">
+                                        <i class="bi bi-apple"></i>
                                     </div>
-                                    
-                                    <div class="result-card p-3 risk-high">
-                                        <h5>Anemia Risk</h5>
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span>Risk Level:</span>
-                                            <span class="badge bg-danger" id="anemiaRiskLevel">High</span>
-                                        </div>
-                                        <div class="progress mb-3">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" id="anemiaRiskBar"></div>
-                                        </div>
-                                        <div id="anemiaRecommendations">
-                                            <h6>Recommendations:</h6>
-                                            <ul>
-                                                <li>Immediate hemoglobin test recommended</li>
-                                                <li>Increase intake of iron-rich foods (leafy greens, meat, beans)</li>
-                                                <li>Consider iron supplements (consult with healthcare provider)</li>
-                                                <li>Follow up with healthcare provider within 1 week</li>
-                                                <li>Check for eligible government health schemes for free treatment</li>
-                                            </ul>
-                                        </div>
+                                    <div>
+                                        <h5 class="mb-1">Dietary Recommendations</h5>
+                                        <p class="mb-0 text-muted">Get personalized nutritional guidance</p>
                                     </div>
-                                    
-                                    <div class="mt-4">
-                                        <a href="/download_assessment" class="btn btn-outline-primary me-2">
-                                            <i class="bi bi-download me-1"></i> Download Report
-                                        </a>
-                                        <a href="/share_with_doctor" class="btn btn-outline-primary">
-                                            <i class="bi bi-share me-1"></i> Share with Doctor
-                                        </a>
+                                </div>
+                                <p>Analyze your current diet and receive recommendations for optimal nutrition to support your health needs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pregnancy Risk Assessment Form -->
+                    <div class="assessment-forms active" id="pregnancy-form">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">High-Risk Pregnancy Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="pregnancyRiskForm">
+                                            <h5 class="mb-3">Demographic Information</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="pregAgeAbove35">
+                                                <label class="form-check-label" for="pregAgeAbove35">Are you over 35 years old?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Pregnancy Factors</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="multiplePregnancy">
+                                                <label class="form-check-label" for="multiplePregnancy">Are you carrying multiple babies (twins, triplets, etc.)?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="previousCSection">
+                                                <label class="form-check-label" for="previousCSection">Have you had a previous C-section?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="previousPretermBirth">
+                                                <label class="form-check-label" for="previousPretermBirth">Have you had a previous preterm birth?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="previousMiscarriage">
+                                                <label class="form-check-label" for="previousMiscarriage">Have you had previous miscarriages?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Medical Conditions</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="pregDiabetes">
+                                                <label class="form-check-label" for="pregDiabetes">Do you have pre-existing diabetes?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="pregHypertension">
+                                                <label class="form-check-label" for="pregHypertension">Do you have high blood pressure?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="pregThyroid">
+                                                <label class="form-check-label" for="pregThyroid">Do you have thyroid disorders?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Current Pregnancy Complications</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="gestationalDiabetes">
+                                                <label class="form-check-label" for="gestationalDiabetes">Have you been diagnosed with gestational diabetes?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="preeclampsia">
+                                                <label class="form-check-label" for="preeclampsia">Have you been diagnosed with preeclampsia?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="bleeding">
+                                                <label class="form-check-label" for="bleeding">Have you experienced vaginal bleeding during this pregnancy?</label>
+                                            </div>
+                                            
+                                            <button type="button" class="btn btn-primary" onclick="calculatePregnancyRisk()">Submit Assessment</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="card-title">Why take this assessment?</h5>
+                            <div class="col-md-5">
+                                <div class="card mb-4" id="pregnancyResultsCard" style="display: none;">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Pregnancy Risk Assessment Results</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-card p-3 risk-moderate">
+                                            <h5>Pregnancy Risk</h5>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>Risk Level:</span>
+                                                <span class="badge bg-warning" id="pregnancyRiskLevel">Moderate</span>
+                                            </div>
+                                            <div class="progress mb-3">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 65%" id="pregnancyRiskBar"></div>
+                                            </div>
+                                            <div id="pregnancyRecommendations">
+                                                <h6>Recommendations:</h6>
+                                                <ul>
+                                                    <li>Regular prenatal check-ups every 2 weeks</li>
+                                                    <li>Monitor blood pressure daily</li>
+                                                    <li>Follow a balanced diet rich in iron and folic acid</li>
+                                                    <li>Moderate physical activity as recommended by your doctor</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <a href="#" class="btn btn-outline-primary me-2">
+                                                <i class="bi bi-download me-1"></i> Download Report
+                                            </a>
+                                            <a href="#" class="btn btn-outline-primary">
+                                                <i class="bi bi-share me-1"></i> Share with Doctor
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>This comprehensive health risk assessment helps identify potential health risks related to pregnancy complications, anemia, and other health conditions.</p>
-                                    <p>Our AI-powered assessment tool analyzes multiple risk factors to provide personalized recommendations and guidance.</p>
-                                    <p>Early identification of health risks can lead to timely interventions and improved health outcomes.</p>
-                                    <p>Your results are kept confidential and can be shared with your healthcare provider for better care coordination.</p>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">About Pregnancy Risk Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>This assessment helps identify factors that may increase the risk of pregnancy complications.</p>
+                                        <p>Early identification of high-risk pregnancies allows for closer monitoring and specialized care when needed.</p>
+                                        <p>The assessment considers your medical history, current health status, and pregnancy-specific factors.</p>
+                                        <p>Based on your responses, you'll receive personalized recommendations to help ensure a healthy pregnancy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Anemia Risk Assessment Form -->
+                    <div class="assessment-forms" id="anemia-form">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Anemia Risk Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="anemiaRiskForm">
+                                            <h5 class="mb-3">Physical Symptoms</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="fatigue">
+                                                <label class="form-check-label" for="fatigue">Do you often feel fatigued or weak?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="dizzySpells">
+                                                <label class="form-check-label" for="dizzySpells">Do you experience dizziness or fainting?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="paleSkin">
+                                                <label class="form-check-label" for="paleSkin">Have you noticed that your skin is paler than usual?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="shortnessOfBreath">
+                                                <label class="form-check-label" for="shortnessOfBreath">Do you experience shortness of breath during normal activities?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="headaches">
+                                                <label class="form-check-label" for="headaches">Do you frequently have headaches?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Dietary Factors</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="poorDiet">
+                                                <label class="form-check-label" for="poorDiet">Do you have limited access to iron-rich foods?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="vegetarianVegan">
+                                                <label class="form-check-label" for="vegetarianVegan">Are you vegetarian or vegan?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="lowProtein">
+                                                <label class="form-check-label" for="lowProtein">Is your diet low in protein?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Medical Factors</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="heavyPeriods">
+                                                <label class="form-check-label" for="heavyPeriods">Do you have heavy menstrual periods?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="recentBloodLoss">
+                                                <label class="form-check-label" for="recentBloodLoss">Have you experienced any recent blood loss?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="chronicDisease">
+                                                <label class="form-check-label" for="chronicDisease">Do you have any chronic diseases (kidney disease, rheumatoid arthritis, etc.)?</label>
+                                            </div>
+                                            
+                                            <button type="button" class="btn btn-primary" onclick="calculateAnemiaRisk()">Submit Assessment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <div class="card mb-4" id="anemiaResultsCard" style="display: none;">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Anemia Risk Assessment Results</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-card p-3 risk-high">
+                                            <h5>Anemia Risk</h5>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>Risk Level:</span>
+                                                <span class="badge bg-danger" id="anemiaRiskLevel">High</span>
+                                            </div>
+                                            <div class="progress mb-3">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" id="anemiaRiskBar"></div>
+                                            </div>
+                                            <div id="anemiaRecommendations">
+                                                <h6>Recommendations:</h6>
+                                                <ul>
+                                                    <li>Immediate hemoglobin test recommended</li>
+                                                    <li>Increase intake of iron-rich foods (leafy greens, meat, beans)</li>
+                                                    <li>Consider iron supplements (consult with healthcare provider)</li>
+                                                    <li>Follow up with healthcare provider within 1 week</li>
+                                                    <li>Check for eligible government health schemes for free treatment</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <a href="#" class="btn btn-outline-primary me-2">
+                                                <i class="bi bi-download me-1"></i> Download Report
+                                            </a>
+                                            <a href="#" class="btn btn-outline-primary">
+                                                <i class="bi bi-share me-1"></i> Share with Doctor
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">About Anemia Risk Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Anemia is a condition where you don't have enough healthy red blood cells to carry adequate oxygen to your body's tissues.</p>
+                                        <p>This assessment helps identify risk factors for anemia, which is particularly important during pregnancy.</p>
+                                        <p>Early detection and treatment of anemia can prevent complications like fatigue, weakness, and in pregnant women, preterm delivery and low birth weight.</p>
+                                        <p>After completing the assessment, you'll receive personalized recommendations to help maintain healthy hemoglobin levels.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrition Assessment Form -->
+                    <div class="assessment-forms" id="nutrition-form">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Dietary Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="nutritionAssessmentForm">
+                                            <h5 class="mb-3">Current Diet</h5>
+                                            <div class="mb-3">
+                                                <label class="form-label">How many servings of fruits do you consume daily?</label>
+                                                <select class="form-select" id="fruitServings">
+                                                    <option value="0">None</option>
+                                                    <option value="1">1 serving</option>
+                                                    <option value="2">2 servings</option>
+                                                    <option value="3">3 servings</option>
+                                                    <option value="4">4 or more servings</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">How many servings of vegetables do you consume daily?</label>
+                                                <select class="form-select" id="vegetableServings">
+                                                    <option value="0">None</option>
+                                                    <option value="1">1 serving</option>
+                                                    <option value="2">2 servings</option>
+                                                    <option value="3">3 servings</option>
+                                                    <option value="4">4 or more servings</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">How often do you consume iron-rich foods (leafy greens, red meat, beans)?</label>
+                                                <select class="form-select" id="ironFoods">
+                                                    <option value="rarely">Rarely or never</option>
+                                                    <option value="sometimes">1-2 times per week</option>
+                                                    <option value="often">3-4 times per week</option>
+                                                    <option value="daily">Daily</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">How often do you consume calcium-rich foods (dairy, fortified plant milk, etc.)?</label>
+                                                <select class="form-select" id="calciumFoods">
+                                                    <option value="rarely">Rarely or never</option>
+                                                    <option value="sometimes">1-2 times per week</option>
+                                                    <option value="often">3-4 times per week</option>
+                                                    <option value="daily">Daily</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Dietary Restrictions</h5>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="vegetarian">
+                                                <label class="form-check-label" for="vegetarian">Are you vegetarian?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="vegan">
+                                                <label class="form-check-label" for="vegan">Are you vegan?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="glutenFree">
+                                                <label class="form-check-label" for="glutenFree">Do you follow a gluten-free diet?</label>
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="dairyFree">
+                                                <label class="form-check-label" for="dairyFree">Do you avoid dairy products?</label>
+                                            </div>
+                                            
+                                            <h5 class="mb-3 mt-4">Eating Habits</h5>
+                                            <div class="mb-3">
+                                                <label class="form-label">How many meals do you typically eat per day?</label>
+                                                <select class="form-select" id="mealsPerDay">
+                                                    <option value="1-2">1-2 meals</option>
+                                                    <option value="3">3 meals</option>
+                                                    <option value="4-5">4-5 meals (including snacks)</option>
+                                                    <option value="6+">6 or more meals</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Do you often skip meals?</label>
+                                                <select class="form-select" id="skipMeals">
+                                                    <option value="never">Never</option>
+                                                    <option value="sometimes">Sometimes</option>
+                                                    <option value="often">Often</option>
+                                                    <option value="daily">Daily</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <button type="button" class="btn btn-primary" onclick="calculateNutritionRecommendations()">Submit Assessment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <div class="card mb-4" id="nutritionResultsCard" style="display: none;">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Dietary Recommendations</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <h5>Diet Quality Analysis</h5>
+                                            <div class="progress mb-3">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: 70%" id="dietQualityBar"></div>
+                                            </div>
+                                            <p id="dietQualityMessage">Based on your responses, your diet provides moderate nutritional support. There are several areas where improvements can be made.</p>
+                                        </div>
+                                        
+                                        <div id="nutritionRecommendations">
+                                            <h6>Personalized Recommendations:</h6>
+                                            <ul>
+                                                <li>Increase your daily fruit intake to at least 2-3 servings</li>
+                                                <li>Add more leafy greens to your meals for iron and folate</li>
+                                                <li>Consider including a vitamin C source with iron-rich foods to improve absorption</li>
+                                                <li>Ensure adequate protein intake through a variety of sources</li>
+                                                <li>Stay well-hydrated with at least 8 glasses of water daily</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <a href="/nutrition/meal-planner" class="btn btn-primary w-100">
+                                                <i class="bi bi-calendar-check me-2"></i>
+                                                View Personalized Meal Plan
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="card-title">About Dietary Assessment</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>This assessment analyzes your current diet and eating habits to provide personalized nutritional recommendations.</p>
+                                        <p>Good nutrition is essential for overall health and is particularly important during pregnancy, when managing anemia, or other health conditions.</p>
+                                        <p>The recommendations consider your dietary preferences, restrictions, and current eating patterns.</p>
+                                        <p>After completing the assessment, you'll receive tailored advice on how to optimize your diet for your specific health needs.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2024,15 +4385,134 @@ def risk_assessment():
             </div>
         </div>
         
+        <!-- Floating Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        
+        <!-- Chatbot Popup -->
+        <div class="chatbot-popup" id="chatbotPopup">
+            <div class="chatbot-header">
+                <div>
+                    <i class="bi bi-robot me-2"></i>
+                    NeoMitra Assistant
+                </div>
+                <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hello! I'm your health assessment assistant. How can I help you understand the different assessments available?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            function calculateRisk() {
-                // In a real application, this would send data to the server for processing
-                // Here we're just showing the results div for demonstration
-                document.getElementById('resultsCard').style.display = 'block';
+            // Assessment type selection
+            function selectAssessmentType(type) {
+                // Hide all forms
+                document.querySelectorAll('.assessment-forms').forEach(form => {
+                    form.classList.remove('active');
+                });
                 
-                // Scroll to results
-                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+                // Remove active class from all cards
+                document.querySelectorAll('.assessment-type-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                
+                // Show selected form and activate card
+                document.getElementById(type + '-form').classList.add('active');
+                document.getElementById(type + '-card').classList.add('active');
+            }
+            
+            // Risk calculation functions
+            function calculatePregnancyRisk() {
+                // In a real application, this would send data to the server for processing
+                document.getElementById('pregnancyResultsCard').style.display = 'block';
+                document.getElementById('pregnancyResultsCard').scrollIntoView({ behavior: 'smooth' });
+                
+                // Store assessment results in session
+                sessionStorage.setItem('pregnancy_risk_level', 'Moderate');
+                sessionStorage.setItem('pregnancy_risk_score', '65');
+            }
+            
+            function calculateAnemiaRisk() {
+                // In a real application, this would send data to the server for processing
+                document.getElementById('anemiaResultsCard').style.display = 'block';
+                document.getElementById('anemiaResultsCard').scrollIntoView({ behavior: 'smooth' });
+                
+                // Store assessment results in session
+                sessionStorage.setItem('anemia_risk_level', 'High');
+                sessionStorage.setItem('anemia_risk_score', '85');
+            }
+            
+            function calculateNutritionRecommendations() {
+                // In a real application, this would send data to the server for processing
+                document.getElementById('nutritionResultsCard').style.display = 'block';
+                document.getElementById('nutritionResultsCard').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Chatbot functionality
+            let chatbotOpen = false;
+            
+            function toggleChatbot() {
+                chatbotOpen = !chatbotOpen;
+                document.getElementById('chatbotPopup').style.display = chatbotOpen ? 'flex' : 'none';
+                if (chatbotOpen) {
+                    document.getElementById('chatbotInput').focus();
+                }
+            }
+            
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            }
+            
+            function sendMessage() {
+                const input = document.getElementById('chatbotInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    input.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        let response = '';
+                        
+                        if (message.toLowerCase().includes('pregnancy') || message.toLowerCase().includes('high-risk')) {
+                            response = "The High-Risk Pregnancy assessment evaluates factors that might lead to pregnancy complications. It considers your age, medical history, previous pregnancy outcomes, and current health status to identify potential risks.";
+                        } else if (message.toLowerCase().includes('anemia')) {
+                            response = "The Anemia Prevention assessment looks at symptoms and risk factors for anemia, which is especially important during pregnancy. It evaluates physical symptoms, dietary habits, and medical factors that might contribute to low hemoglobin levels.";
+                        } else if (message.toLowerCase().includes('diet') || message.toLowerCase().includes('nutrition')) {
+                            response = "The Dietary Recommendations assessment analyzes your current eating habits, nutritional intake, and dietary restrictions to provide personalized nutrition guidance. This helps ensure you're getting all the essential nutrients needed, especially during pregnancy.";
+                        } else if (message.toLowerCase().includes('result') || message.toLowerCase().includes('recommendation')) {
+                            response = "After completing an assessment, you'll receive personalized results and recommendations based on your responses. These include risk levels for certain conditions and specific actions you can take to maintain or improve your health.";
+                        } else {
+                            response = "You can choose from three different health assessments: High-Risk Pregnancy Detection, Anemia Prevention, and Dietary Recommendations. Each provides personalized insights based on your specific situation. Which assessment are you most interested in learning about?";
+                        }
+                        
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            function addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatbotMessages');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageElement.textContent = text;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         </script>
     </body>
@@ -3180,6 +5660,21 @@ def dashboard():
     username = session.get('username')
     user_data = users.get(email, {})
     
+    # Get health metrics from session if available (updated from health records)
+    weight = session.get('weight', '65')
+    blood_pressure = session.get('blood_pressure', '120/80')
+    blood_sugar = session.get('blood_sugar', '98')
+    hemoglobin = session.get('hemoglobin', '11.2')
+    bmi = session.get('bmi', '22.5')
+    
+    # Get risk assessment results if available
+    pregnancy_risk_level = session.get('pregnancy_risk_level', 'Moderate')
+    pregnancy_risk_score = session.get('pregnancy_risk_score', '65')
+    anemia_risk_level = session.get('anemia_risk_level', 'High')
+    anemia_risk_score = session.get('anemia_risk_score', '85')
+    diabetes_risk_level = session.get('diabetes_risk_level', 'Low') 
+    diabetes_risk_score = session.get('diabetes_risk_score', '15')
+    
     return render_template_string("""
     <!DOCTYPE html>
     <html lang="en">
@@ -3526,23 +6021,23 @@ def dashboard():
                             <div class="card-body">
                                 <div class="metric">
                                     <div class="metric-label">Weight</div>
-                                    <div class="metric-value">65 kg</div>
+                                    <div class="metric-value">{{ weight }} kg</div>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-label">Blood Pressure</div>
-                                    <div class="metric-value">120/80 mmHg</div>
+                                    <div class="metric-value">{{ blood_pressure }} mmHg</div>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-label">Blood Sugar (Fasting)</div>
-                                    <div class="metric-value">98 mg/dL</div>
+                                    <div class="metric-value">{{ blood_sugar }} mg/dL</div>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-label">Hemoglobin</div>
-                                    <div class="metric-value warning">11.2 g/dL</div>
+                                    <div class="metric-value warning">{{ hemoglobin }} g/dL</div>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-label">BMI</div>
-                                    <div class="metric-value">22.5</div>
+                                    <div class="metric-value">{{ bmi }}</div>
                                 </div>
                             </div>
                         </div>
@@ -3560,34 +6055,34 @@ def dashboard():
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between mb-2">
                                         <strong>Anemia Risk</strong>
-                                        <span class="text-warning">Moderate (45%)</span>
+                                        <span class="text-{{ 'danger' if anemia_risk_level == 'High' else 'warning' if anemia_risk_level == 'Moderate' else 'success' }}">{{ anemia_risk_level }} ({{ anemia_risk_score }}%)</span>
                                     </div>
                                     <div class="progress">
-                                        <div class="progress-bar risk-moderate" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar risk-{{ 'high' if anemia_risk_level == 'High' else 'moderate' if anemia_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ anemia_risk_score }}%" aria-valuenow="{{ anemia_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="text-muted mt-2 small">Based on your hemoglobin levels and other factors</p>
+                                    <p class="text-muted mt-2 small">Based on your hemoglobin levels ({{ hemoglobin }} g/dL) and other factors</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <strong>Pregnancy Risk</strong>
+                                        <span class="text-{{ 'danger' if pregnancy_risk_level == 'High' else 'warning' if pregnancy_risk_level == 'Moderate' else 'success' }}">{{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar risk-{{ 'high' if pregnancy_risk_level == 'High' else 'moderate' if pregnancy_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ pregnancy_risk_score }}%" aria-valuenow="{{ pregnancy_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="text-muted mt-2 small">Based on your health history and current pregnancy factors</p>
                                 </div>
                                 
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between mb-2">
                                         <strong>Diabetes Risk</strong>
-                                        <span class="text-success">Low (15%)</span>
+                                        <span class="text-{{ 'danger' if diabetes_risk_level == 'High' else 'warning' if diabetes_risk_level == 'Moderate' else 'success' }}">{{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)</span>
                                     </div>
                                     <div class="progress">
-                                        <div class="progress-bar risk-low" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar risk-{{ 'high' if diabetes_risk_level == 'High' else 'moderate' if diabetes_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ diabetes_risk_score }}%" aria-valuenow="{{ diabetes_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    <p class="text-muted mt-2 small">Based on your blood sugar levels, BMI, and family history</p>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <strong>Hypertension Risk</strong>
-                                        <span class="text-success">Low (10%)</span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar risk-low" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p class="text-muted mt-2 small">Based on your blood pressure readings and lifestyle factors</p>
+                                    <p class="text-muted mt-2 small">Based on your blood sugar levels ({{ blood_sugar }} mg/dL), BMI, and family history</p>
                                 </div>
                                 
                                 <a href="/risk_assessment" class="btn btn-primary">Take Full Assessment</a>
@@ -3763,11 +6258,123 @@ def dashboard():
             </div>
         </footer>
         
+        <!-- Floating Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary-color); color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); cursor: pointer; z-index: 1000; transition: all 0.3s;">
+            <i class="bi bi-chat-dots-fill"></i>
+        </div>
+        
+        <!-- Chatbot Popup -->
+        <div id="chatbotPopup" style="position: fixed; bottom: 90px; right: 20px; width: 350px; height: 500px; background-color: white; border-radius: 10px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2); z-index: 999; display: none; flex-direction: column; overflow: hidden;">
+            <div style="background-color: var(--primary-color); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <i class="bi bi-robot me-2"></i>
+                    NeoMitra Assistant
+                </div>
+                <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+            </div>
+            <div id="chatbotMessages" style="flex: 1; padding: 15px; overflow-y: auto;">
+                <div style="margin-bottom: 10px; max-width: 80%; background-color: #f1f1f1; color: #333; padding: 10px 15px; border-radius: 18px 18px 18px 0; align-self: flex-start;">
+                    Hello! I'm your NeoMitra health assistant. How can I help you today?
+                </div>
+            </div>
+            <div style="border-top: 1px solid #e0e0e0; padding: 10px; display: flex;">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)" style="flex: 1; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; margin-right: 10px;">
+                <button class="btn btn-primary" onclick="sendChatMessage()">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+        
         <!-- Bootstrap Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Chatbot Script -->
+        <script>
+            // Chatbot functionality
+            let chatbotOpen = false;
+            
+            function toggleChatbot() {
+                chatbotOpen = !chatbotOpen;
+                document.getElementById('chatbotPopup').style.display = chatbotOpen ? 'flex' : 'none';
+                if (chatbotOpen) {
+                    document.getElementById('chatbotInput').focus();
+                }
+            }
+            
+            function handleChatKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendChatMessage();
+                }
+            }
+            
+            function sendChatMessage() {
+                const input = document.getElementById('chatbotInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    // Add user message
+                    addChatMessage(message, 'user');
+                    input.value = '';
+                    
+                    // Send to backend API
+                    fetch('/api/chatbot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Add bot response
+                        addChatMessage(data.response, 'bot');
+                    })
+                    .catch(error => {
+                        console.error('Error processing message:', error);
+                        addChatMessage("I'm sorry, I couldn't process your message. Please try again.", 'bot');
+                    });
+                }
+            }
+            
+            function addChatMessage(text, sender) {
+                const messagesContainer = document.getElementById('chatbotMessages');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                
+                if (sender === 'user') {
+                    messageElement.style.background = 'var(--primary-color)';
+                    messageElement.style.color = 'white';
+                    messageElement.style.padding = '10px 15px';
+                    messageElement.style.borderRadius = '18px 18px 0 18px';
+                    messageElement.style.alignSelf = 'flex-end';
+                    messageElement.style.marginLeft = 'auto';
+                    messageElement.style.marginBottom = '10px';
+                    messageElement.style.maxWidth = '80%';
+                } else {
+                    messageElement.style.background = '#f1f1f1';
+                    messageElement.style.color = '#333';
+                    messageElement.style.padding = '10px 15px';
+                    messageElement.style.borderRadius = '18px 18px 18px 0';
+                    messageElement.style.alignSelf = 'flex-start';
+                    messageElement.style.marginBottom = '10px';
+                    messageElement.style.maxWidth = '80%';
+                }
+                
+                messageElement.textContent = text;
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        </script>
     </body>
     </html>
-    """, username=username, user_data=user_data)
+    """, username=username, user_data=user_data, 
+       weight=weight, blood_pressure=blood_pressure, blood_sugar=blood_sugar, 
+       hemoglobin=hemoglobin, bmi=bmi, pregnancy_risk_level=pregnancy_risk_level, 
+       pregnancy_risk_score=pregnancy_risk_score, anemia_risk_level=anemia_risk_level, 
+       anemia_risk_score=anemia_risk_score, diabetes_risk_level=diabetes_risk_level, 
+       diabetes_risk_score=diabetes_risk_score)
 
 @app.route('/logout')
 def logout():
@@ -3775,11 +6382,36 @@ def logout():
     session.clear()
     return redirect('/')
 
-@app.route('/health-records')
+@app.route('/health-records', methods=['GET', 'POST'])
 def health_records():
     # Check if user is logged in
     if not session.get('logged_in'):
         return redirect('/login')
+    
+    # Handle form submission
+    if request.method == 'POST':
+        # Update session with health metrics
+        session['weight'] = request.form.get('weight', '65')
+        
+        # Combine systolic and diastolic for blood pressure
+        bp_systolic = request.form.get('bp_systolic', '120')
+        bp_diastolic = request.form.get('bp_diastolic', '80')
+        session['blood_pressure'] = f"{bp_systolic}/{bp_diastolic}"
+        
+        session['blood_sugar'] = request.form.get('blood_sugar', '98')
+        session['hemoglobin'] = request.form.get('hemoglobin', '11.2')
+        
+        # Calculate BMI if height and weight are provided
+        weight = float(request.form.get('weight', '0'))
+        height = float(request.form.get('height', '0'))
+        if weight > 0 and height > 0:
+            # BMI = weight(kg) / (height(m))²
+            bmi = weight / ((height/100) ** 2)
+            session['bmi'] = f"{bmi:.1f}"
+        
+        # Redirect to dashboard to show updated metrics
+        flash('Health records updated successfully!', 'success')
+        return redirect('/dashboard')
     
     return render_template_string("""
     <!DOCTYPE html>
@@ -4137,15 +6769,15 @@ def health_records():
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <form>
+                                        <form action="/health-records" method="POST">
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="weight" class="form-label">Weight (kg)</label>
-                                                    <input type="number" class="form-control" id="weight" name="weight" step="0.1">
+                                                    <input type="number" class="form-control" id="weight" name="weight" step="0.1" value="{{ session.get('weight', '65') }}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="height" class="form-label">Height (cm)</label>
-                                                    <input type="number" class="form-control" id="height" name="height" step="0.1">
+                                                    <input type="number" class="form-control" id="height" name="height" step="0.1" value="165">
                                                 </div>
                                             </div>
                                             
@@ -4153,21 +6785,21 @@ def health_records():
                                                 <div class="col-md-6">
                                                     <label class="form-label">Blood Pressure (mmHg)</label>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control" id="bp_systolic" name="bp_systolic" placeholder="Systolic">
+                                                        <input type="number" class="form-control" id="bp_systolic" name="bp_systolic" placeholder="Systolic" value="{{ session.get('blood_pressure', '120/80').split('/')[0] }}">
                                                         <span class="input-group-text">/</span>
-                                                        <input type="number" class="form-control" id="bp_diastolic" name="bp_diastolic" placeholder="Diastolic">
+                                                        <input type="number" class="form-control" id="bp_diastolic" name="bp_diastolic" placeholder="Diastolic" value="{{ session.get('blood_pressure', '120/80').split('/')[1] }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="blood_sugar" class="form-label">Blood Sugar (mg/dL)</label>
-                                                    <input type="number" class="form-control" id="blood_sugar" name="blood_sugar" step="0.1">
+                                                    <input type="number" class="form-control" id="blood_sugar" name="blood_sugar" step="0.1" value="{{ session.get('blood_sugar', '98') }}">
                                                 </div>
                                             </div>
                                             
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <label for="hemoglobin" class="form-label">Hemoglobin (g/dL)</label>
-                                                    <input type="number" class="form-control" id="hemoglobin" name="hemoglobin" step="0.1">
+                                                    <input type="number" class="form-control" id="hemoglobin" name="hemoglobin" step="0.1" value="{{ session.get('hemoglobin', '11.2') }}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-check mt-4">
