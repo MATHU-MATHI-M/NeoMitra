@@ -4011,15 +4011,33 @@ def risk_assessment():
                                     <div class="card-body">
                                         <form id="pregnancyRiskForm">
                                             <h5 class="mb-3">Demographic Information</h5>
-                                            <div class="mb-3 form-check">
-                                                <input type="checkbox" class="form-check-input" id="pregAgeAbove35">
-                                                <label class="form-check-label" for="pregAgeAbove35">Are you over 35 years old?</label>
+                                            <div class="mb-3">
+                                                <label class="form-label">Are you over 35 years old?</label>
+                                                <div class="d-flex">
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="pregAgeAbove35" id="pregAgeAbove35Yes" value="yes">
+                                                        <label class="form-check-label" for="pregAgeAbove35Yes">Yes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="pregAgeAbove35" id="pregAgeAbove35No" value="no" checked>
+                                                        <label class="form-check-label" for="pregAgeAbove35No">No</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                             
                                             <h5 class="mb-3 mt-4">Pregnancy Factors</h5>
-                                            <div class="mb-3 form-check">
-                                                <input type="checkbox" class="form-check-input" id="multiplePregnancy">
-                                                <label class="form-check-label" for="multiplePregnancy">Are you carrying multiple babies (twins, triplets, etc.)?</label>
+                                            <div class="mb-3">
+                                                <label class="form-label">Are you carrying multiple babies (twins, triplets, etc.)?</label>
+                                                <div class="d-flex">
+                                                    <div class="form-check me-3">
+                                                        <input class="form-check-input" type="radio" name="multiplePregnancy" id="multiplePregnancyYes" value="yes">
+                                                        <label class="form-check-label" for="multiplePregnancyYes">Yes</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="multiplePregnancy" id="multiplePregnancyNo" value="no" checked>
+                                                        <label class="form-check-label" for="multiplePregnancyNo">No</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="mb-3 form-check">
                                                 <input type="checkbox" class="form-check-input" id="previousCSection">
@@ -6047,47 +6065,182 @@ def dashboard():
                             <div class="card-header">
                                 <h5 class="card-title">
                                     <i class="bi bi-shield-check"></i>
-                                    Health Risk Assessment
+                                    Completed Health Risk Assessments
                                 </h5>
-                                <a href="/risk_assessment" class="btn btn-sm btn-outline-primary">Details</a>
+                                <a href="/risk_assessment" class="btn btn-sm btn-outline-primary">Take New Assessment</a>
                             </div>
                             <div class="card-body">
-                                <div class="mb-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <strong>Anemia Risk</strong>
-                                        <span class="text-{{ 'danger' if anemia_risk_level == 'High' else 'warning' if anemia_risk_level == 'Moderate' else 'success' }}">{{ anemia_risk_level }} ({{ anemia_risk_score }}%)</span>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div style="width: 15px; height: 15px; background-color: #7952b3; border-radius: 50%; margin-right: 10px;"></div>
+                                            <span>Anemia Risk: {{ anemia_risk_level }} ({{ anemia_risk_score }}%)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div style="width: 15px; height: 15px; background-color: #ff6b6b; border-radius: 50%; margin-right: 10px;"></div>
+                                            <span>High Risk Pregnancy: {{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div style="width: 15px; height: 15px; background-color: #20c997; border-radius: 50%; margin-right: 10px;"></div>
+                                            <span>Diabetes Risk: {{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)</span>
+                                        </div>
                                     </div>
-                                    <div class="progress">
-                                        <div class="progress-bar risk-{{ 'high' if anemia_risk_level == 'High' else 'moderate' if anemia_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ anemia_risk_score }}%" aria-valuenow="{{ anemia_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="col-md-6">
+                                        <div class="chart-container" style="position: relative; height: 200px;">
+                                            <canvas id="riskPieChart" width="100%" height="100%"></canvas>
+                                        </div>
                                     </div>
-                                    <p class="text-muted mt-2 small">Based on your hemoglobin levels ({{ hemoglobin }} g/dL) and other factors</p>
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <strong>Pregnancy Risk</strong>
-                                        <span class="text-{{ 'danger' if pregnancy_risk_level == 'High' else 'warning' if pregnancy_risk_level == 'Moderate' else 'success' }}">{{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="downloadPDF()">
+                                            <i class="bi bi-file-earmark-pdf"></i> Download Report
+                                        </button>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-share"></i> Share
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" onclick="shareViaWhatsApp()"><i class="bi bi-whatsapp text-success me-2"></i>WhatsApp</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="shareViaEmail()"><i class="bi bi-envelope text-primary me-2"></i>Email</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="progress">
-                                        <div class="progress-bar risk-{{ 'high' if pregnancy_risk_level == 'High' else 'moderate' if pregnancy_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ pregnancy_risk_score }}%" aria-valuenow="{{ pregnancy_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p class="text-muted mt-2 small">Based on your health history and current pregnancy factors</p>
+                                    <a href="/risk_assessment" class="btn btn-primary">Take New Assessment</a>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <strong>Diabetes Risk</strong>
-                                        <span class="text-{{ 'danger' if diabetes_risk_level == 'High' else 'warning' if diabetes_risk_level == 'Moderate' else 'success' }}">{{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)</span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar risk-{{ 'high' if diabetes_risk_level == 'High' else 'moderate' if diabetes_risk_level == 'Moderate' else 'low' }}" role="progressbar" style="width: {{ diabetes_risk_score }}%" aria-valuenow="{{ diabetes_risk_score }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p class="text-muted mt-2 small">Based on your blood sugar levels ({{ blood_sugar }} mg/dL), BMI, and family history</p>
-                                </div>
-                                
-                                <a href="/risk_assessment" class="btn btn-primary">Take Full Assessment</a>
                             </div>
                         </div>
+                        
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+                        <script>
+                            // Initialize chart once DOM is loaded
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const ctx = document.getElementById('riskPieChart').getContext('2d');
+                                
+                                // Get risk data from template variables
+                                const riskScores = [
+                                    parseInt('{{ anemia_risk_score }}'),
+                                    parseInt('{{ pregnancy_risk_score }}'),
+                                    parseInt('{{ diabetes_risk_score }}')
+                                ];
+                                
+                                const pieChart = new Chart(ctx, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['Anemia Risk', 'Pregnancy Risk', 'Diabetes Risk'],
+                                        datasets: [{
+                                            data: riskScores,
+                                            backgroundColor: [
+                                                '#7952b3',
+                                                '#ff6b6b',
+                                                '#20c997'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            legend: {
+                                                position: 'bottom'
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                            
+                            // Functions for downloading and sharing reports
+                            function downloadPDF() {
+                                const { jsPDF } = window.jspdf;
+                                const doc = new jsPDF();
+                                
+                                // Add content to PDF
+                                doc.setFontSize(22);
+                                doc.text('NeoMitra Health Risk Assessment Report', 20, 20);
+                                
+                                doc.setFontSize(14);
+                                doc.text('Assessment Date: ' + new Date().toLocaleDateString(), 20, 30);
+                                
+                                doc.setFontSize(16);
+                                doc.text('Risk Assessment Results:', 20, 40);
+                                
+                                doc.setFontSize(12);
+                                doc.text('Anemia Risk: {{ anemia_risk_level }} ({{ anemia_risk_score }}%)', 25, 50);
+                                doc.text('Pregnancy Risk: {{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)', 25, 60);
+                                doc.text('Diabetes Risk: {{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)', 25, 70);
+                                
+                                doc.setFontSize(16);
+                                doc.text('Health Metrics:', 20, 90);
+                                
+                                doc.setFontSize(12);
+                                doc.text('Weight: {{ weight }} kg', 25, 100);
+                                doc.text('Blood Pressure: {{ blood_pressure }} mmHg', 25, 110);
+                                doc.text('Blood Sugar: {{ blood_sugar }} mg/dL', 25, 120);
+                                doc.text('Hemoglobin: {{ hemoglobin }} g/dL', 25, 130);
+                                doc.text('BMI: {{ bmi }}', 25, 140);
+                                
+                                // Add recommendations based on risk levels
+                                doc.setFontSize(16);
+                                doc.text('Recommendations:', 20, 160);
+                                
+                                doc.setFontSize(12);
+                                var y = 170;
+                                
+                                if ('{{ anemia_risk_level }}' === 'High') {
+                                    doc.text('• Consult with a healthcare provider about your anemia risk', 25, y);
+                                    y += 10;
+                                    doc.text('• Increase consumption of iron-rich foods', 25, y);
+                                    y += 10;
+                                }
+                                
+                                if ('{{ pregnancy_risk_level }}' === 'High') {
+                                    doc.text('• Schedule regular prenatal check-ups', 25, y);
+                                    y += 10;
+                                    doc.text('• Follow medical advice for high-risk pregnancy management', 25, y);
+                                    y += 10;
+                                }
+                                
+                                if ('{{ diabetes_risk_level }}' === 'High') {
+                                    doc.text('• Monitor blood sugar levels regularly', 25, y);
+                                    y += 10;
+                                    doc.text('• Consult with a healthcare provider about diabetes prevention', 25, y);
+                                    y += 10;
+                                }
+                                
+                                doc.text('• Maintain a healthy diet and regular exercise routine', 25, y);
+                                
+                                // Add footer
+                                doc.setFontSize(10);
+                                doc.text('This report is generated by NeoMitra Health Platform. Please consult with a healthcare provider for medical advice.', 20, 280);
+                                
+                                // Save the PDF
+                                doc.save('NeoMitra_Health_Risk_Report.pdf');
+                            }
+                            
+                            function shareViaWhatsApp() {
+                                const message = 'My NeoMitra Health Risk Assessment Results:\n' +
+                                    'Anemia Risk: {{ anemia_risk_level }} ({{ anemia_risk_score }}%)\n' +
+                                    'Pregnancy Risk: {{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)\n' +
+                                    'Diabetes Risk: {{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)';
+                                
+                                const encodedMessage = encodeURIComponent(message);
+                                window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+                            }
+                            
+                            function shareViaEmail() {
+                                const subject = 'My NeoMitra Health Risk Assessment Results';
+                                const body = 'My NeoMitra Health Risk Assessment Results:\n' +
+                                    'Anemia Risk: {{ anemia_risk_level }} ({{ anemia_risk_score }}%)\n' +
+                                    'Pregnancy Risk: {{ pregnancy_risk_level }} ({{ pregnancy_risk_score }}%)\n' +
+                                    'Diabetes Risk: {{ diabetes_risk_level }} ({{ diabetes_risk_score }}%)';
+                                
+                                const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                window.location.href = mailtoLink;
+                            }
+                        </script>
                         
                         <!-- Recommendations -->
                         <div class="card mb-4">
@@ -6440,8 +6593,25 @@ def health_records():
             }
             
             .navbar {
-                background-color: white;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                background-color: #212529;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+            
+            .navbar-brand, .nav-link {
+                color: white !important;
+                font-weight: 600;
+            }
+            
+            .navbar .btn {
+                background-color: #ff6b6b;
+                border-color: #ff6b6b;
+                color: white;
+                font-weight: 600;
+            }
+            
+            .navbar .btn:hover {
+                background-color: #fa5252;
+                border-color: #fa5252;
             }
             
             .navbar-brand {
