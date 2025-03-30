@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="#0d6efd" />
+  
+  <!-- Inner Circle for Mother -->
+  <circle cx="100" cy="75" r="30" fill="#ffffff" />
+  
+  <!-- Mother's Body -->
+  <path d="M70 110 Q100 160 130 110" stroke="#ffffff" stroke-width="8" fill="none" />
+  
+  <!-- Baby in the Womb -->
+  <circle cx="100" cy="115" r="20" fill="#ffffff" opacity="0.7" />
+  
+  <!-- Heartbeat Line -->
+  <path d="M50 140 L70 140 L80 120 L90 160 L100 130 L110 150 L120 140 L150 140" stroke="#ffffff" stroke-width="4" fill="none" />
+  
+  <!-- Text: NeoMitra (Optional) -->
+  <text x="100" y="185" font-family="Arial" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="bold">NeoMitra</text>
+</svg>
