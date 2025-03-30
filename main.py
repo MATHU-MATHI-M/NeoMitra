@@ -136,9 +136,19 @@ def process_voice_input():
         "response": response
     })
 
-# Home page with gradient background like in the provided screenshot
+# Register page as the first page
 @app.route('/')
+def index():
+    # Redirect to register page
+    return redirect('/register')
+
+# Home page with gradient background like in the provided screenshot  
+@app.route('/home')
 def home():
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+        
     return render_template_string("""
     <!DOCTYPE html>
     <html lang="en">
@@ -482,7 +492,7 @@ def home():
                 <h1 class="hero-title">Empowering Complete Health</h1>
                 <p class="hero-subtitle">A comprehensive healthcare platform for everyone, offering personalized monitoring and recommendations for conditions like anemia, diabetes, and pregnancy with accessibility in multiple languages.</p>
                 <div class="hero-buttons">
-                    <a href="/register" class="btn btn-primary me-3">Get Started</a>
+                    <a href="/dashboard" class="btn btn-primary me-3">Get Started</a>
                     <a href="#features" class="btn btn-outline-light">Learn More</a>
                 </div>
             </div>

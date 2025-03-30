@@ -1,0 +1,129 @@
+{
+  "maternal_health": {
+    "pregnancy": [
+      {
+        "query": "What are common pregnancy symptoms?",
+        "response": "Common early pregnancy symptoms include missed periods, nausea (morning sickness), tender breasts, fatigue, frequent urination, and mood changes. Later symptoms can include backaches, headaches, enlarged abdomen, and feeling the baby move."
+      },
+      {
+        "query": "How should I prepare for pregnancy?",
+        "response": "Preparation for pregnancy includes taking folic acid supplements, stopping alcohol and tobacco use, maintaining a healthy diet and weight, checking medications with your doctor, managing chronic conditions, and scheduling a preconception checkup."
+      },
+      {
+        "query": "What should I eat during pregnancy?",
+        "response": "A balanced pregnancy diet should include fruits, vegetables, whole grains, lean proteins, and dairy products. Foods rich in folic acid, iron, calcium, and omega-3 fatty acids are particularly important. Stay hydrated and limit caffeine intake."
+      },
+      {
+        "query": "What should I avoid during pregnancy?",
+        "response": "During pregnancy, avoid alcohol, smoking, raw or undercooked meat, unpasteurized dairy products, excessive caffeine, certain fish high in mercury, and raw eggs. Also avoid hot tubs, saunas, and harmful chemicals. Check with your doctor before taking any medications."
+      },
+      {
+        "query": "When should I see a doctor during pregnancy?",
+        "response": "You should see a doctor as soon as you suspect you're pregnant. Regular prenatal visits are typically scheduled: monthly until week 28, every 2 weeks until week 36, and weekly until delivery. Contact your doctor immediately for any concerning symptoms."
+      }
+    ],
+    "complications": [
+      {
+        "query": "What are signs of pregnancy complications?",
+        "response": "Warning signs include vaginal bleeding, severe abdominal pain, severe headaches, vision changes, high fever, severe swelling in face/hands, rapid weight gain, reduced fetal movement, persistent vomiting, and difficulty breathing. Contact your healthcare provider immediately if you experience any of these."
+      },
+      {
+        "query": "What is preeclampsia?",
+        "response": "Preeclampsia is a serious pregnancy complication characterized by high blood pressure and damage to organs like the liver and kidneys. Symptoms include high blood pressure, protein in urine, severe headaches, vision changes, and upper abdominal pain. Early detection and management are crucial."
+      },
+      {
+        "query": "What is gestational diabetes?",
+        "response": "Gestational diabetes is high blood sugar that develops during pregnancy. It usually has no symptoms but can cause complications for mother and baby if not managed. It's diagnosed with blood tests between weeks 24-28 and managed through diet, exercise, and sometimes medication."
+      }
+    ],
+    "postpartum": [
+      {
+        "query": "What is postpartum care?",
+        "response": "Postpartum care involves physical recovery, emotional wellbeing, newborn care, and adjustment to parenthood. It includes rest, proper nutrition, regular medical check-ups, watching for complications, and seeking support for postpartum depression if needed."
+      },
+      {
+        "query": "What is postpartum depression?",
+        "response": "Postpartum depression is a serious mental health condition affecting some women after childbirth. Symptoms include persistent sadness, anxiety, fatigue, difficulty bonding with the baby, withdrawal, and thoughts of harming yourself or the baby. It requires medical attention and treatment."
+      }
+    ]
+  },
+  "anemia": [
+    {
+      "query": "What is anemia?",
+      "response": "Anemia is a condition where you don't have enough healthy red blood cells to carry adequate oxygen to your body's tissues. It can make you feel tired and weak. The most common cause is iron deficiency, but there are many types of anemia."
+    },
+    {
+      "query": "What are symptoms of anemia?",
+      "response": "Common symptoms of anemia include fatigue, weakness, pale or yellowish skin, irregular heartbeat, shortness of breath, dizziness, chest pain, cold hands and feet, and headaches. In pregnancy, anemia can also increase risks of complications."
+    },
+    {
+      "query": "How is anemia treated?",
+      "response": "Treatment depends on the cause. Iron deficiency anemia is treated with iron supplements and iron-rich foods. Other forms may require different supplements, medications, or procedures. Severe anemia might require blood transfusions or bone marrow treatments."
+    },
+    {
+      "query": "What foods help with anemia?",
+      "response": "Iron-rich foods include red meat, liver, dark leafy greens (spinach), beans, lentils, fortified cereals, and dried fruits. Vitamin C helps iron absorption, so consume oranges, strawberries, and bell peppers alongside. For B12 anemia, eat fish, meat, eggs, and dairy."
+    }
+  ],
+  "diabetes": [
+    {
+      "query": "What is diabetes?",
+      "response": "Diabetes is a chronic health condition that affects how your body turns food into energy. The body either doesn't make enough insulin or can't effectively use the insulin it makes, resulting in high blood sugar levels. Main types include Type 1, Type 2, and gestational diabetes."
+    },
+    {
+      "query": "What are the symptoms of diabetes?",
+      "response": "Common diabetes symptoms include increased thirst, frequent urination, extreme hunger, unexplained weight loss, fatigue, irritability, blurred vision, slow-healing sores, and frequent infections. Type 1 symptoms often develop quickly, while Type 2 may develop slowly or be mild."
+    },
+    {
+      "query": "How is diabetes managed?",
+      "response": "Diabetes management includes monitoring blood sugar, taking prescribed medications (insulin or oral drugs), healthy eating, regular physical activity, and maintaining a healthy weight. Regular medical check-ups and screening for complications are also important."
+    },
+    {
+      "query": "What should I eat with diabetes?",
+      "response": "A diabetes-friendly diet includes high-fiber, low-fat foods: fruits, vegetables, whole grains, and lean proteins. Limit refined carbs, sugary foods, and saturated fats. Practice portion control and consistent meal timing. Work with a dietitian to create a personalized meal plan."
+    }
+  ],
+  "government_schemes": [
+    {
+      "query": "What government schemes are available for pregnant women?",
+      "response": "Several schemes are available including: Pradhan Mantri Matru Vandana Yojana (PMMVY) providing financial assistance, Janani Suraksha Yojana (JSY) for safe delivery, Janani Shishu Suraksha Karyakram (JSSK) for free services, and Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA) for quality prenatal care."
+    },
+    {
+      "query": "What is PMMVY?",
+      "response": "Pradhan Mantri Matru Vandana Yojana (PMMVY) is a maternity benefit program that provides financial assistance of ₹5,000 to pregnant women and lactating mothers for their first living child. The payment is made in three installments for meeting specific health and nutrition conditions."
+    },
+    {
+      "query": "What is Janani Suraksha Yojana?",
+      "response": "Janani Suraksha Yojana (JSY) is a safe motherhood intervention scheme that promotes institutional deliveries among poor pregnant women. It provides cash assistance to reduce maternal and neonatal mortality by encouraging women to deliver in health facilities."
+    },
+    {
+      "query": "What healthcare schemes are available for low-income families?",
+      "response": "Low-income families can access schemes like Ayushman Bharat (PMJAY) providing health insurance coverage, Rashtriya Swasthya Bima Yojana (RSBY) for hospitalization coverage, National Health Mission (NHM) programs, and various state-specific health schemes."
+    }
+  ],
+  "general_health": [
+    {
+      "query": "How can I maintain good health?",
+      "response": "Maintain good health through balanced nutrition, regular physical activity (150+ minutes weekly), adequate sleep (7-9 hours), stress management techniques, regular health check-ups, avoiding tobacco and limiting alcohol, staying hydrated, and maintaining social connections."
+    },
+    {
+      "query": "What vaccines do I need?",
+      "response": "Adult vaccines include annual flu shots, Td/Tdap (tetanus, diphtheria, pertussis) every 10 years, and age-specific vaccines like shingles (50+) and pneumococcal (65+). Pregnant women need Tdap and flu vaccines. Specific recommendations vary by age, health condition, and location."
+    },
+    {
+      "query": "How often should I have health check-ups?",
+      "response": "Adults should have a physical exam every 1-3 years depending on age and health status. Blood pressure checks annually, cholesterol checks every 4-6 years (more often if at risk), diabetes screening every 3 years after age 45, and age-appropriate cancer screenings as recommended."
+    },
+    {
+      "query": "What is a balanced diet?",
+      "response": "A balanced diet includes fruits, vegetables (half your plate), whole grains (quarter plate), and protein sources (quarter plate). Limit added sugars, sodium, and saturated fats. Include a variety of nutrient-dense foods across all food groups and stay within your calorie needs."
+    }
+  ],
+  "fallback_responses": [
+    "I'm not sure I understand. Could you rephrase your question?",
+    "I don't have information on that topic yet. Would you like to ask about pregnancy, anemia, diabetes, or government health schemes?",
+    "I'm still learning and don't have an answer for that. Please try asking about maternal health, anemia prevention, or diabetes management.",
+    "That's beyond my current knowledge. I can help with questions about health monitoring, risk assessment, or general wellness advice.",
+    "I don't have enough information to answer that properly. Could you ask something about health tracking or available government schemes?"
+  ]
+}
