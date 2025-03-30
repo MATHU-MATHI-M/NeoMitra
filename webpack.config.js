@@ -2,9 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  mode: 'development',
   entry: './frontend/src/index.js',
   output: {
-    path: path.resolve(__dirname, 'frontend/dist'),
+    path: path.resolve(__dirname, 'frontend/public'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -25,25 +26,35 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
+        test: /\.(png|jpg|gif|svg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'images/'
+          }
+        }
       }
     ]
   },
-  resolve: {
-    extensions: ['.js', '.jsx']
-  },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './frontend/public/index.html'
+      template: './frontend/public/index.html',
+      filename: 'index.html'
     })
   ],
   devServer: {
     historyApiFallback: true,
     port: 3000,
-    hot: true,
+    static: {
+      directory: path.join(__dirname, 'frontend/public'),
+    },
     proxy: {
       '/api': 'http://localhost:5000'
-    }
+    },
+    hot: true
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   }
 };

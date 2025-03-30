@@ -1,0 +1,363 @@
+.dashboard-page {
+  padding: 7rem 0 3rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--light-color);
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: var(--light-color);
+  opacity: 0.8;
+}
+
+.dashboard-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Pregnancy Progress Section */
+.progress-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--light-color);
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--light-color);
+}
+
+.progress-bar-container {
+  margin-top: 1rem;
+}
+
+.progress-bar-wrapper {
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  border-radius: 10px;
+  transition: width 1.5s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--light-color);
+  opacity: 0.7;
+}
+
+/* Appointment Card */
+.appointment-details {
+  display: flex;
+  align-items: flex-start;
+}
+
+.appointment-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1.5rem;
+}
+
+.date-circle {
+  width: 70px;
+  height: 70px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.date-day {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.9rem;
+}
+
+.appointment-time {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.appointment-info {
+  flex: 1;
+}
+
+.info-item {
+  margin-bottom: 0.8rem;
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.action-btn {
+  flex: 1;
+}
+
+/* Vital Stats */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.vital-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.vital-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(108, 92, 231, 0.1);
+  border-radius: 50%;
+  margin-bottom: 0.8rem;
+  color: var(--primary-color);
+}
+
+.vital-label {
+  font-size: 0.9rem;
+  color: var(--light-color);
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.vital-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--light-color);
+}
+
+/* Risk Assessment */
+.risk-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.risk-date {
+  font-size: 0.9rem;
+  color: var(--light-color);
+  opacity: 0.7;
+  margin-bottom: 1.5rem;
+}
+
+.risk-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.risk-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.risk-label {
+  font-size: 0.9rem;
+  color: var(--light-color);
+  opacity: 0.7;
+  margin-bottom: 0.8rem;
+}
+
+.risk-badge {
+  padding: 0.4rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.risk-badge.low {
+  background-color: rgba(46, 213, 115, 0.2);
+  color: #2ed573;
+}
+
+.risk-badge.moderate {
+  background-color: rgba(255, 165, 2, 0.2);
+  color: #ffa502;
+}
+
+.risk-badge.high {
+  background-color: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+.recommendations-preview {
+  background-color: rgba(108, 92, 231, 0.1);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.recommendations-header {
+  display: flex;
+  align-items: center;
+}
+
+.recommendations-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  margin-right: 0.7rem;
+}
+
+.recommendations-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.card-actions {
+  margin-top: auto;
+}
+
+/* Quick Actions */
+.quick-actions {
+  margin-top: 2rem;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-bottom: 1.5rem;
+}
+
+.quick-action-link {
+  text-decoration: none;
+}
+
+.quick-action {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.quick-action:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+.quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(108, 92, 231, 0.1);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.quick-action:hover .quick-action-icon {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.quick-action-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--light-color);
+}
+
+@media (max-width: 992px) {
+  .progress-details {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: 5rem 0 2rem;
+  }
+  
+  .appointment-details {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .appointment-date {
+    margin-right: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .appointment-info {
+    width: 100%;
+    text-align: center;
+  }
+}

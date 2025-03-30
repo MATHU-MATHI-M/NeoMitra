@@ -1,55 +1,77 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
-
-// Layout components
+import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-
-// Page components
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import NotFoundPage from './pages/NotFoundPage';
-
-// Auth components
+import DashboardPage from './pages/DashboardPage';
+import ChatbotPage from './pages/ChatbotPage';
+import HealthRecordsPage from './pages/HealthRecordsPage';
+import RiskAssessmentPage from './pages/RiskAssessmentPage';
 import PrivateRoute from './components/auth/PrivateRoute';
-
-// Styles
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-const App = () => {
+function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+  }, []);
+
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+
   return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
-        <Header />
-        <main className="flex-grow-1">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            
-            {/* Protected Routes */}
-            <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<div>Dashboard</div>} />
-              <Route path="/health-records" element={<div>Health Records</div>} />
-              <Route path="/risk-assessment" element={<div>Risk Assessment</div>} />
-              <Route path="/health-schemes" element={<div>Government Schemes</div>} />
-              <Route path="/chatbot" element={<div>Chatbot</div>} />
-              <Route path="/profile" element={<div>Profile</div>} />
-              <Route path="/settings" element={<div>Settings</div>} />
-            </Route>
-            
-            {/* 404 Route */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <div className="app-container">
+      <Header user={user} logout={logout} />
+      <main className="content-container">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage login={login} user={user} />} />
+          <Route path="/register" element={<RegisterPage login={login} />} />
+          <Route path="/dashboard" element={
+            <PrivateRoute user={user}>
+              <DashboardPage user={user} />
+            </PrivateRoute>
+          } />
+          <Route path="/chatbot" element={
+            <PrivateRoute user={user}>
+              <ChatbotPage user={user} />
+            </PrivateRoute>
+          } />
+          <Route path="/health-records" element={
+            <PrivateRoute user={user}>
+              <HealthRecordsPage user={user} />
+            </PrivateRoute>
+          } />
+          <Route path="/risk-assessment" element={
+            <PrivateRoute user={user}>
+              <RiskAssessmentPage user={user} />
+            </PrivateRoute>
+          } />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
-};
+}
 
 export default App;

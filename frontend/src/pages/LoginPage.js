@@ -1,150 +1,150 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
+import axios from 'axios';
+import './LoginPage.css';
 
-const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
-  });
-  const [error, setError] = useState(null);
+const LoginPage = ({ login, user }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
-  const { email, password, rememberMe } = formData;
-
-  const onChange = e => {
-    const { name, value, checked, type } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const onSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setError('');
     
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Please provide both email and password');
       return;
     }
     
     try {
       setLoading(true);
       
-      // This is a placeholder for the actual login API call
-      // Will be replaced with the real implementation later
-      console.log('Login form submitted:', { email, password, rememberMe });
-      
-      // Simulate API call
+      // For demonstration purposes - in a real app, this would be an API call
+      // Mock login functionality for now
       setTimeout(() => {
-        // For development, just set a dummy token
-        localStorage.setItem('userToken', 'dummy-token');
+        // Simulate successful login
+        const userData = {
+          id: 1,
+          username: 'testuser',
+          email: email,
+          firstName: 'Test',
+          lastName: 'User',
+          token: 'mock-jwt-token',
+        };
         
-        // Redirect to dashboard after login
-        navigate('/dashboard');
+        login(userData);
         setLoading(false);
-      }, 1000);
+        navigate('/dashboard');
+      }, 1500);
+      
+      // In a real implementation, this would be:
+      /*
+      const response = await axios.post('/api/auth/login', {
+        email,
+        password,
+        rememberMe
+      });
+      
+      login(response.data);
+      navigate('/dashboard');
+      */
       
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
       setLoading(false);
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     }
   };
 
   return (
-    <Container>
-      <Row className="justify-content-center my-5">
-        <Col md={8} lg={6}>
-          <Card className="border-0 shadow-sm">
-            <Card.Body className="p-4 p-md-5">
-              <div className="text-center mb-4">
-                <h2 className="fw-bold">Welcome Back</h2>
-                <p className="text-muted">Sign in to access your account</p>
-              </div>
-              
-              {error && <Alert variant="danger">{error}</Alert>}
-              
-              <Form onSubmit={onSubmit}>
-                <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email Address</Form.Label>
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <FaEnvelope />
-                    </span>
+    <div className="login-page">
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={8} lg={6} xl={5}>
+            <div className="text-center mb-4">
+              <h2 className="auth-title">Welcome Back</h2>
+              <p className="auth-subtitle">Log in to access your personalized healthcare journey</p>
+            </div>
+            
+            <Card className="auth-card">
+              <Card.Body className="p-4">
+                {error && (
+                  <Alert variant="danger" className="mb-4">
+                    {error}
+                  </Alert>
+                )}
+                
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email Address</Form.Label>
                     <Form.Control
                       type="email"
-                      name="email"
                       placeholder="Enter your email"
                       value={email}
-                      onChange={onChange}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
-                    />
-                  </div>
-                </Form.Group>
-                
-                <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Password</Form.Label>
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <FaLock />
-                    </span>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={onChange}
-                      required
-                    />
-                  </div>
-                </Form.Group>
-                
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                  <Form.Group controlId="rememberMe">
-                    <Form.Check
-                      type="checkbox"
-                      name="rememberMe"
-                      label="Remember me"
-                      checked={rememberMe}
-                      onChange={onChange}
                     />
                   </Form.Group>
-                  <Link to="#" className="text-decoration-none">Forgot Password?</Link>
-                </div>
-                
-                <Button 
-                  variant="primary" 
-                  type="submit" 
-                  className="w-100 mb-3" 
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Signing in...
-                    </>
-                  ) : (
-                    <>
-                      <FaSignInAlt className="me-2" /> Sign In
-                    </>
-                  )}
-                </Button>
-                
-                <div className="text-center mt-4">
-                  <p className="mb-0">
-                    Don't have an account? <Link to="/register" className="text-decoration-none">Register</Link>
-                  </p>
-                </div>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                  
+                  <Form.Group className="mb-4">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+                  
+                  <Form.Group className="mb-4 d-flex justify-content-between align-items-center">
+                    <Form.Check
+                      type="checkbox"
+                      label="Remember me"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <Link to="/forgot-password" className="forgot-password">
+                      Forgot Password?
+                    </Link>
+                  </Form.Group>
+                  
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-100 login-btn"
+                    disabled={loading}
+                  >
+                    {loading ? 'Logging in...' : 'Log In'}
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+            
+            <div className="text-center mt-4">
+              <p className="auth-redirect">
+                Don't have an account?{' '}
+                <Link to="/register" className="auth-link">
+                  Sign up now
+                </Link>
+              </p>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 

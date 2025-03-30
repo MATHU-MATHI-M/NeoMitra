@@ -1,0 +1,87 @@
+.login-page {
+  padding: 7rem 0 3rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.auth-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--light-color);
+  margin-bottom: 1rem;
+}
+
+.auth-subtitle {
+  color: var(--light-color);
+  opacity: 0.8;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.auth-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.forgot-password {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.forgot-password:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.login-btn {
+  padding: 0.75rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+}
+
+.auth-redirect {
+  color: var(--light-color);
+  font-size: 1rem;
+}
+
+.auth-link {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.auth-link:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    padding: 5rem 0 2rem;
+  }
+  
+  .auth-title {
+    font-size: 2rem;
+  }
+  
+  .auth-card {
+    margin: 0 1rem;
+  }
+}

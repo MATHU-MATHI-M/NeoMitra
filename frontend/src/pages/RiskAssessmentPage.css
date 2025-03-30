@@ -1,0 +1,297 @@
+.risk-assessment-page {
+  padding: 7rem 0 3rem;
+}
+
+.assessment-header {
+  margin-bottom: 2rem;
+}
+
+.assessment-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--light-color);
+  margin-bottom: 0.5rem;
+}
+
+.assessment-subtitle {
+  font-size: 1.1rem;
+  color: var(--light-color);
+  opacity: 0.8;
+}
+
+.assessment-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+}
+
+/* Assessment Tabs */
+.assessment-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+  padding: 1rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.tab.active {
+  color: var(--primary-color);
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.tab:hover:not(.active) {
+  color: var(--secondary-color);
+}
+
+/* Tab Content */
+.tab-content {
+  padding: 1rem 0;
+}
+
+.tab-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+/* Results Display */
+.assessment-results {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.results-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+}
+
+.results-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.results-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--light-color);
+  margin-bottom: 0.5rem;
+}
+
+.results-date {
+  color: var(--light-color);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+/* Risk Score Cards */
+.risk-score-card {
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  height: 100%;
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.score-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin: 0;
+}
+
+.risk-badge {
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.risk-badge.low {
+  background-color: rgba(46, 213, 115, 0.2);
+  color: #2ed573;
+}
+
+.risk-badge.moderate {
+  background-color: rgba(255, 165, 2, 0.2);
+  color: #ffa502;
+}
+
+.risk-badge.high {
+  background-color: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+.score-progress {
+  margin-top: 1rem;
+}
+
+.progress-bar-wrapper {
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ed573 0%, #ffa502 50%, #ff4757 100%);
+  border-radius: 10px;
+  transition: width 1.5s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--light-color);
+  opacity: 0.7;
+}
+
+/* Recommendations Section */
+.results-section {
+  margin: 2rem 0;
+}
+
+.recommendations-list {
+  padding-left: 1.5rem;
+}
+
+.recommendation-item {
+  margin-bottom: 0.75rem;
+  color: var(--light-color);
+}
+
+.recommendation-item::marker {
+  color: var(--primary-color);
+}
+
+.results-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.action-btn {
+  min-width: 150px;
+}
+
+/* Disclaimer */
+.disclaimer-card {
+  background-color: rgba(108, 92, 231, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.disclaimer-icon {
+  color: var(--primary-color);
+  margin-right: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.disclaimer-text {
+  font-size: 0.9rem;
+  color: var(--light-color);
+  opacity: 0.8;
+}
+
+.disclaimer-text p {
+  margin: 0;
+}
+
+/* Override Bootstrap Accordion Styles */
+.accordion {
+  --bs-accordion-bg: transparent;
+  --bs-accordion-border-color: rgba(255, 255, 255, 0.1);
+  --bs-accordion-btn-color: var(--light-color);
+  --bs-accordion-btn-bg: rgba(108, 92, 231, 0.05);
+  --bs-accordion-active-color: var(--primary-color);
+  --bs-accordion-active-bg: rgba(108, 92, 231, 0.1);
+}
+
+.accordion-item {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordion-button:not(.collapsed) {
+  color: var(--primary-color);
+  background-color: rgba(108, 92, 231, 0.1);
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: rgba(108, 92, 231, 0.3);
+}
+
+@media (max-width: 768px) {
+  .risk-assessment-page {
+    padding: 5rem 0 2rem;
+  }
+  
+  .tab {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+  
+  .results-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .results-actions .btn {
+    width: 100%;
+  }
+}

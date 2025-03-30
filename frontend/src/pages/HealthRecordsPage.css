@@ -1,0 +1,343 @@
+.health-records-page {
+  padding: 7rem 0 3rem;
+}
+
+.records-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.records-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--light-color);
+  margin-bottom: 0.5rem;
+}
+
+.records-subtitle {
+  font-size: 1.1rem;
+  color: var(--light-color);
+  opacity: 0.8;
+  margin-bottom: 0;
+}
+
+.add-record-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+}
+
+/* Form Card */
+.form-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-bottom: 0;
+}
+
+.close-btn {
+  color: var(--light-color);
+  opacity: 0.7;
+  padding: 0;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  color: var(--light-color);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+/* Records Card */
+.records-card {
+  background-color: var(--dark-color);
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+}
+
+/* Tabs */
+.records-tabs {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+  color: var(--light-color);
+  opacity: 0.7;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  background-color: transparent;
+}
+
+.nav-link:hover {
+  color: var(--light-color);
+  opacity: 0.9;
+  border: none;
+}
+
+.nav-link.active {
+  color: var(--primary-color) !important;
+  background-color: transparent !important;
+  border: none;
+  border-bottom: 3px solid var(--primary-color);
+  opacity: 1;
+}
+
+/* Records Table */
+.records-table-container {
+  overflow-x: auto;
+}
+
+.records-table {
+  width: 100%;
+  color: var(--light-color);
+}
+
+.records-table thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.records-table th {
+  font-weight: 600;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--light-color);
+}
+
+.records-table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.records-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.records-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bmi-category {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 0.2rem;
+}
+
+.record-notes {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-btn {
+  color: var(--light-color);
+  opacity: 0.7;
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.25rem;
+}
+
+.action-btn:hover {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* No Records */
+.no-records {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--light-color);
+  opacity: 0.8;
+}
+
+.no-records p {
+  margin-bottom: 1.5rem;
+}
+
+/* Health Summary */
+.health-summary {
+  padding: 1rem 0;
+}
+
+.summary-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  height: 100%;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+.summary-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(108, 92, 231, 0.1);
+  margin: 0 auto 1rem;
+  color: var(--primary-color);
+}
+
+.summary-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--light-color);
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--light-color);
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: var(--light-color);
+  opacity: 0.7;
+}
+
+/* Health Insights */
+.health-insights {
+  margin-top: 2.5rem;
+}
+
+.insights-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.insights-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.insight-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  padding: 1.2rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.insight-icon {
+  color: var(--primary-color);
+  margin-right: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.insight-text {
+  font-size: 0.95rem;
+  color: var(--light-color);
+}
+
+.insight-text p {
+  margin: 0;
+}
+
+/* Charts Placeholder */
+.charts-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+}
+
+.chart-info {
+  text-align: center;
+  padding: 2rem;
+  color: var(--light-color);
+  opacity: 0.7;
+}
+
+.chart-text {
+  margin-top: 1.5rem;
+  max-width: 400px;
+}
+
+@media (min-width: 768px) {
+  .insights-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .health-records-page {
+    padding: 5rem 0 2rem;
+  }
+  
+  .records-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .add-record-btn {
+    margin-top: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+  
+  .form-actions .me-2 {
+    margin-right: 0 !important;
+  }
+}

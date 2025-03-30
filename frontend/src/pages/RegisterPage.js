@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendarAlt, FaLanguage, FaUserPlus } from 'react-icons/fa';
+import axios from 'axios';
+import './RegisterPage.css';
 
-const RegisterPage = () => {
+const RegisterPage = ({ login }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -11,243 +12,250 @@ const RegisterPage = () => {
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    preferredLanguage: 'en'
+    phone: '',
+    dob: '',
+    language: 'en'
   });
-  const [error, setError] = useState(null);
+  
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
-
-  const { 
-    username, 
-    email, 
-    password, 
-    confirmPassword, 
-    firstName, 
-    lastName, 
-    phoneNumber, 
-    dateOfBirth, 
-    preferredLanguage 
-  } = formData;
-
-  const onChange = e => {
+  
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData({ ...formData, [name]: value });
   };
-
-  const onSubmit = async e => {
-    e.preventDefault();
-    setError(null);
-    
-    // Basic validation
-    if (password !== confirmPassword) {
+  
+  const validateForm = () => {
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
-      return;
+      return false;
     }
     
-    if (password.length < 8) {
+    if (formData.password.length < 8) {
       setError('Password must be at least 8 characters long');
+      return false;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return false;
+    }
+    
+    // Check that all required fields are filled
+    const requiredFields = ['username', 'email', 'password', 'firstName', 'lastName', 'phone', 'dob'];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        setError(`Please fill in all required fields (${field} is missing)`);
+        return false;
+      }
+    }
+    
+    return true;
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!validateForm()) {
       return;
     }
     
     try {
       setLoading(true);
       
-      // This is a placeholder for the actual registration API call
-      // Will be replaced with the real implementation later
-      console.log('Registration form submitted:', formData);
-      
-      // Simulate API call
+      // For demonstration purposes - in a real app, this would be an API call
+      // Mock registration functionality for now
       setTimeout(() => {
-        // Redirect to login after registration
-        navigate('/login');
+        // Simulate successful registration
+        const userData = {
+          id: 1,
+          username: formData.username,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          token: 'mock-jwt-token',
+        };
+        
+        login(userData);
         setLoading(false);
+        navigate('/dashboard');
       }, 1500);
       
+      // In a real implementation, this would be:
+      /*
+      const response = await axios.post('/api/auth/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone_number: formData.phone,
+        date_of_birth: formData.dob,
+        preferred_language: formData.language
+      });
+      
+      login(response.data);
+      navigate('/dashboard');
+      */
+      
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
       setLoading(false);
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }
   };
-
+  
   return (
-    <Container>
-      <Row className="justify-content-center my-5">
-        <Col md={10} lg={8}>
-          <Card className="border-0 shadow-sm">
-            <Card.Body className="p-4 p-md-5">
-              <div className="text-center mb-4">
-                <h2 className="fw-bold">Create an Account</h2>
-                <p className="text-muted">Join NeoMitra to access maternal healthcare services</p>
-              </div>
-              
-              {error && <Alert variant="danger">{error}</Alert>}
-              
-              <Form onSubmit={onSubmit}>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="username">
-                      <Form.Label>Username</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaUser />
-                        </span>
+    <div className="register-page">
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={10} lg={8}>
+            <div className="text-center mb-4">
+              <h2 className="auth-title">Create Your Account</h2>
+              <p className="auth-subtitle">Join NeoMitra and start your maternal health journey</p>
+            </div>
+            
+            <Card className="auth-card">
+              <Card.Body className="p-4">
+                {error && (
+                  <Alert variant="danger" className="mb-4">
+                    {error}
+                  </Alert>
+                )}
+                
+                <Form onSubmit={handleSubmit}>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Username</Form.Label>
                         <Form.Control
                           type="text"
-                          name="username"
                           placeholder="Choose a username"
-                          value={username}
-                          onChange={onChange}
+                          name="username"
+                          value={formData.username}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                  
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="email">
-                      <Form.Label>Email Address</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaEnvelope />
-                        </span>
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Email Address</Form.Label>
                         <Form.Control
                           type="email"
-                          name="email"
                           placeholder="Enter your email"
-                          value={email}
-                          onChange={onChange}
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="password">
-                      <Form.Label>Password</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaLock />
-                        </span>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Password</Form.Label>
                         <Form.Control
                           type="password"
+                          placeholder="Create a password"
                           name="password"
-                          placeholder="Create password (min. 8 characters)"
-                          value={password}
-                          onChange={onChange}
+                          value={formData.password}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                  
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="confirmPassword">
-                      <Form.Label>Confirm Password</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaLock />
-                        </span>
+                        <Form.Text className="text-muted">
+                          Password must be at least 8 characters long
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Confirm Password</Form.Label>
                         <Form.Control
                           type="password"
-                          name="confirmPassword"
                           placeholder="Confirm your password"
-                          value={confirmPassword}
-                          onChange={onChange}
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="firstName">
-                      <Form.Label>First Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="firstName"
-                        placeholder="Enter your first name"
-                        value={firstName}
-                        onChange={onChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
+                      </Form.Group>
+                    </Col>
+                  </Row>
                   
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="lastName">
-                      <Form.Label>Last Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="lastName"
-                        placeholder="Enter your last name"
-                        value={lastName}
-                        onChange={onChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="phoneNumber">
-                      <Form.Label>Phone Number</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaPhone />
-                        </span>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>First Name</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter your first name"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter your last name"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Phone Number</Form.Label>
                         <Form.Control
                           type="tel"
-                          name="phoneNumber"
                           placeholder="Enter your phone number"
-                          value={phoneNumber}
-                          onChange={onChange}
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                  
-                  <Col md={6}>
-                    <Form.Group className="mb-3" controlId="dateOfBirth">
-                      <Form.Label>Date of Birth</Form.Label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <FaCalendarAlt />
-                        </span>
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Date of Birth</Form.Label>
                         <Form.Control
                           type="date"
-                          name="dateOfBirth"
-                          value={dateOfBirth}
-                          onChange={onChange}
+                          name="dob"
+                          value={formData.dob}
+                          onChange={handleChange}
                           required
                         />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                
-                <Form.Group className="mb-4" controlId="preferredLanguage">
-                  <Form.Label>Preferred Language</Form.Label>
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <FaLanguage />
-                    </span>
-                    <Form.Select 
-                      name="preferredLanguage" 
-                      value={preferredLanguage}
-                      onChange={onChange}
-                      required
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  
+                  <Form.Group className="mb-4">
+                    <Form.Label>Preferred Language</Form.Label>
+                    <Form.Select
+                      name="language"
+                      value={formData.language}
+                      onChange={handleChange}
                     >
                       <option value="en">English</option>
                       <option value="hi">Hindi</option>
@@ -256,51 +264,40 @@ const RegisterPage = () => {
                       <option value="bn">Bengali</option>
                       <option value="mr">Marathi</option>
                     </Form.Select>
-                  </div>
-                </Form.Group>
-                
-                <Form.Group className="mb-4">
-                  <Form.Check
-                    type="checkbox"
-                    id="termsCheckbox"
-                    label={
-                      <span>
-                        I agree to the <Link to="#" className="text-decoration-none">Terms of Service</Link> and <Link to="#" className="text-decoration-none">Privacy Policy</Link>
-                      </span>
-                    }
-                    required
-                  />
-                </Form.Group>
-                
-                <Button 
-                  variant="primary" 
-                  type="submit" 
-                  className="w-100 mb-3" 
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Creating your account...
-                    </>
-                  ) : (
-                    <>
-                      <FaUserPlus className="me-2" /> Register
-                    </>
-                  )}
-                </Button>
-                
-                <div className="text-center mt-4">
-                  <p className="mb-0">
-                    Already have an account? <Link to="/login" className="text-decoration-none">Sign In</Link>
-                  </p>
-                </div>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                  </Form.Group>
+                  
+                  <Form.Group className="mb-4">
+                    <Form.Check
+                      type="checkbox"
+                      label="I agree to the Terms of Service and Privacy Policy"
+                      required
+                    />
+                  </Form.Group>
+                  
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-100 register-btn"
+                    disabled={loading}
+                  >
+                    {loading ? 'Creating Account...' : 'Create Account'}
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+            
+            <div className="text-center mt-4">
+              <p className="auth-redirect">
+                Already have an account?{' '}
+                <Link to="/login" className="auth-link">
+                  Log in
+                </Link>
+              </p>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 
