@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-robot me-2"></i>NeoMitra Health Assistant</h2>
+                </div>
+                <div class="card-body">
+                    <div class="chat-full-page">
+                        <div id="chat-full-messages" class="chat-full-messages mb-4">
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    <p>Hello! I'm your NeoMitra Health Assistant. How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-full">
+                            <div class="input-group">
+                                <input type="text" id="chat-full-input" class="form-control" placeholder="Type your question here...">
+                                <button class="btn btn-primary" id="voice-full-button">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="btn btn-primary" id="send-full-button">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4 shadow">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">How can I help you?</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-chip" data-message="What are symptoms of anemia during pregnancy?">
+                                <i class="fas fa-tint me-2"></i> Anemia symptoms
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-chip" data-message="What nutrition is important during pregnancy?">
+                                <i class="fas fa-apple-alt me-2"></i> Nutrition advice
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-chip" data-message="What government schemes are available for pregnant women?">
+                                <i class="fas fa-landmark me-2"></i> Government schemes
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="suggestion-chip" data-message="What are some signs of high-risk pregnancy?">
+                                <i class="fas fa-exclamation-triangle me-2"></i> Pregnancy risks
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chat-full-messages');
+        const userInput = document.getElementById('chat-full-input');
+        const sendButton = document.getElementById('send-full-button');
+        const voiceButton = document.getElementById('voice-full-button');
+        const suggestionChips = document.querySelectorAll('.suggestion-chip');
+        
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message bot-message';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const messageParagraph = document.createElement('p');
+            messageParagraph.textContent = message;
+            
+            contentDiv.appendChild(messageParagraph);
+            messageDiv.appendChild(contentDiv);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage(message) {
+            if (!message.trim()) return;
+            
+            addMessage(message, true);
+            userInput.value = '';
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message loading';
+            loadingDiv.innerHTML = '<div class="message-content"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Send the message to the server
+            fetch('/api/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove loading indicator
+                chatMessages.removeChild(loadingDiv);
+                
+                // Add the response
+                addMessage(data.response);
+            })
+            .catch(error => {
+                // Remove loading indicator
+                chatMessages.removeChild(loadingDiv);
+                
+                // Add error message
+                addMessage('Sorry, there was an error processing your request. Please try again later.');
+                console.error('Error:', error);
+            });
+        }
+        
+        sendButton.addEventListener('click', () => {
+            sendMessage(userInput.value);
+        });
+        
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage(userInput.value);
+            }
+        });
+        
+        // Handle suggestion chips
+        suggestionChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const message = chip.getAttribute('data-message');
+                userInput.value = message;
+                sendMessage(message);
+            });
+        });
+        
+        // Voice input functionality (linked to the existing voice recognition system)
+        voiceButton.addEventListener('click', () => {
+            // This assumes you have a global voice recognition function
+            if (typeof startVoiceRecognition === 'function') {
+                startVoiceRecognition(text => {
+                    userInput.value = text;
+                    sendMessage(text);
+                });
+            } else {
+                alert('Voice recognition is not available');
+            }
+        });
+    });
+</script>
+
+<style>
+    .chat-full-page {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+    }
+    
+    .chat-full-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+    
+    .message {
+        margin-bottom: 1rem;
+        display: flex;
+    }
+    
+    .user-message {
+        justify-content: flex-end;
+    }
+    
+    .message-content {
+        max-width: 80%;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+    }
+    
+    .bot-message .message-content {
+        background-color: #e9ecef;
+        border-bottom-left-radius: 0.25rem;
+    }
+    
+    .user-message .message-content {
+        background-color: #007bff;
+        color: white;
+        border-bottom-right-radius: 0.25rem;
+    }
+    
+    .chat-input-full {
+        margin-top: 1rem;
+    }
+    
+    .suggestion-chip {
+        background-color: #f0f7ff;
+        color: #007bff;
+        padding: 0.75rem 1rem;
+        border-radius: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        border: 1px solid #d0e3ff;
+    }
+    
+    .suggestion-chip:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    /* Typing indicator */
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+    }
+    
+    .typing-indicator span {
+        height: 8px;
+        width: 8px;
+        background-color: #007bff;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+        opacity: 0.6;
+        animation: typing 1.4s infinite ease-in-out both;
+    }
+    
+    .typing-indicator span:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-5px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

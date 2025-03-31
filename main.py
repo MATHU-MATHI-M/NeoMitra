@@ -1,7 +1,8 @@
 import os
 import re
+import uuid
 import logging
-from flask import Flask, send_from_directory, jsonify, render_template_string, redirect, url_for, request, flash, session
+from flask import Flask, send_from_directory, jsonify, render_template_string, redirect, url_for, request, flash, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -8962,6 +8963,15 @@ def chatbot():
     if not session.get('logged_in'):
         return redirect('/login')
     
+    # Generate a session ID if one doesn't exist
+    if 'chatbot_session_id' not in session:
+        session['chatbot_session_id'] = str(uuid.uuid4())
+    
+    return render_template('chatbot.html', title='NeoMitra Health Assistant', username=session.get('username'), logged_in=session.get('logged_in', False))
+
+# Legacy chatbot function - keeping code for reference
+def chatbot_legacy():
+    # This is an old version kept for reference
     return render_template_string("""
     <!DOCTYPE html>
     <html lang="en">
@@ -9702,7 +9712,7 @@ def resources():
                     <div class="row">
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YW5lbWlhfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Anemia Management">
+                                <img src="https://via.placeholder.com/500x300?text=Anemia+Management" class="card-img-top" alt="Anemia Management">
                                 <div class="card-body">
                                     <h5 class="card-title">Understanding and Managing Anemia</h5>
                                     <p class="card-text">Learn about the causes, symptoms, and treatment options for anemia, a condition affecting both men and women.</p>
@@ -9719,7 +9729,7 @@ def resources():
                                     <i class="bi bi-lock-fill"></i> Login to Access
                                 </div>
                                 {% endif %}
-                                <img src="https://images.unsplash.com/photo-1584362917165-526a968579e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlhYmV0ZXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Diabetes Care">
+                                <img src="https://via.placeholder.com/500x300?text=Diabetes+Care" class="card-img-top" alt="Diabetes Care">
                                 <div class="card-body">
                                     <h5 class="card-title">Comprehensive Diabetes Management</h5>
                                     <p class="card-text">Essential guidelines for managing blood sugar levels, understanding medication, and making lifestyle changes.</p>
@@ -9735,7 +9745,7 @@ def resources():
                         </div>
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJlZ25hbmN5fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Pregnancy Care">
+                                <img src="https://via.placeholder.com/500x300?text=Pregnancy+Care" class="card-img-top" alt="Pregnancy Care">
                                 <div class="card-body">
                                     <h5 class="card-title">Pregnancy Care Guidelines</h5>
                                     <p class="card-text">Essential information for a healthy pregnancy, including prenatal care, nutrition, and managing common concerns.</p>
@@ -9757,7 +9767,7 @@ def resources():
                     <div class="row">
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1576097449402-94a548bc8de1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhbHRoeSUyMGZvb2R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Iron-Rich Foods">
+                                <img src="https://via.placeholder.com/500x300?text=Iron+Rich+Foods" class="card-img-top" alt="Iron-Rich Foods">
                                 <div class="card-body">
                                     <h5 class="card-title">Iron-Rich Foods for Anemia Prevention</h5>
                                     <p class="card-text">A comprehensive guide to foods high in iron and strategies to enhance iron absorption in your diet.</p>
@@ -9774,7 +9784,7 @@ def resources():
                                     <i class="bi bi-lock-fill"></i> Login to Access
                                 </div>
                                 {% endif %}
-                                <img src="https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZGlhYmV0ZXMlMjBmb29kfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Diabetic Diet">
+                                <img src="https://via.placeholder.com/500x300?text=Diabetic+Diet" class="card-img-top" alt="Diabetic Diet">
                                 <div class="card-body">
                                     <h5 class="card-title">Diabetes-Friendly Meal Planning</h5>
                                     <p class="card-text">Learn how to create balanced meals that help manage blood sugar levels, including recipe ideas and sample meal plans.</p>
@@ -9790,7 +9800,7 @@ def resources():
                         </div>
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGhlYWx0aHklMjBmb29kfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Pregnancy Nutrition">
+                                <img src="https://via.placeholder.com/500x300?text=Pregnancy+Nutrition" class="card-img-top" alt="Pregnancy Nutrition">
                                 <div class="card-body">
                                     <h5 class="card-title">Optimal Nutrition During Pregnancy</h5>
                                     <p class="card-text">Essential nutritional guidance for each trimester of pregnancy, focusing on critical nutrients for maternal and fetal health.</p>
@@ -9812,7 +9822,7 @@ def resources():
                     <div class="row">
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aG9zcGl0YWx8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Janani Suraksha Yojana">
+                                <img src="https://via.placeholder.com/500x300?text=Janani+Suraksha+Yojana" class="card-img-top" alt="Janani Suraksha Yojana">
                                 <div class="card-body">
                                     <h5 class="card-title">Janani Suraksha Yojana (JSY)</h5>
                                     <p class="card-text">Details about this scheme which promotes institutional delivery among poor pregnant women with cash assistance and support.</p>
@@ -9824,7 +9834,7 @@ def resources():
                         </div>
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card resource-card">
-                                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZG9jdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Ayushman Bharat">
+                                <img src="https://via.placeholder.com/500x300?text=Ayushman+Bharat" class="card-img-top" alt="Ayushman Bharat">
                                 <div class="card-body">
                                     <h5 class="card-title">Ayushman Bharat Health Scheme</h5>
                                     <p class="card-text">Information about India's national health protection scheme providing coverage for secondary and tertiary care hospitalization.</p>
@@ -9841,7 +9851,7 @@ def resources():
                                     <i class="bi bi-lock-fill"></i> Login to Access
                                 </div>
                                 {% endif %}
-                                <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1lZGljaW5lfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Pradhan Mantri Jan Arogya Yojana">
+                                <img src="https://via.placeholder.com/500x300?text=PM+Jan+Arogya+Yojana" class="card-img-top" alt="Pradhan Mantri Jan Arogya Yojana">
                                 <div class="card-body">
                                     <h5 class="card-title">Pradhan Mantri Jan Arogya Yojana (PM-JAY)</h5>
                                     <p class="card-text">A detailed guide to eligibility, benefits, and application process for this flagship health insurance scheme.</p>
