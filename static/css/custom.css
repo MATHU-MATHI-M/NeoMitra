@@ -28,6 +28,31 @@ body {
     overflow-x: hidden;
 }
 
+/* Form input styling to ensure dark text */
+.form-control, 
+input, 
+select, 
+textarea, 
+.form-select {
+    color: #212529 !important;
+    background-color: #fff !important;
+}
+
+/* Ensure date input fields have black text */
+input[type="date"] {
+    color: #212529 !important;
+}
+
+/* Add white background to cards and forms for better contrast */
+.card, .form {
+    background-color: #ffffff;
+}
+
+/* Calendar input styling fix */
+.form-control::-webkit-calendar-picker-indicator {
+    filter: invert(0);
+}
+
 .btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);

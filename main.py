@@ -3750,7 +3750,8 @@ def risk_assessment():
                 border-bottom: 1px solid #e0e0e0;
             }
             input[type="date"] {
-                color: #212529 !important;
+                color: #000000 !important;
+                background-color: #ffffff !important;
             }
             .form-check-input:checked {
                 background-color: var(--bs-primary);
@@ -6868,12 +6869,17 @@ def appointments():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Appointments - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
+            body {
+                background-color: #f8f9fa;
+                color: #212529;
+            }
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
             }
             .page-header {
                 padding: 1.5rem 0;
