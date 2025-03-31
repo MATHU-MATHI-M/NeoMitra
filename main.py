@@ -2392,9 +2392,9 @@ def index():
     </head>
     <body>
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand text-primary" href="/">
                     <i class="bi bi-heart-pulse-fill"></i> NeoMitra
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -2403,19 +2403,19 @@ def index():
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/">Home</a>
+                            <a class="nav-link active text-dark" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/health_records">Health Records</a>
+                            <a class="nav-link text-dark" href="/health_records">Health Records</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/risk_assessment">Risk Assessment</a>
+                            <a class="nav-link text-dark" href="/risk_assessment">Risk Assessment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/government_schemes">Government Schemes</a>
+                            <a class="nav-link text-dark" href="/government_schemes">Government Schemes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/nutrition">Nutrition Guide</a>
+                            <a class="nav-link text-dark" href="/nutrition">Nutrition Guide</a>
                         </li>
                     </ul>
                     <div class="d-flex">
@@ -2980,9 +2980,9 @@ def home():
     </head>
     <body>
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand text-primary" href="/">
                     <i class="bi bi-heart-pulse-fill"></i> NeoMitra
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -2991,13 +2991,13 @@ def home():
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/">Home</a>
+                            <a class="nav-link active text-dark" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Resources</a>
+                            <a class="nav-link text-dark" href="#">Resources</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Assistant</a>
+                            <a class="nav-link text-dark" href="#">Assistant</a>
                         </li>
                     </ul>
                     <div class="auth-buttons">
@@ -3886,38 +3886,38 @@ def risk_assessment():
                         <hr>
                         <ul class="nav nav-pills flex-column mb-auto">
                             <li class="nav-item">
-                                <a href="/dashboard" class="nav-link">
-                                    <i class="bi bi-speedometer2 me-2"></i>
+                                <a href="/dashboard" class="nav-link text-dark">
+                                    <i class="bi bi-speedometer2 text-primary me-2"></i>
                                     Dashboard
                                 </a>
                             </li>
                             <li>
-                                <a href="/health-records" class="nav-link">
-                                    <i class="bi bi-journal-medical me-2"></i>
+                                <a href="/health-records" class="nav-link text-dark">
+                                    <i class="bi bi-journal-medical text-primary me-2"></i>
                                     Health Records
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link active">
+                                <a href="/risk_assessment" class="nav-link active bg-primary">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
                             </li>
                             <li>
-                                <a href="/appointments" class="nav-link">
-                                    <i class="bi bi-calendar-check me-2"></i>
+                                <a href="/appointments" class="nav-link text-dark">
+                                    <i class="bi bi-calendar-check text-primary me-2"></i>
                                     Appointments
                                 </a>
                             </li>
                             <li>
-                                <a href="/nutrition" class="nav-link">
-                                    <i class="bi bi-egg-fried me-2"></i>
+                                <a href="/nutrition" class="nav-link text-dark">
+                                    <i class="bi bi-egg-fried text-primary me-2"></i>
                                     Nutrition Guide
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
-                                    <i class="bi bi-bank me-2"></i>
+                                <a href="/government_schemes" class="nav-link text-dark">
+                                    <i class="bi bi-bank text-primary me-2"></i>
                                     Government Schemes
                                 </a>
                             </li>
@@ -4611,26 +4611,26 @@ def government_schemes():
                                 </a>
                             </li>
                             <li>
-                                <a href="/appointments" class="nav-link">
-                                    <i class="bi bi-calendar-check me-2"></i>
+                                <a href="/appointments" class="nav-link text-dark">
+                                    <i class="bi bi-calendar-check text-primary me-2"></i>
                                     Appointments
                                 </a>
                             </li>
                             <li>
-                                <a href="/nutrition" class="nav-link">
-                                    <i class="bi bi-egg-fried me-2"></i>
+                                <a href="/nutrition" class="nav-link text-dark">
+                                    <i class="bi bi-egg-fried text-primary me-2"></i>
                                     Nutrition Guide
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link active">
+                                <a href="/government_schemes" class="nav-link active bg-primary">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
                             </li>
                             <li>
-                                <a href="/chatbot" class="nav-link">
-                                    <i class="bi bi-chat-dots me-2"></i>
+                                <a href="/chatbot" class="nav-link text-dark">
+                                    <i class="bi bi-chat-dots text-primary me-2"></i>
                                     Chatbot Assistant
                                 </a>
                             </li>
@@ -7281,9 +7281,9 @@ def dashboard():
     </head>
     <body>
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand text-primary" href="/">
                     <i class="bi bi-heart-pulse-fill"></i> NeoMitra
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -7292,18 +7292,19 @@ def dashboard():
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+                            <a class="nav-link text-dark" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/dashboard">Dashboard</a>
+                            <a class="nav-link active text-dark" href="/dashboard">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Health Records</a>
+                            <a class="nav-link text-dark" href="#">Health Records</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" href="/risk_assessment">Risk Assessment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Resources</a>
+                            <a class="nav-link text-dark" href="#">Resources</a>
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
