@@ -1,6 +1,6 @@
 .main-navbar {
-  background-color: var(--dark-color);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--light-color);
+  box-shadow: 0 2px 10px rgb(238, 238, 236, 0.2);
   padding: 1rem 0;
 }
 
@@ -40,7 +40,7 @@
 
 .register-link {
   background-color: var(--primary-color);
-  color: white !important;
+  color: #f3f3f3 !important;
 }
 
 .register-link:hover {

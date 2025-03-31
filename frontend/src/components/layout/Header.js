@@ -12,7 +12,7 @@ const Header = ({ user, logout }) => {
   };
 
   return (
-    <Navbar expand="lg" variant="dark" className="main-navbar" fixed="top">
+    <Navbar expand="lg" variant="light" className="main-navbar" fixed="top">
       <Container>
         <Navbar.Brand as={Link} to="/" className="brand">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="brand-icon">

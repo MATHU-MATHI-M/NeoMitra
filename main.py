@@ -4877,15 +4877,33 @@ def profile():
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
+            }
+            .nav-link {
+                color: #333;
+            }
+            .nav-link.active {
+                background-color: var(--bs-primary);
+                color: white;
+            }
+            .nav-link:hover {
+                color: var(--bs-primary);
+            }
+            .dropdown-toggle, .fs-4.fw-bold.text-primary {
+                color: var(--bs-primary) !important;
             }
             .page-header {
                 padding: 1.5rem 0;
                 border-bottom: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
             }
             .profile-header {
                 padding: 2rem 0;
                 margin-bottom: 2rem;
                 border-radius: 10px;
+                background-color: #ffffff;
             }
             .avatar-upload {
                 position: relative;
@@ -5401,16 +5419,34 @@ def voice_input_page():
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
+            }
+            .nav-link {
+                color: #333;
+            }
+            .nav-link.active {
+                background-color: var(--bs-primary);
+                color: white;
+            }
+            .nav-link:hover {
+                color: var(--bs-primary);
+            }
+            .dropdown-toggle, .fs-4.fw-bold.text-primary {
+                color: var(--bs-primary) !important;
             }
             .page-header {
                 padding: 1.5rem 0;
                 border-bottom: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
             }
             .voice-container {
                 border-radius: 15px;
                 background-color: rgba(var(--bs-primary-rgb), 0.05);
                 padding: 2rem;
                 margin-bottom: 2rem;
+                color: #333;
             }
             .status-indicator {
                 display: inline-block;
@@ -5655,15 +5691,34 @@ def settings():
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
+            }
+            .nav-link {
+                color: #333;
+            }
+            .nav-link.active {
+                background-color: var(--bs-primary);
+                color: white;
+            }
+            .nav-link:hover {
+                color: var(--bs-primary);
+            }
+            .dropdown-toggle, .fs-4.fw-bold.text-primary {
+                color: var(--bs-primary) !important;
             }
             .page-header {
                 padding: 1.5rem 0;
                 border-bottom: 1px solid #e0e0e0;
+                background-color: #ffffff;
+                color: #333;
             }
             .settings-card {
                 transition: all 0.3s ease;
                 border-radius: 10px;
                 margin-bottom: 20px;
+                background-color: #ffffff;
+                color: #333;
             }
             .form-switch .form-check-input {
                 width: 3em;
