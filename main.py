@@ -226,7 +226,7 @@ def meal_planner():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -244,7 +244,7 @@ def meal_planner():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -758,7 +758,7 @@ def shopping_list():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -776,7 +776,7 @@ def shopping_list():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -1681,7 +1681,7 @@ def scheme_details(scheme_id):
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -1699,7 +1699,7 @@ def scheme_details(scheme_id):
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link active">
+                                <a href="/government-schemes" class="nav-link active">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -1726,7 +1726,7 @@ def scheme_details(scheme_id):
                     <div class="page-header d-flex justify-content-between align-items-center">
                         <h2>Government Scheme Details</h2>
                         <div>
-                            <a href="/government_schemes" class="btn btn-outline-primary">
+                            <a href="/government-schemes" class="btn btn-outline-primary">
                                 <i class="bi bi-arrow-left me-2"></i>
                                 Back to Schemes
                             </a>
@@ -2423,10 +2423,10 @@ def index():
                             <a class="nav-link text-dark" href="/health-records">Health Records</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/risk_assessment">Risk Assessment</a>
+                            <a class="nav-link text-dark" href="/risk-assessment">Risk Assessment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/government_schemes">Government Schemes</a>
+                            <a class="nav-link text-dark" href="/government-schemes">Government Schemes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/nutrition">Nutrition Guide</a>
@@ -2475,7 +2475,7 @@ def index():
                             </div>
                             <h3 class="feature-title">Risk Assessment</h3>
                             <p>AI-powered risk assessment for health conditions including anemia and diabetes for all users, with additional pregnancy monitoring for women.</p>
-                            <a href="/risk_assessment" class="btn btn-sm btn-primary mt-3">Learn More</a>
+                            <a href="/risk-assessment" class="btn btn-sm btn-primary mt-3">Learn More</a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4">
@@ -2495,7 +2495,7 @@ def index():
                             </div>
                             <h3 class="feature-title">Government Schemes</h3>
                             <p>Stay informed about government healthcare schemes for all health conditions including diabetes, anemia, and pregnancy care.</p>
-                            <a href="/government_schemes" class="btn btn-sm btn-primary mt-3">View Schemes</a>
+                            <a href="/government-schemes" class="btn btn-sm btn-primary mt-3">View Schemes</a>
                         </div>
                     </div>
                 </div>
@@ -2647,8 +2647,8 @@ def index():
                         <h5 class="mb-4">Health Resources</h5>
                         <ul class="list-unstyled">
                             <li class="mb-2"><a href="/health-records" class="text-light text-decoration-none">Health Records</a></li>
-                            <li class="mb-2"><a href="/risk_assessment" class="text-light text-decoration-none">Risk Assessment</a></li>
-                            <li class="mb-2"><a href="/government_schemes" class="text-light text-decoration-none">Government Schemes</a></li>
+                            <li class="mb-2"><a href="/risk-assessment" class="text-light text-decoration-none">Risk Assessment</a></li>
+                            <li class="mb-2"><a href="/government-schemes" class="text-light text-decoration-none">Government Schemes</a></li>
                             <li class="mb-2"><a href="/nutrition" class="text-light text-decoration-none">Nutrition Guide</a></li>
                         </ul>
                     </div>
@@ -3720,7 +3720,7 @@ def register():
     </html>
     """)
 
-@app.route('/risk_assessment')
+@app.route('/risk-assessment')
 def risk_assessment():
     # Check if user is logged in
     if not session.get('logged_in'):
@@ -3733,16 +3733,24 @@ def risk_assessment():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Risk Assessment - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
+            body {
+                background-color: #f8f9fa;
+                color: #212529;
+            }
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
             }
             .page-header {
                 padding: 1.5rem 0;
                 border-bottom: 1px solid #e0e0e0;
+            }
+            input[type="date"] {
+                color: #212529 !important;
             }
             .form-check-input:checked {
                 background-color: var(--bs-primary);
@@ -3912,7 +3920,7 @@ def risk_assessment():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link active bg-primary">
+                                <a href="/risk-assessment" class="nav-link active bg-primary">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -3930,7 +3938,7 @@ def risk_assessment():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link text-dark">
+                                <a href="/government-schemes" class="nav-link text-dark">
                                     <i class="bi bi-bank text-primary me-2"></i>
                                     Government Schemes
                                 </a>
@@ -4551,7 +4559,7 @@ def risk_assessment():
     </html>
     """, username=session.get('username', 'User'))
 
-@app.route('/government_schemes')
+@app.route('/government-schemes')
 def government_schemes():
     # Check if user is logged in
     if not session.get('logged_in'):
@@ -4626,7 +4634,7 @@ def government_schemes():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -4644,7 +4652,7 @@ def government_schemes():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link active bg-primary">
+                                <a href="/government-schemes" class="nav-link active bg-primary">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -4985,7 +4993,7 @@ def profile():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -5003,7 +5011,7 @@ def profile():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -5535,7 +5543,7 @@ def voice_input_page():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -5553,7 +5561,7 @@ def voice_input_page():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -5772,7 +5780,7 @@ def settings():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -5790,7 +5798,7 @@ def settings():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -6272,7 +6280,7 @@ def nutrition():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -6290,7 +6298,7 @@ def nutrition():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -6945,7 +6953,7 @@ def appointments():
                                 </a>
                             </li>
                             <li>
-                                <a href="/risk_assessment" class="nav-link">
+                                <a href="/risk-assessment" class="nav-link">
                                     <i class="bi bi-shield-check me-2"></i>
                                     Risk Assessment
                                 </a>
@@ -6963,7 +6971,7 @@ def appointments():
                                 </a>
                             </li>
                             <li>
-                                <a href="/government_schemes" class="nav-link">
+                                <a href="/government-schemes" class="nav-link">
                                     <i class="bi bi-bank me-2"></i>
                                     Government Schemes
                                 </a>
@@ -7647,7 +7655,7 @@ def dashboard():
                             <a class="nav-link text-dark" href="#">Health Records</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/risk_assessment">Risk Assessment</a>
+                            <a class="nav-link text-dark" href="/risk-assessment">Risk Assessment</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="#">Resources</a>
@@ -7728,7 +7736,7 @@ def dashboard():
                                     <i class="bi bi-shield-check"></i>
                                     Completed Health Risk Assessments
                                 </h5>
-                                <a href="/risk_assessment" class="btn btn-sm btn-outline-primary">Take New Assessment</a>
+                                <a href="/risk-assessment" class="btn btn-sm btn-outline-primary">Take New Assessment</a>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-4">
@@ -7768,7 +7776,7 @@ def dashboard():
                                             </ul>
                                         </div>
                                     </div>
-                                    <a href="/risk_assessment" class="btn btn-primary">Take New Assessment</a>
+                                    <a href="/risk-assessment" class="btn btn-primary">Take New Assessment</a>
                                 </div>
                             </div>
                         </div>
@@ -7971,7 +7979,7 @@ def dashboard():
                                     </div>
                                 </a>
                                 
-                                <a href="/government_schemes" class="quick-action d-block">
+                                <a href="/government-schemes" class="quick-action d-block">
                                     <i class="bi bi-bank"></i>
                                     <div>
                                         <div class="quick-action-title">Government Schemes</div>
