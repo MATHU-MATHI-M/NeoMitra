@@ -62,12 +62,17 @@ def meal_planner():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Meal Planner - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
+            body {
+                background-color: #f8f9fa;
+                color: #212529;
+            }
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
             }
             .page-header {
                 padding: 1.5rem 0;
@@ -78,6 +83,8 @@ def meal_planner():
                 overflow: hidden;
                 transition: all 0.3s ease;
                 margin-bottom: 1.5rem;
+                background-color: #ffffff;
+                color: #212529;
             }
             .meal-card:hover {
                 transform: translateY(-5px);
@@ -88,10 +95,11 @@ def meal_planner():
                 object-fit: cover;
             }
             .meal-planner-week {
-                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                background-color: #f0f7ff;
                 border-radius: 12px;
                 padding: 20px;
                 margin-bottom: 2rem;
+                color: #212529;
             }
             .meal-day {
                 background-color: white;
@@ -557,12 +565,17 @@ def shopping_list():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shopping List - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
+            body {
+                background-color: #f8f9fa;
+                color: #212529;
+            }
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
             }
             .page-header {
                 padding: 1.5rem 0;
@@ -580,6 +593,7 @@ def shopping_list():
                 align-items: center;
                 transition: all 0.2s;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                color: #212529;
             }
             .shopping-item:hover {
                 box-shadow: 0 5px 10px rgba(0,0,0,0.1);
@@ -4550,12 +4564,17 @@ def government_schemes():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Government Schemes - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
+            body {
+                background-color: #f8f9fa;
+                color: #212529;
+            }
             .sidebar {
                 min-height: 100vh;
                 border-right: 1px solid #e0e0e0;
+                background-color: #ffffff;
             }
             .page-header {
                 padding: 1.5rem 0;
@@ -4564,6 +4583,8 @@ def government_schemes():
             .scheme-card {
                 transition: all 0.3s ease;
                 margin-bottom: 1.5rem;
+                background-color: #ffffff;
+                color: #212529;
             }
             .scheme-card:hover {
                 transform: translateY(-5px);
@@ -4680,8 +4701,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=PMSMA" alt="PMSMA Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title text-light">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h5>
-                                            <p class="card-text text-light">Provides free antenatal care to pregnant women on the 9th of every month with the aim of detecting high-risk pregnancies.</p>
+                                            <h5 class="card-title">Pradhan Mantri Surakshit Matritva Abhiyan (PMSMA)</h5>
+                                            <p class="card-text">Provides free antenatal care to pregnant women on the 9th of every month with the aim of detecting high-risk pregnancies.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Pregnancy Care</span>
                                                 <span class="badge bg-info">Free Check-ups</span>
@@ -4697,8 +4718,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=JSY" alt="JSY Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title text-light">Janani Suraksha Yojana (JSY)</h5>
-                                            <p class="card-text text-light">Promotes institutional delivery among poor pregnant women with cash assistance, reducing maternal and infant mortality.</p>
+                                            <h5 class="card-title">Janani Suraksha Yojana (JSY)</h5>
+                                            <p class="card-text">Promotes institutional delivery among poor pregnant women with cash assistance, reducing maternal and infant mortality.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Pregnancy Care</span>
                                                 <span class="badge bg-info">Cash Benefits</span>
@@ -4713,8 +4734,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=PMJAY" alt="PMJAY Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title text-light">Pradhan Mantri Jan Arogya Yojana (PMJAY)</h5>
-                                            <p class="card-text text-light">Health insurance scheme providing coverage up to ₹5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
+                                            <h5 class="card-title">Pradhan Mantri Jan Arogya Yojana (PMJAY)</h5>
+                                            <p class="card-text">Health insurance scheme providing coverage up to ₹5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Health Insurance</span>
                                                 <span class="badge bg-info">All Conditions</span>
@@ -4729,8 +4750,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=RBSK" alt="RBSK Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title text-light">Rashtriya Bal Swasthya Karyakram (RBSK)</h5>
-                                            <p class="card-text text-light">Child health screening and early intervention services for children from birth to 18 years to provide comprehensive care.</p>
+                                            <h5 class="card-title">Rashtriya Bal Swasthya Karyakram (RBSK)</h5>
+                                            <p class="card-text">Child health screening and early intervention services for children from birth to 18 years to provide comprehensive care.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Child Health</span>
                                                 <span class="badge bg-info">Screening</span>
@@ -4745,8 +4766,8 @@ def government_schemes():
                                     <div class="card-body d-flex">
                                         <img src="https://via.placeholder.com/80x80?text=NPCDCS" alt="NPCDCS Logo" class="scheme-logo me-3">
                                         <div>
-                                            <h5 class="card-title text-light">National Programme for Prevention and Control of Diabetes</h5>
-                                            <p class="card-text text-light">Provides free screening, diagnosis, and management of diabetes and related non-communicable diseases.</p>
+                                            <h5 class="card-title">National Programme for Prevention and Control of Diabetes</h5>
+                                            <p class="card-text">Provides free screening, diagnosis, and management of diabetes and related non-communicable diseases.</p>
                                             <div class="d-flex flex-wrap gap-2 mb-2">
                                                 <span class="badge bg-primary">Diabetes</span>
                                                 <span class="badge bg-info">Free Treatment</span>
@@ -4871,7 +4892,7 @@ def profile():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Profile - NeoMitra</title>
-        <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <style>
             .sidebar {
