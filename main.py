@@ -2406,7 +2406,7 @@ def index():
                             <a class="nav-link active text-dark" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/health_records">Health Records</a>
+                            <a class="nav-link text-dark" href="/health-records">Health Records</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/risk_assessment">Risk Assessment</a>
@@ -2451,7 +2451,7 @@ def index():
                             </div>
                             <h3 class="feature-title">Health Tracking</h3>
                             <p>Easily record and monitor vital health metrics for everyone, including specialized tracking for pregnancy, anemia, and diabetes.</p>
-                            <a href="/health_records" class="btn btn-sm btn-primary mt-3">Learn More</a>
+                            <a href="/health-records" class="btn btn-sm btn-primary mt-3">Learn More</a>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4">
@@ -2632,7 +2632,7 @@ def index():
                     <div class="col-md-3 mb-4 mb-md-0">
                         <h5 class="mb-4">Health Resources</h5>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><a href="/health_records" class="text-light text-decoration-none">Health Records</a></li>
+                            <li class="mb-2"><a href="/health-records" class="text-light text-decoration-none">Health Records</a></li>
                             <li class="mb-2"><a href="/risk_assessment" class="text-light text-decoration-none">Risk Assessment</a></li>
                             <li class="mb-2"><a href="/government_schemes" class="text-light text-decoration-none">Government Schemes</a></li>
                             <li class="mb-2"><a href="/nutrition" class="text-light text-decoration-none">Nutrition Guide</a></li>
@@ -6501,6 +6501,331 @@ def nutrition():
     </html>
     """, username=session.get('username', 'User'))
 
+@app.route('/providers')
+def providers():
+    """
+    Page for managing healthcare providers
+    """
+    # Check if user is logged in
+    if not session.get('logged_in'):
+        return redirect('/login')
+        
+    return render_template_string("""
+    {% extends 'layout.html' %}
+    {% block title %}Healthcare Providers{% endblock %}
+    {% block content %}
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3">Healthcare Providers</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProviderModal">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Provider
+                    </button>
+                </div>
+                
+                <!-- Provider Cards -->
+                <div class="row">
+                    <!-- Provider 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title">Dr. Meera Patel</h5>
+                                    <div>
+                                        <span class="badge bg-primary">Primary Care</span>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted">MBBS, MD - General Medicine</p>
+                                <div class="mb-3">
+                                    <i class="bi bi-geo-alt text-primary me-2"></i>
+                                    <span>City Hospital, New Delhi</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-telephone text-primary me-2"></i>
+                                    <span>+91 98765 43210</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-envelope text-primary me-2"></i>
+                                    <span>dr.meera@example.com</span>
+                                </div>
+                                <div class="d-flex mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary me-2">Schedule Appointment</a>
+                                    <div class="dropdown ms-auto">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProviderModal">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">Remove</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Provider 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title">Dr. Rajesh Kumar</h5>
+                                    <div>
+                                        <span class="badge bg-danger">Gynecologist</span>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted">MBBS, MS - Obstetrics & Gynecology</p>
+                                <div class="mb-3">
+                                    <i class="bi bi-geo-alt text-primary me-2"></i>
+                                    <span>Women's Health Center, Mumbai</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-telephone text-primary me-2"></i>
+                                    <span>+91 87654 32109</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-envelope text-primary me-2"></i>
+                                    <span>dr.rajesh@example.com</span>
+                                </div>
+                                <div class="d-flex mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary me-2">Schedule Appointment</a>
+                                    <div class="dropdown ms-auto">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProviderModal">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">Remove</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Provider 3 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title">Dr. Ananya Singh</h5>
+                                    <div>
+                                        <span class="badge bg-info">Pediatrician</span>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted">MBBS, MD - Pediatrics</p>
+                                <div class="mb-3">
+                                    <i class="bi bi-geo-alt text-primary me-2"></i>
+                                    <span>Children's Hospital, Bangalore</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-telephone text-primary me-2"></i>
+                                    <span>+91 76543 21098</span>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-envelope text-primary me-2"></i>
+                                    <span>dr.ananya@example.com</span>
+                                </div>
+                                <div class="d-flex mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary me-2">Schedule Appointment</a>
+                                    <div class="dropdown ms-auto">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProviderModal">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">Remove</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Provider Modal -->
+    <div class="modal fade" id="addProviderModal" tabindex="-1" aria-labelledby="addProviderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProviderModalLabel">Add New Healthcare Provider</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Title</label>
+                                <select class="form-select">
+                                    <option>Dr.</option>
+                                    <option>Prof.</option>
+                                    <option>Mr.</option>
+                                    <option>Mrs.</option>
+                                    <option>Ms.</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Specialty</label>
+                                <select class="form-select">
+                                    <option>General Medicine</option>
+                                    <option>Gynecology</option>
+                                    <option>Pediatrics</option>
+                                    <option>Cardiology</option>
+                                    <option>Endocrinology</option>
+                                    <option>Hematology</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Qualifications</label>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Years of Experience</label>
+                                <input type="number" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hospital/Clinic</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Consultation Fees</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Add Provider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Provider Modal -->
+    <div class="modal fade" id="editProviderModal" tabindex="-1" aria-labelledby="editProviderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProviderModalLabel">Edit Healthcare Provider</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Same form as Add Provider with pre-filled values -->
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Title</label>
+                                <select class="form-select">
+                                    <option selected>Dr.</option>
+                                    <option>Prof.</option>
+                                    <option>Mr.</option>
+                                    <option>Mrs.</option>
+                                    <option>Ms.</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Specialty</label>
+                                <select class="form-select">
+                                    <option selected>General Medicine</option>
+                                    <option>Gynecology</option>
+                                    <option>Pediatrics</option>
+                                    <option>Cardiology</option>
+                                    <option>Endocrinology</option>
+                                    <option>Hematology</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" value="Meera">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" value="Patel">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Qualifications</label>
+                                <input type="text" class="form-control" value="MBBS, MD - General Medicine">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Years of Experience</label>
+                                <input type="number" class="form-control" value="12">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hospital/Clinic</label>
+                            <input type="text" class="form-control" value="City Hospital">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" rows="2">123 Main Street, New Delhi, 110001</textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="dr.meera@example.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" value="+91 98765 43210">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Consultation Fees</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control" value="500">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    """)
+    
 @app.route('/appointments')
 def appointments():
     # Check if user is logged in
