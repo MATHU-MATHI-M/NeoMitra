@@ -25,12 +25,20 @@ app.use(helmet({
 app.use(morgan('dev'));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/neomitra')
+// Using a connection string compatible with older MongoDB versions
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/NeoMitra', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // These options help with compatibility for older MongoDB versions
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => {
     console.log('MongoDB Connected');
   })
   .catch((err) => {
     console.error('MongoDB Connection Error:', err);
+    console.log('Continuing without database connection. Some features may not work.');
   });
 
 // Define routes
@@ -50,9 +58,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Port setup
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Access the application at http://localhost:${PORT}`);
+  console.log(`Access the application at http://localhost:${PORT}`);
+  console.log(`Access the application at http://localhost:${PORT}`);
 });
